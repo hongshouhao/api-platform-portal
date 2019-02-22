@@ -1,0 +1,13 @@
+var env = function () {};
+env.client_id = "ocelot_admin_zlq";
+env.client_secret = "configuration_administration_secret";
+env.client_root = "http://localhost:8080";
+env.redirect_uri = "http://localhost:8080/signin-callback.html";
+env.scope = "openid profile roles ocelot_administration consul_administration";
+env.silent_redirect_uri = "http://localhost:8080/silent-callback.html";
+env.identityServer_host = "http://192.168.84.124:8610";
+env.identityServerAdmin_host = "http://192.168.84.124:8611";
+env.ocelot_host = "http://192.168.84.124:8000";
+env.consul_host = "http://192.168.84.124:8000";
+env.consul_access_token = "";
+env.butterfly_host = "http://192.168.84.124:9618";

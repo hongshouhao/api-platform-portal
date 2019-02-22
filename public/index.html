@@ -1,17 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>ocelot</title>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but ocelot doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>ocelot</title>
+</head>
+
+<body>
+  <noscript>
+    <strong>We're sorry but ocelot doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+  </noscript>
+  <div id="app"></div>
+  <script src="./js/core/jquery.min.js"></script>
+  <script src="./js/core/oidc-client.js"></script>
+  <script src="./js/core/env.js"></script>
+  <script src="./js/core/identity.js"></script>
+  <script src="./js/core/utils.js"></script>
+  <script src="./js/ocelot.js"></script>
+  <script>
+    var obj = {
+      "jsonString": "{}",
+      "sectionType": 1,
+      "name": "111",
+    }
+    // Ocelot.SaveSection(obj,
+    //   function () {
+    //     _this.$Message.success("保存成功");
+    //   },
+    //   function (errorThrow) {
+    //     console.log(errorThrow);
+    //     _this.$Message.error("保存失败");
+    //   }
+    // );
+  </script>
+</body>
+
 </html>

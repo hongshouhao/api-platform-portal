@@ -1,0 +1,74 @@
+<template>
+  <div class="layout">
+    <Layout>
+      <Header :style="{position: 'fixed', width: '100%'}">
+        <Menu mode="horizontal" theme="light" :active-name="activeName" @on-select="handleSelect">
+          <div class="layout-nav">
+            <MenuItem name="ocelot">
+              <Icon type="md-code"></Icon>网关配置
+            </MenuItem>
+            <MenuItem name="servicediscovery">
+              <Icon type="ios-navigate"></Icon>服务发现
+            </MenuItem>
+            <MenuItem name="test">
+              <Icon type="ios-flower"></Icon>接口测试
+            </MenuItem>
+            <MenuItem name="statistic">
+              <Icon type="ios-podium"></Icon>接口统计
+            </MenuItem>
+            <MenuItem name="authority">
+              <Icon type="ios-people"></Icon>权限
+            </MenuItem>
+          </div>
+        </Menu>
+      </Header>
+      <Content :style="{margin: '88px 20px 0', minHeight: '500px'}">
+        <router-view></router-view>
+      </Content>
+      <Footer class="layout-footer-center">2019 &copy;</Footer>
+    </Layout>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      activeName: "ocelot"
+    };
+  },
+  mounted() {
+    this.activeName = this.$route.name;
+  },
+  methods: {
+    handleSelect(name) {
+      this.$router.push({ name: name });
+      this.activeName = name;
+    }
+  }
+};
+</script>
+
+<style scoped lang="less">
+.layout {
+  border: 1px solid #d7dde4;
+  background: #f5f7f9;
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.ivu-layout-header {
+  background: #fff;
+  padding: 0;
+}
+.ivu-menu-horizontal.ivu-menu-light:after {
+  display: none;
+}
+.layout-nav {
+  width: 620px;
+  margin: 0 auto;
+}
+.layout-footer-center {
+  text-align: center;
+}
+</style>
