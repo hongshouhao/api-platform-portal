@@ -2,10 +2,13 @@
   <div class="layout">
     <Layout>
       <Header :style="{position: 'fixed', width: '100%'}">
-        <Menu mode="horizontal" theme="light" :active-name="activeName" @on-select="handleSelect">
+        <Menu mode="horizontal" theme="dark" :active-name="activeName" @on-select="handleSelect">
           <div class="layout-nav">
             <MenuItem name="ocelot">
               <Icon type="md-code"></Icon>网关配置
+            </MenuItem>
+            <MenuItem name="template">
+              <Icon type="ios-clipboard"></Icon>模板配置
             </MenuItem>
             <MenuItem name="servicediscovery">
               <Icon type="ios-navigate"></Icon>服务发现
@@ -22,7 +25,7 @@
           </div>
         </Menu>
       </Header>
-      <Content :style="{margin: '88px 20px 0', minHeight: '500px'}">
+      <Content :style="{margin: '88px 20px 0', minHeight: '500px',background:'#fff'}">
         <router-view></router-view>
       </Content>
       <Footer class="layout-footer-center">2019 &copy;</Footer>
@@ -65,7 +68,7 @@ export default {
   display: none;
 }
 .layout-nav {
-  width: 620px;
+  width: 670px;
   margin: 0 auto;
 }
 .layout-footer-center {

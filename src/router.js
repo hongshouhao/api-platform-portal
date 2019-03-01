@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import HomeView from '@/views/index'
 import OcelotView from '@/views/ocelot/'
+import TemplateView from '@/views/template/'
 import ServiceDiscoveryView from '@/views/servicediscovery/'
 import TestView from '@/views/test/'
 import StatisticView from '@/views/statistic/'
@@ -27,6 +28,13 @@ export default new Router({
           auth: true
         },
         component: OcelotView,
+      }, { //模板配置
+        path: '/template',
+        name: 'template',
+        meta: {
+          auth: true
+        },
+        component: TemplateView,
       }, { //服务发现
         path: '/servicediscovery',
         name: 'servicediscovery',

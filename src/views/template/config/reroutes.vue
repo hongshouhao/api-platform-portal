@@ -251,8 +251,7 @@ export default {
   mounted() {
     if (this.jsonString) {
       var json = eval("(" + this.jsonString + ")");
-      this.transfer(json.ReRoutes[0]);
-      console.log(this.ReRoutesForm);
+      if (json.ReRoutes.length > 0) this.transfer(json.ReRoutes[0]);
     }
   },
   methods: {

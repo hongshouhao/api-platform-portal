@@ -3,16 +3,27 @@
     <Tabs value="name1" type="card">
       <TabPane label="Table View" name="name1">
         <div class="content">
-          <Button icon="md-add-circle" type="primary" @click="add" :style="{margin:'10px 5px'}">新增</Button>
-          <Button icon="ios-refresh" type="primary" :style="{margin:'10px'}" @click="initTable">刷新</Button>
+          <Button icon="ios-refresh" type="info" :style="{margin:'10px'}" @click="initTable">刷新</Button>
+          <Button icon="md-add-circle" type="primary" @click="onAdd" :style="{margin:'10px 5px'}">新增</Button>
           <Button
-            icon="ios-refresh"
-            type="primary"
+            icon="ios-locate-outline"
+            type="warning"
+            @click="onVerify"
+            :style="{margin:'10px 5px'}"
+          >验证</Button>
+          <Button
+            icon="ios-code-working"
+            type="success"
             :style="{margin:'10px'}"
             @click="GetCurrentMapping"
-          >获取当前Mapping</Button>
-          <Button icon="ios-build" type="error" :style="{margin:'10px 5px'}" @click="onExcute">生成</Button>
-          <Table :columns="columns" :data="columnData" stripe :loading="loading"></Table>
+          >当前Mapping</Button>
+          <Button
+            icon="ios-cloud-circle"
+            type="error"
+            :style="{margin:'10px 5px'}"
+            @click="onExcute"
+          >生成</Button>
+          <Table ref="configTable" :columns="columns" :data="columnData" stripe :loading="loading"></Table>
         </div>
       </TabPane>
       <TabPane label="JSON View" name="name2">
@@ -23,8 +34,15 @@
         </div>
       </TabPane>
     </Tabs>
-    <Modal v-model="modal" title="编辑网关信息" fullscreen @on-ok="save">
+    <Modal v-model="modal" title="编辑网关信息" fullscreen @on-ok="onSave">
       <edit-view ref="config" v-if="modal" :sectionModel="formData"></edit-view>
+    </Modal>
+    <Modal v-model="configModal" title="当前Mapping" width="800">
+      <div class="mappingcontent">
+        <pre>
+          <code>{{configData}}</code>
+        </pre>
+      </div>
     </Modal>
   </div>
 </template>
@@ -37,14 +55,21 @@ export default {
       loading: false,
       columns: [
         {
+          type: "selection",
+          width: 60,
+          align: "center"
+        },
+        {
           title: "id",
           key: "id",
-          width: 150
+          width: 100,
+          align: "center"
         },
         {
           title: "name",
           key: "name",
-          width: 150
+          width: 150,
+          align: "center"
         },
         {
           title: "jsonString",
@@ -55,26 +80,31 @@ export default {
         {
           title: "enable",
           key: "enable",
-          width: 150
+          width: 150,
+          align: "center"
         },
         {
           title: "description",
           key: "description",
-          width: 250
+          width: 250,
+          align: "center"
         },
         {
           title: "createTime",
           key: "createTime",
-          width: 180
+          width: 180,
+          align: "center"
         },
         {
           title: "modifiedTime",
           key: "modifiedTime",
-          width: 180
+          width: 180,
+          align: "center"
         },
         {
           title: "操作",
           width: 180,
+          align: "center",
           render: (h, params) => {
             let hButton = [];
             hButton.push(
@@ -116,7 +146,10 @@ export default {
       columnData: [],
       json: "",
       modal: false,
-      formData: {}
+      configModal: false,
+      configData: [],
+      formData: {},
+      template: false
     };
   },
   mounted() {
@@ -124,10 +157,6 @@ export default {
     this.initTable();
   },
   methods: {
-    onEdit(row) {
-      this.formData = row;
-      this.modal = true;
-    },
     initTable() {
       this.loading = true;
       var _this = this;
@@ -148,21 +177,22 @@ export default {
           _this.loading = false;
         },
         function(errorThrow) {
-          if (errorThrow == "Unauthorized") {
-            debugger;
-            Identity.ensureLogedin();
-          }
-          _this.$Message.warning("数据获取失败！");
+          if (errorThrow == "Unauthorized")
+            _this.$Message.warning("登录过期，请重新登录");
+          else _this.$Message.warning("数据获取失败！");
         }
       );
     },
-    add() {
+    onEdit(row) {
+      this.formData = row;
+      this.modal = true;
+    },
+    onAdd() {
       this.modal = true;
       this.formData = {};
     },
-    save() {
+    onSave() {
       var _this = this;
-      console.log(typeof _this.$refs.config.sectionModel);
       var obj = _this.$refs.config.sectionModel;
       Ocelot.SaveSection(
         obj,
@@ -179,7 +209,6 @@ export default {
     onDelete(row) {
       var _this = this;
       var id = row.id;
-      debugger;
       _this.$Modal.confirm({
         title: "注意",
         content: "<p>是否删除当前行？</p>",
@@ -208,7 +237,31 @@ export default {
         }
       );
     },
-    GetCurrentMapping() {}
+    onVerify() {
+      var _this = this;
+      var rows = _this.$refs.configTable.getSelection();
+      Ocelot.ValidateSection(
+        rows,
+        function() {
+          _this.$Message.success("验证通过");
+        },
+        function(errorThrow) {
+          _this.$Message.error("验证失败：" + errorThrow);
+        }
+      );
+    },
+    GetCurrentMapping() {
+      var _this = this;
+      Ocelot.GetConfiguration(
+        function(data) {
+          _this.configModal = true;
+          _this.configData = JSON.stringify(data, null, 2);
+        },
+        function(errorThrow) {
+          _this.$Message.error("获取失败" + errorThrow);
+        }
+      );
+    }
   },
   components: {
     EditView
@@ -217,4 +270,8 @@ export default {
 </script>
 
 <style scoped>
+.mappingcontent {
+  height: 500px;
+  overflow-y: scroll;
+}
 </style>
