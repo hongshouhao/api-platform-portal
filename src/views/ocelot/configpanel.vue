@@ -10,8 +10,8 @@
         <Col span="12">
           <FormItem label="sectionType">
             <Select v-model="sectionModel.sectionType" placeholder="选择配置类型">
-              <Option value="1">ReRoutes</Option>
-              <Option value="2">GlobalConfiguration</Option>
+              <Option value="1">GlobalConfiguration</Option>
+              <Option value="2">ReRoutes</Option>
             </Select>
           </FormItem>
         </Col>
@@ -49,16 +49,16 @@
     </Form>
     <Modal v-model="modal" width="1000" title="配置内容" @on-ok="ok" :mask-closable="false">
       <div v-if="modal">
-        <reroutes-view
-          ref="reroute"
+      <global-view
+          ref="global"
           v-if="sectionModel.sectionType=='1'"
           :jsonString="sectionModel.jsonString"
-        ></reroutes-view>
-        <global-view
-          ref="global"
+        ></global-view>
+        <reroutes-view
+          ref="reroute"
           v-if="sectionModel.sectionType=='2'"
           :jsonString="sectionModel.jsonString"
-        ></global-view>
+        ></reroutes-view>
       </div>
     </Modal>
   </div>
@@ -81,7 +81,7 @@ export default {
       type: Object,
       default: {
         name: "",
-        sectionType: "1",
+        sectionType: "2",
         jsonString: "",
         enable: true,
         description: "",
@@ -97,21 +97,21 @@ export default {
   methods: {
     onConfig() {
       this.modal = true;
-      this.show = this.sectionModel.sectionType == "1";
+      this.show = this.sectionModel.sectionType == "2";
     },
     ok() {
       switch (this.sectionModel.sectionType) {
         case "1":
+          this.data = this.$refs.global.GlobalForm;
+          var obj = {
+            GlobalConfiguration: this.data
+          };
+          break;
+        case "2":
           this.data = this.$refs.reroute.ReRoutesForm;
           this.ObjToJSON();
           var obj = {
             ReRoutes: [this.data]
-          };
-          break;
-        case "2":
-          this.data = this.$refs.global.GlobalForm;
-          var obj = {
-            GlobalConfiguration: this.data
           };
           break;
         case "3":
