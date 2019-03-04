@@ -12,6 +12,8 @@
             <Select v-model="sectionModel.sectionType" placeholder="选择配置类型">
               <Option value="1">GlobalConfiguration</Option>
               <Option value="2">ReRoutes</Option>
+              <Option value="3">AggregateReRoute</Option>
+              <Option value="4">DynamicReRoutes</Option>
             </Select>
           </FormItem>
         </Col>
@@ -59,14 +61,26 @@
           v-if="sectionModel.sectionType=='2'"
           :jsonString="sectionModel.jsonString"
         ></reroutes-view>
+        <aggregates-view
+          ref="aggregates"
+          v-if="sectionModel.sectionType=='3'"
+          :jsonString="sectionModel.jsonString"
+        ></aggregates-view>
+        <dynamic-view
+          ref="dynamic"
+          v-if="sectionModel.sectionType=='4'"
+          :jsonString="sectionModel.jsonString"
+        ></dynamic-view>
       </div>
     </Modal>
   </div>
 </template>
 
 <script>
-import ReroutesView from "./templete/reroutes";
-import GlobalView from "./templete/global";
+import ReroutesView from "../template/config/reroutes";
+import GlobalView from "../template/config/global";
+import AggregatesView from "../template/config/aggregates";
+import DynamicView from "../template/config/dynamic";
 export default {
   data() {
     return {
@@ -115,8 +129,16 @@ export default {
           };
           break;
         case "3":
+          this.data = this.$refs.aggregates.AggregatesForm;
+          var obj = {
+            Aggregates: [this.data]
+          };
           break;
         case "4":
+          this.data = this.$refs.dynamic.DynamicForm;
+          var obj = {
+            DynamicReRoutes: [this.data]
+          };
           break;
       }
       this.sectionModel.jsonString = JSON.stringify(obj, null, 2);
@@ -142,7 +164,9 @@ export default {
   },
   components: {
     ReroutesView,
-    GlobalView
+    GlobalView,
+    AggregatesView,
+    DynamicView
   }
 };
 </script>

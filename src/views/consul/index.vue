@@ -3,27 +3,9 @@
     <Tabs value="name1" type="card">
       <TabPane label="Table View" name="name1">
         <div class="content">
-          <Button icon="ios-refresh" type="info" :style="{margin:'10px'}" @click="initTable">刷新</Button>
-          <Button icon="md-add-circle" type="primary" @click="onAdd" :style="{margin:'10px 5px'}">新增</Button>
-          <Button
-            icon="ios-locate-outline"
-            type="warning"
-            @click="onVerify"
-            :style="{margin:'10px 5px'}"
-          >验证</Button>
-          <Button
-            icon="ios-code-working"
-            type="success"
-            :style="{margin:'10px'}"
-            @click="GetCurrentMapping"
-          >当前Mapping</Button>
-          <Button
-            icon="ios-cloud-circle"
-            type="error"
-            :style="{margin:'10px 5px'}"
-            @click="onExcute"
-          >生成</Button>
-          <Table ref="configTable" :columns="columns" :data="columnData" stripe :loading="loading"></Table>
+          <Button icon="ios-refresh" type="info" :style="{margin:'10px'}" @click="initTable">服务</Button>
+          <Button icon="md-add-circle" type="primary" @click="onAdd" :style="{margin:'10px 5px'}">注册新服务</Button>
+          <Table ref="serviceTable" :columns="columns" :data="dataSource" stripe :loading="loading"></Table>
         </div>
       </TabPane>
       <TabPane label="JSON View" name="name2">
@@ -34,31 +16,19 @@
         </div>
       </TabPane>
     </Tabs>
-    <Modal v-model="modal" title="编辑网关信息" fullscreen @on-ok="onSave">
+    <Modal v-model="modal" title="编辑服务信息" fullscreen @on-ok="onSave">
       <edit-view ref="config" v-if="modal" :sectionModel="formData"></edit-view>
-    </Modal>
-    <Modal v-model="configModal" title="当前Mapping" width="800">
-      <div class="mappingcontent">
-        <pre>
-          <code>{{configData}}</code>
-        </pre>
-      </div>
     </Modal>
   </div>
 </template>
 
 <script>
-import EditView from "./configpanel";
+import ServiceView from "./service.vue";
 export default {
   data() {
     return {
       loading: false,
-      columns: [
-        {
-          type: "selection",
-          width: 60,
-          align: "center"
-        },
+      columns: [ 
         {
           title: "id",
           key: "id",
@@ -72,33 +42,13 @@ export default {
           align: "center"
         },
         {
-          title: "jsonString",
-          key: "jsonString",
-          ellipsis: true,
-          tooltip: true
+          title: "address",
+          key: "address",
         },
         {
-          title: "enable",
-          key: "enable",
+          title: "port",
+          key: "port",
           width: 150,
-          align: "center"
-        },
-        {
-          title: "description",
-          key: "description",
-          width: 250,
-          align: "center"
-        },
-        {
-          title: "createTime",
-          key: "createTime",
-          width: 180,
-          align: "center"
-        },
-        {
-          title: "modifiedTime",
-          key: "modifiedTime",
-          width: 180,
           align: "center"
         },
         {
@@ -143,7 +93,7 @@ export default {
           }
         }
       ],
-      columnData: [],
+      dataSource: [],
       json: "",
       modal: false,
       configModal: false,
@@ -162,18 +112,7 @@ export default {
       var _this = this;
       Ocelot.GetAllSections(
         function(json) {
-          _this.columnData = json.map(item => {
-            item.createTime = new Date(item.createTime).Format(
-              "yyyy-MM-dd hh:mm:ss"
-            );
-            if (item.modifiedTime) {
-              item.modifiedTime = new Date(item.modifiedTime).Format(
-                "yyyy-MM-dd hh:mm:ss"
-              );
-            }
-            return item;
-          });
-          _this.json = JSON.stringify(json, null, 2);
+          _this.dataSource =json;
           _this.loading = false;
         },
         function(errorThrow) {
@@ -269,9 +208,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.mappingcontent {
-  height: 500px;
-  overflow-y: scroll;
-}
-</style>

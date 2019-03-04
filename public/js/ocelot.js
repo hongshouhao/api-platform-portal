@@ -56,12 +56,10 @@ Ocelot.SaveSection = function (json, ifSuccess, ifError) {
                 xhr.setRequestHeader('Authorization', 'Bearer ' + token);
             },
             success: function (data) {
-                debugger;
                 console.log(data);
                 ifSuccess ? ifSuccess(data) : function () {};
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                debugger;
                 console.log(textStatus + "," + errorThrown);
                 ifError ? ifError(errorThrown) : function (errorThrown) {};
             }
@@ -94,10 +92,10 @@ Ocelot.DeleteSection = function (id, ifSuccess, ifError) {
 Ocelot.ValidateSection = function (json, ifSuccess, ifError) {
     Identity.getAccessToken().then(function (token) {
         $.ajax({
-            url: env.ocelot_host + "/admin/configuration/validateSection",
+            url: env.ocelot_host + "/admin/configuration/validateSections",
             contentType: "application/json",
             dataType: "JSON",
-            data: json,
+            data: JSON.stringify(json),
             type: "POST",
             beforeSend: function (xhr) {
                 xhr.setRequestHeader('Authorization', 'Bearer ' + token);
@@ -175,43 +173,3 @@ Ocelot.ReBuiltConfiguration = function (ifSuccess, ifError) {
         });
     });
 };
-
-var codeobj = $("#jsonTxt");
-
-$("#btnRefresh").click(function () {
-    Ocelot.GetAllSections(
-        function (json) {
-            var jsonText = JSON.stringify(json, null, 2);
-            codeobj.text(jsonText);
-            hljs.highlightBlock(codeobj.get(0));
-        },
-        function (errorThrown) {});
-});
-
-$("#btnSave").click(function () {
-    Ocelot.SaveSection(codeobj.text(),
-        function () {
-            $("#btnRefresh").click();
-        },
-        function (errorThrown) {});
-});
-
-$("#btnReBuild").click(function () {
-    Ocelot.ReBuiltConfiguration(
-        function (json) {
-            var jsonText = JSON.stringify(json, null, 2);
-            codeobj.text(jsonText);
-            hljs.highlightBlock(codeobj.get(0));
-        },
-        function (errorThrown) {});
-});
-
-$("#btnCurrentMapping").click(function () {
-    Ocelot.GetConfiguration(
-        function (json) {
-            var jsonText = JSON.stringify(json, null, 2);
-            codeobj.text(jsonText);
-            hljs.highlightBlock(codeobj.get(0));
-        },
-        function (errorThrown) {});
-});

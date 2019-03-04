@@ -46,7 +46,6 @@ export default {
   methods: {
     add() {
       this.data.push("");
-      console.log(this.data);
     },
     onDelete(index) {
       this.data.splice(index, 1);
