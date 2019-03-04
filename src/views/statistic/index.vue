@@ -27,20 +27,44 @@
       </Row>
     </div>
     <Divider></Divider>
-    <div id="myChart" :style="{width: '100%', height: '400px'}"></div>
-    <Divider></Divider>
+    <div id="myChart" :style="{width: '100%', height: '350px'}"></div>
     <div class="listView">
-      <div v-for="item in tableData" :key="item.traceId" class="list">
-        <p v-for="service in item.services">{{service.name}}</p>
+      <div
+        v-for="item in tableData"
+        :key="item.traceId"
+        class="list"
+        v-on:click="onShow(item.traceId)"
+      >
+        <Row>
+          <Col span="19">
+            <Progress :percent="item.per" :hide-info="true"/>
+          </Col>
+          <Col span="4" offset="1">
+            <a>{{item.dura}}</a>
+          </Col>
+          <Col span="20">
+            <tag v-for="service in item.services" :key="service.name">{{service.name}}</tag>
+          </Col>
+          <Col span="4">
+            <p>{{item.time}}</p>
+          </Col>
+        </Row>
       </div>
     </div>
+    <Modal v-model="model" title="查看详情" width="700">
+      <detail-view v-if="model" :id="id"></detail-view>
+    </Modal>
   </div>
 </template>
 
 <script>
+import DetailView from "./detail";
 export default {
   data() {
     return {
+      model: false,
+      id: "",
+      title: "",
       Services: [],
       limits: [
         {
@@ -98,7 +122,7 @@ export default {
       loading: false,
       service: "",
       tag: "",
-      start: new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 2),
+      start: new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 7),
       end: new Date(),
       limit: 10,
       chartData: [],
@@ -142,6 +166,10 @@ export default {
       this.getTableData(Obj);
       this.getChartData(Obj);
     },
+    onShow(id) {
+      this.id = id;
+      this.model = true;
+    },
     getTableData(Obj) {
       var _this = this;
       Identity.getAccessToken().then(function(token) {
@@ -150,7 +178,18 @@ export default {
           type: "GET",
           data: Obj,
           success: function(data) {
-            _this.tableData = data;
+            _this.tableData = data.map(function(item) {
+              item.time = new Date(item.startTimestamp).Format(
+                "yyyy-MM-dd hh:mm:ss"
+              );
+              if (item.duration < 1000) {
+                item.dura = item.duration + "μs";
+              } else {
+                item.dura = (item.duration / 1000).toFixed(2) + "ms";
+              }
+              item.per = item.duration / 20;
+              return item;
+            });
           },
           error: function(XMLHttpRequest, textStatus, errorThrown) {
             console.log(textStatus + "," + errorThrown);
@@ -209,6 +248,9 @@ export default {
         });
       });
     }
+  },
+  components: {
+    DetailView
   }
 };
 </script>
@@ -220,7 +262,8 @@ export default {
 .listView {
   padding: 10px;
   .list {
-    margin: 5px 0;
+    margin: 15px 0;
+    cursor: pointer;
   }
 }
 </style>
