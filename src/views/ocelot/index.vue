@@ -1,7 +1,7 @@
 <template>
   <div class="panel">
-    <Tabs value="name1" type="card">
-      <TabPane label="Table View" name="name1">
+    <Tabs value="table" type="card">
+      <TabPane label="Table View" name="table">
         <div class="content">
           <Button icon="ios-refresh" type="info" :style="{margin:'10px'}" @click="initTable">刷新</Button>
           <Button icon="md-add-circle" type="primary" @click="onAdd" :style="{margin:'10px 5px'}">新增</Button>
@@ -26,7 +26,7 @@
           <Table ref="configTable" :columns="columns" :data="columnData" stripe :loading="loading"></Table>
         </div>
       </TabPane>
-      <TabPane label="JSON View" name="name2">
+      <TabPane label="JSON View" name="json">
         <div class="content">
           <pre>
             <code>{{json}}</code>
