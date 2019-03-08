@@ -58,6 +58,8 @@
 </template>
 
 <script>
+import { Env } from "../../lib/env";
+import { Identity } from "../../lib/identity";
 import DetailView from "./detail";
 export default {
   data() {
@@ -138,7 +140,7 @@ export default {
       var _this = this;
       Identity.getAccessToken().then(function(token) {
         $.ajax({
-          url: env.butterfly_host + "/api/service",
+          url: Env.butterfly_host + "/api/service",
           type: "GET",
           success: function(data) {
             data.forEach(function(item) {
@@ -174,7 +176,7 @@ export default {
       var _this = this;
       Identity.getAccessToken().then(function(token) {
         $.ajax({
-          url: env.butterfly_host + "/api/trace",
+          url: Env.butterfly_host + "/api/trace",
           type: "GET",
           data: Obj,
           success: function(data) {
@@ -201,7 +203,7 @@ export default {
       var _this = this;
       Identity.getAccessToken().then(function(token) {
         $.ajax({
-          url: env.butterfly_host + "/api/trace/histogram",
+          url: Env.butterfly_host + "/api/trace/histogram",
           type: "GET",
           data: Obj,
           success: function(data) {

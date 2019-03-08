@@ -1,26 +1,23 @@
 <template>
-  <div>callback</div>
+  <Content :style="{padding: '0 50px'}">
+    <Button :size="buttonSize" type="primary" @click="fffff">
+      <Icon type="ios-arrow-back"/>Backward
+    </Button>
+  </Content>
 </template>
 
 <script>
+import { Identity } from "../../lib/identity";
 export default {
-  mounted() {
-    var mgr = new Oidc.UserManager({
-      loadUserInfo: true,
-      filterProtocolClaims: true
-    });
-    mgr.signinRedirectCallback().then(function(user) {
-      console.log(user);
-      window.history.replaceState(
-        {},
-        window.document.title,
-        env.client_root + "/"
-      );
-      this.$router.push("/");
-    });
+  created() {
+    debugger;
+    Identity.redirect();
+  },
+  methods: {
+    fffff() {
+      Identity.redirect();
+    }
   }
 };
 </script>
 
-<style>
-</style>

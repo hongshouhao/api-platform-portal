@@ -48,7 +48,11 @@
 </template>
 
 <script>
+import { Identity } from "../../lib/identity";
+import { Ocelot } from "../../lib/ocelot";
+import { util } from "../../js/utils";
 import EditView from "./configpanel";
+
 export default {
   data() {
     return {
@@ -153,11 +157,11 @@ export default {
     };
   },
   mounted() {
-    Identity.ensureLogedin();
     this.initTable();
   },
   methods: {
     initTable() {
+      Identity.ensureLogedin();
       this.loading = true;
       var _this = this;
       Ocelot.GetAllSections(

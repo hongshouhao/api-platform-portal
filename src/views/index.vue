@@ -4,14 +4,14 @@
       <Header :style="{position: 'fixed', width: '100%'}">
         <Menu mode="horizontal" theme="dark" :active-name="activeName" @on-select="handleSelect">
           <div class="layout-nav">
+            <MenuItem name="login">
+              <Icon type="md-code"></Icon>Login
+            </MenuItem>
             <MenuItem name="ocelot">
               <Icon type="md-code"></Icon>网关配置
             </MenuItem>
             <MenuItem name="template">
               <Icon type="ios-clipboard"></Icon>模板配置
-            </MenuItem>
-            <MenuItem name="servicediscovery">
-              <Icon type="ios-navigate"></Icon>服务发现
             </MenuItem>
             <MenuItem name="test">
               <Icon type="ios-flower"></Icon>接口测试
@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import { Identity } from "../lib/identity";
 export default {
   data() {
     return {
@@ -41,6 +42,8 @@ export default {
     };
   },
   mounted() {
+    debugger
+    Identity.ensureLogedin();
     this.activeName = this.$route.name;
   },
   methods: {

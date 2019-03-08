@@ -77,6 +77,7 @@
 </template>
 
 <script>
+import Identity from '../../lib/identity'
 import ReroutesView from "../template/config/reroutes";
 import GlobalView from "../template/config/global";
 import AggregatesView from "../template/config/aggregates";

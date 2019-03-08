@@ -14,7 +14,6 @@ Date.prototype.Format = function (fmt) { //author: meizz
     return fmt;
 }
 
-
 window.getQueryStringByName = function (name) {
     var result = location.search.match(new RegExp("[\?\&]" + name + "=([^\&]+)", "i"));
     if (result == null || result.length < 1) {

@@ -9,6 +9,8 @@
 </template>
 
 <script>
+import { Env } from "../../lib/env";
+import { Identity } from "../../lib/identity";
 import ConfigView from "./config";
 export default {
   data() {
@@ -113,7 +115,7 @@ export default {
       var _this = this;
       Identity.getAccessToken().then(function(token) {
         $.ajax({
-          url: env.ocelot_host + "/admin/template/getall",
+          url: Env.ocelot_host + "/admin/template/getall",
           type: "GET",
           beforeSend: function(xhr) {
             xhr.setRequestHeader("Authorization", "Bearer " + token);
