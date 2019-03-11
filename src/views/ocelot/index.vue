@@ -161,7 +161,6 @@ export default {
   },
   methods: {
     initTable() {
-      Identity.ensureLogedin();
       this.loading = true;
       var _this = this;
       Ocelot.GetAllSections(
