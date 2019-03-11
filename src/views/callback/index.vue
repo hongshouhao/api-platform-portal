@@ -10,7 +10,6 @@
 import { Identity } from "../../lib/identity";
 export default {
   created() {
-    debugger;
     Identity.redirect();
   },
   methods: {
@@ -20,4 +19,3 @@ export default {
   }
 };
 </script>
-

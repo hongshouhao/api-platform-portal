@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-var requirejs = require("requirejs");
 var path = require("path");
 
 // requirejs.config({

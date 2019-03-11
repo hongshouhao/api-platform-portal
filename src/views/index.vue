@@ -42,7 +42,6 @@ export default {
     };
   },
   mounted() {
-    debugger
     Identity.ensureLogedin();
     this.activeName = this.$route.name;
   },

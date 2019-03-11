@@ -27,7 +27,8 @@
       </Row>
     </div>
     <Divider></Divider>
-    <div id="myChart" :style="{width: '100%', height: '350px'}"></div>
+    <div id="lineChart" :style="{width: '100%', height: '350px'}"></div>
+    <div id="barChart" :style="{width: '100%', height: '350px'}"></div>
     <div class="listView">
       <div
         v-for="item in tableData"
@@ -124,10 +125,9 @@ export default {
       loading: false,
       service: "",
       tag: "",
-      start: new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 7),
+      start: new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 30),
       end: new Date(),
       limit: 10,
-      chartData: [],
       tableData: []
     };
   },
@@ -167,6 +167,51 @@ export default {
       };
       this.getTableData(Obj);
       this.getChartData(Obj);
+      this.getStatistic(Obj);
+    },
+    getStatistic(Obj) {
+      var _this = this;
+      Identity.getAccessToken().then(function(token) {
+        $.ajax({
+          url: Env.butterfly_host + "/api/statistic/histogram",
+          type: "GET",
+          data: Obj,
+          success: function(data) {
+            console.log(data);
+            let myChart = _this.$echarts.init(
+              document.getElementById("barChart")
+            );
+            var dataList = data.map(function(item) {
+              return item.count;
+            });
+            var dateList = data.map(function(item) {
+              return item.time;
+            });
+            var options = {
+              xAxis: {
+                data: dateList
+              },
+              yAxis: {
+                splitLine: { show: false }
+              },
+              tooltip: {
+                trigger: "axis"
+              },
+              series: [
+                {
+                  data: dataList,
+                  type: "bar",
+                  showSymbol: false
+                }
+              ]
+            };
+            myChart.setOption(options);
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown) {
+            console.log(textStatus + "," + errorThrown);
+          }
+        });
+      });
     },
     onShow(id) {
       this.id = id;
@@ -207,9 +252,8 @@ export default {
           type: "GET",
           data: Obj,
           success: function(data) {
-            _this.chartData = data;
             let myChart = _this.$echarts.init(
-              document.getElementById("myChart")
+              document.getElementById("lineChart")
             );
             var dataList = data.map(function(item) {
               return item.count;

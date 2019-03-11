@@ -58,7 +58,6 @@ class IdentityClass {
                 handleCallback();
             } else {
                 mgr.getUser().then(function (user) {
-                    debugger;
                     if (!user) {
                         mgr.signinRedirect();
                     } else if (user.expired) {
@@ -74,10 +73,7 @@ class IdentityClass {
             }
         };
         this.redirect = function () {
-            debugger;
             mgr.signinRedirectCallback().then(function (user) {
-                console.log(user);
-                debugger;
                 window.history.replaceState({},
                     window.document.title,
                     window.location + "/");
@@ -85,7 +81,6 @@ class IdentityClass {
             });
         };
         this.silentRedirect = function () {
-            debugger;
             mgr.signinSilentCallback();
         };
         mgr.events.addUserLoaded(function (user) {});
