@@ -8,6 +8,7 @@ import {
 class OcelotClient {
     constructor() {
         this.GetAllSections = async function (ifSuccess, ifError) {
+            Identity.ensureLogedin();
             Identity.getAccessToken().then(function (token) {
                 $.ajax({
                     url: Env.ocelot_host + "/admin/configuration/getAllSections",
@@ -27,6 +28,7 @@ class OcelotClient {
             });
         };
         this.GetSection = async function (name, ifSuccess, ifError) {
+            Identity.ensureLogedin();
             Identity.getAccessToken().then(function (token) {
                 $.ajax({
                     url: Env.ocelot_host + "/admin/configuration/getSection",
@@ -50,6 +52,7 @@ class OcelotClient {
             });
         };
         this.SaveSection = function (json, ifSuccess, ifError) {
+            Identity.ensureLogedin();
             Identity.getAccessToken().then(function (token) {
                 $.ajax({
                     url: Env.ocelot_host + "/admin/configuration/saveSection",
@@ -72,6 +75,7 @@ class OcelotClient {
             });
         };
         this.DeleteSection = function (id, ifSuccess, ifError) {
+            Identity.ensureLogedin();
             Identity.getAccessToken().then(function (token) {
                 $.ajax({
                     url: Env.ocelot_host + "/admin/configuration/deleteSection",
@@ -93,6 +97,7 @@ class OcelotClient {
             });
         };
         this.ValidateSection = function (json, ifSuccess, ifError) {
+            Identity.ensureLogedin();
             Identity.getAccessToken().then(function (token) {
                 $.ajax({
                     url: Env.ocelot_host + "/admin/configuration/validateSections",
@@ -115,6 +120,7 @@ class OcelotClient {
             });
         };
         this.ValidateConfiguration = function (ifSuccess, ifError) {
+            Identity.ensureLogedin();
             Identity.getAccessToken().then(function (token) {
                 $.ajax({
                     url: Env.ocelot_host + "/admin/configuration/validateConfiguration",
@@ -135,6 +141,7 @@ class OcelotClient {
             });
         };
         this.GetConfiguration = function (ifSuccess, ifError) {
+            Identity.ensureLogedin();
             Identity.getAccessToken().then(function (token) {
                 $.ajax({
                     url: Env.ocelot_host + "/admin/configuration/getConfiguration",
@@ -155,6 +162,7 @@ class OcelotClient {
             });
         };
         this.ReBuiltConfiguration = function (ifSuccess, ifError) {
+            Identity.ensureLogedin();
             Identity.getAccessToken().then(function (token) {
                 $.ajax({
                     url: Env.ocelot_host + "/admin/configuration/rebuiltConfiguration",

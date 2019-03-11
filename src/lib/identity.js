@@ -22,6 +22,9 @@ class IdentityClass {
             revokeAccessTokenOnSignout: true,
             silent_redirect_uri: Env.silent_redirect_uri,
             automaticSilentRenew: true,
+            userStore: new Oidc.WebStorageStateStore({
+                store: window.localStorage
+            })
         };
 
         var mgr = new Oidc.UserManager(settings);
@@ -58,7 +61,6 @@ class IdentityClass {
                 handleCallback();
             } else {
                 mgr.getUser().then(function (user) {
-                    debugger;
                     if (!user) {
                         mgr.signinRedirect();
                     } else if (user.expired) {

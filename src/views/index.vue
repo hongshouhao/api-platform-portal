@@ -35,6 +35,7 @@
 
 <script>
 import { Identity } from "../lib/identity";
+
 export default {
   data() {
     return {
@@ -42,8 +43,11 @@ export default {
     };
   },
   mounted() {
-    debugger
     Identity.ensureLogedin();
+    var ajaxInterceptor = require("ajax-interceptor");
+    ajaxInterceptor.addRequestCallback(function(xhr) {
+    });
+    ajaxInterceptor.wire();
     this.activeName = this.$route.name;
   },
   methods: {
