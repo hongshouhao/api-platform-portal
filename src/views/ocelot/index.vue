@@ -26,12 +26,9 @@
           <Table ref="configTable" :columns="columns" :data="columnData" stripe :loading="loading"></Table>
         </div>
       </TabPane>
+
       <TabPane label="JSON View" name="json">
-        <div class="content">
-          <pre>
-            <code>{{json}}</code>
-          </pre>
-        </div>
+        <highlight-code lang="JSON">{{json}}</highlight-code>
       </TabPane>
     </Tabs>
     <Modal v-model="modal" title="编辑网关信息" fullscreen @on-ok="onSave">
@@ -48,7 +45,6 @@
 </template>
 
 <script>
-import { Identity } from "../../lib/identity";
 import { Ocelot } from "../../lib/ocelot";
 import { util } from "../../js/utils";
 import EditView from "./configpanel";
@@ -177,6 +173,7 @@ export default {
             return item;
           });
           _this.json = JSON.stringify(json, null, 2);
+          debugger;
           _this.loading = false;
         },
         function(errorThrow) {

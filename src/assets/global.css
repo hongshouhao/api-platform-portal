@@ -1,0 +1,13 @@
+.ivu-form-item {
+    margin-bottom: 10px;
+}
+
+.hjs {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+input[type="hidden"] {
+    display: none;
+}
+

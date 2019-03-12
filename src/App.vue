@@ -3,7 +3,7 @@
     <router-view/>
   </div>
 </template>
-<script> 
+<script>
 export default {};
 </script>
 
@@ -21,6 +21,10 @@ export default {};
     border: 1px solid #ddd;
     border-top: none;
     padding: 10px;
+  }
+
+  .ivu-form-item {
+    margin-bottom: 10px;
   }
 }
 </style>

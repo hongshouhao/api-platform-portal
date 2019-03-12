@@ -2,12 +2,12 @@
   <div class="form">
     <Form ref="formInline" :model="sectionModel" :label-width="100">
       <Row>
-        <Col span="12">
+        <Col span="8">
           <FormItem label="name">
             <Input v-model="sectionModel.name"></Input>
           </FormItem>
         </Col>
-        <Col span="12">
+        <Col span="8">
           <FormItem label="sectionType">
             <Select v-model="sectionModel.sectionType" placeholder="选择配置类型">
               <Option value="1">GlobalConfiguration</Option>
@@ -19,13 +19,9 @@
         </Col>
       </Row>
       <FormItem label="jsonString">
-        <Input
-          v-model="sectionModel.jsonString"
-          type="textarea"
-          :autosize="{minRows: 15,maxRows: 20}"
-          readonly
-        ></Input>
+        <highlight-code lang="JSON" class="hjs">{{sectionModel.jsonString}}</highlight-code>
         <Button type="primary" class="configBth" @click="onConfig">配置</Button>
+        <Input v-model="sectionModel.jsonString" type="textarea" readonly style="display: none"></Input>
       </FormItem>
       <FormItem label="enable">
         <i-switch v-model="sectionModel.enable" size="large">
@@ -51,7 +47,7 @@
     </Form>
     <Modal v-model="modal" width="1000" title="配置内容" @on-ok="ok" :mask-closable="false">
       <div v-if="modal">
-      <global-view
+        <global-view
           ref="global"
           v-if="sectionModel.sectionType=='1'"
           :jsonString="sectionModel.jsonString"
@@ -77,7 +73,7 @@
 </template>
 
 <script>
-import Identity from '../../lib/identity'
+import Identity from "../../lib/identity";
 import ReroutesView from "../template/config/reroutes";
 import GlobalView from "../template/config/global";
 import AggregatesView from "../template/config/aggregates";
@@ -87,8 +83,7 @@ export default {
     return {
       modal: false,
       show: true,
-      data: {},
-      json: ""
+      data: {}
     };
   },
   props: {
@@ -108,6 +103,7 @@ export default {
   mounted() {
     if (this.sectionModel.sectionType)
       this.sectionModel.sectionType = this.sectionModel.sectionType.toString();
+    debugger;
   },
   methods: {
     onConfig() {

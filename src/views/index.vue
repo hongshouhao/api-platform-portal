@@ -45,8 +45,7 @@ export default {
   mounted() {
     Identity.ensureLogedin();
     var ajaxInterceptor = require("ajax-interceptor");
-    ajaxInterceptor.addRequestCallback(function(xhr) {
-    });
+    ajaxInterceptor.addRequestCallback(function(xhr) {});
     ajaxInterceptor.wire();
     this.activeName = this.$route.name;
   },
@@ -81,4 +80,4 @@ export default {
 .layout-footer-center {
   text-align: center;
 }
-</style>
+</style> 
