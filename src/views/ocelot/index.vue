@@ -81,8 +81,8 @@ export default {
       loading: false,
       columns: [
         {
-          type:"selection",
-          width:50
+          type: "selection",
+          width: 50
         },
         {
           title: "id",
@@ -150,8 +150,8 @@ export default {
           _this.dataSourceJString = JSON.stringify(data, null, 2);
           _this.loading = false;
         },
-        function(errorThrow) {
-          if (errorThrow == "Unauthorized")
+        function(errorThrown) {
+          if (errorThrown == "Unauthorized")
             _this.$Message.warning("登录过期，请重新登录");
           else _this.$Message.warning("数据获取失败！");
         }
@@ -172,12 +172,18 @@ export default {
       Ocelot.SaveSection(
         _this.sectionEditViewModel.section,
         function() {
-          _this.$Message.success("保存成功");
+          _this.$Notice.success({
+            title: "保存成功"
+          });
           _this.sectionEditView = false;
           _this.refreshData();
         },
-        function(errorThrow) {
-          _this.$Message.error("保存失败:" + errorThrow);
+        function(errorThrown) {
+          _this.$Notice.error({
+            title: "保存失败",
+            desc: errorThrown,
+            duration: 0
+          });
         }
       );
     },
@@ -190,12 +196,18 @@ export default {
           Ocelot.DeleteSection(
             _this.sectionEditViewModel.section.id,
             function() {
-              _this.$Message.success("删除成功");
+              _this.$Notice.success({
+                title: "删除成功"
+              });
               _this.sectionEditView = false;
               _this.refreshData();
             },
-            function(errorThrow) {
-              _this.$Message.error("删除失败:" + errorThrow);
+            function(errorThrownn) {
+              _this.$Notice.error({
+                title: "删除失败:",
+                desc: errorThrownn,
+                duration: 0
+              });
             }
           );
         }
@@ -205,10 +217,16 @@ export default {
       var _this = this;
       Ocelot.ReBuiltConfiguration(
         function() {
-          _this.$Message.success("生成成功");
+          _this.$Notice.success({
+            title: "生成成功"
+          });
         },
-        function(errorThrow) {
-          _this.$Message.error("生成失败:" + errorThrow);
+        function(errorThrown) {
+          _this.$Notice.error({
+            title: "生成失败:",
+            desc: errorThrown,
+            duration: 0
+          });
         }
       );
     },
@@ -218,10 +236,14 @@ export default {
       Ocelot.ValidateSection(
         rows,
         function() {
-          _this.$Message.success("验证通过");
+          _this.$Notice.success({ title: "验证通过" });
         },
-        function(errorThrow) {
-          _this.$Message.error("验证失败：" + errorThrow);
+        function(errorThrown) {
+          _this.$Notice.error({
+            title: "验证失败：",
+            desc: errorThrown,
+            duration: 0
+          });
         }
       );
     },
@@ -232,8 +254,12 @@ export default {
           _this.showCurrentConfiguration = true;
           _this.currentConfiguration = JSON.stringify(data, null, 2);
         },
-        function(errorThrow) {
-          _this.$Message.error("获取失败" + errorThrow);
+        function(errorThrown) {
+          _this.$Notice.error({
+            title: "获取失败",
+            desc: errorThrown,
+            duration: 0
+          });
         }
       );
     }
