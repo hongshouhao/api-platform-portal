@@ -226,9 +226,6 @@ export default {
           data: Obj,
           success: function(data) {
             _this.tableData = data.map(function(item) {
-              item.time = new Date(item.startTimestamp).Format(
-                "yyyy-MM-dd hh:mm:ss"
-              );
               if (item.duration < 1000) {
                 item.dura = item.duration + "μs";
               } else {

@@ -1,14 +1,14 @@
 <template>
   <div class="layout">
     <Layout>
-      <Header :style="{position: 'fixed', width: '100%'}">
+      <Header style="position:fixed;width:100%;z-index:999">
         <Menu mode="horizontal" theme="dark" :active-name="activeName" @on-select="handleSelect">
           <div class="layout-nav">
             <MenuItem name="login">
               <Icon type="md-code"></Icon>Login
             </MenuItem>
             <MenuItem name="ocelot">
-              <Icon type="md-code"></Icon>网关配置
+              <Icon type="md-code"></Icon>服务注册
             </MenuItem>
             <MenuItem name="template">
               <Icon type="ios-clipboard"></Icon>模板配置

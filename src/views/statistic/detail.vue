@@ -138,14 +138,8 @@ export default {
               _this.spanDuration = (dura / 1000).toFixed(2) + "ms";
             }
             _this.spanServiceName = data.serviceName;
-            _this.timeline = data.logs.map(function(item) {
-              item.timestamp = new Date(item.timestamp).Format(
-                "yyyy-MM-dd hh:mm:ss"
-              );
-              return item;
-            });
+            _this.timeline = data.logs;
             _this.spanData = data.tags;
-            console.log(_this.timeline);
           },
           error: function(XMLHttpRequest, textStatus, errorThrown) {
             console.log(textStatus + "," + errorThrown);

@@ -1,31 +1,52 @@
 <template>
   <div class="panel">
-    <Button icon="md-add-circle" type="primary" @click="onAdd" :style="{margin:'10px 5px'}">新增</Button>
-    <Table ref="configTable" :columns="columns" :data="columnData" stripe :loading="loading"></Table>
-    <Modal v-model="modal" title="编辑模板信息" fullscreen @on-ok="onSave">
-      <config-view ref="config" v-if="modal" :sectionModel="formData"></config-view>
-    </Modal>
+    <Button
+      icon="md-add-circle"
+      type="primary"
+      @click="addNewTemplate"
+      :style="{margin:'10px 5px'}"
+    >新增</Button>
+    <Table
+      ref="configTable"
+      :columns="columns"
+      :data="dataSource"
+      stripe
+      :loading="loading"
+      @on-row-click="showTemplEditView"
+    ></Table>
+    <Drawer
+      title="Template Edit"
+      :closable="false"
+      width="800"
+      v-model="editState"
+      style="overflow:hidden"
+    >
+      <TemplEditView ref="templateEditView" v-if="editState" :templateEditModel="templateEditModel"></TemplEditView>
+      <div class="drawer-footer-buttons">
+        <Button type="error" style="margin-right: 8px" @click="deleteTemplate">Delete</Button>
+        <Button type="primary" @click="saveTemplate">Save</Button>
+      </div>
+    </Drawer>
   </div>
 </template>
 
 <script>
 import { Env } from "../../lib/env";
 import { Identity } from "../../lib/identity";
-import ConfigView from "./config";
+import { modelTempl } from "../modelTempl.js";
+import TemplEditView from "./templateEdit";
+
 export default {
   data() {
     return {
-      modal: false,
-      template: {},
-      columnData: [],
+      editState: false,
+      dataSource: [],
       loading: false,
-      formData: {},
+      templateEditModel: {
+        template: {},
+        forUpdate: false
+      },
       columns: [
-        // {
-        //   type: "selection",
-        //   width: 60,
-        //   align: "center"
-        // },
         {
           title: "id",
           key: "id",
@@ -41,8 +62,7 @@ export default {
         {
           title: "jsonString",
           key: "jsonString",
-          ellipsis: true,
-          tooltip: true
+          ellipsis: true
         },
         {
           title: "description",
@@ -61,59 +81,18 @@ export default {
           key: "modifiedTime",
           width: 200,
           align: "center"
-        },
-        {
-          title: "操作",
-          width: 180,
-          align: "center",
-          render: (h, params) => {
-            let hButton = [];
-            hButton.push(
-              h(
-                "Button",
-                {
-                  props: {
-                    type: "primary",
-                    ghost: true
-                  },
-                  on: {
-                    click: () => {
-                      this.onEdit(params.row);
-                    }
-                  }
-                },
-                "编辑"
-              ),
-              h(
-                "Button",
-                {
-                  props: {
-                    type: "error",
-                    ghost: true
-                  },
-                  on: {
-                    click: () => {
-                      this.onDelete(params.row);
-                    }
-                  }
-                },
-                "删除"
-              )
-            );
-            return h("div", hButton);
-          }
         }
       ]
     };
   },
   created() {
-    Identity.ensureLogedin();
-    this.getData();
+    this.refreshData();
   },
   methods: {
-    getData() {
+    refreshData() {
       var _this = this;
       Identity.getAccessToken().then(function(token) {
+        Identity.ensureLogedin();
         $.ajax({
           url: Env.ocelot_host + "/admin/template/getall",
           type: "GET",
@@ -121,7 +100,8 @@ export default {
             xhr.setRequestHeader("Authorization", "Bearer " + token);
           },
           success: function(data) {
-            _this.columnData = data;
+            _this.dataSource = data;
+            _this.editState = false;
           },
           error: function(XMLHttpRequest, textStatus, errorThrown) {
             console.log(textStatus + "," + errorThrown);
@@ -129,45 +109,46 @@ export default {
         });
       });
     },
-    onSave() {
+    saveTemplate() {
       var _this = this;
-      var obj = {
-        ReRoutes: [this.$refs.config.$refs.reroutes.ReRoutesForm],
-        DynamicReRoutes: [this.$refs.config.$refs.dynamic.DynamicForm],
-        Aggregates: [this.$refs.config.$refs.aggregates.AggregatesForm],
-        GlobalConfiguration: this.$refs.config.$refs.global.GlobalForm
+      var configObj = {
+        ReRoutes: [this.$refs.templateEditView.$refs.reroutesView.model],
+        DynamicReRoutes: [this.$refs.templateEditView.$refs.dynamicView.model],
+        Aggregates: [this.$refs.templateEditView.$refs.aggregatesView.model],
+        GlobalConfiguration: this.$refs.templateEditView.$refs.globalView.model
       };
-      var jsonForm = this.$refs.config.sectionModel;
-      jsonForm.jsonString = JSON.stringify(obj, null, 2);
+      var templ = this.$refs.templateEditView.templateEditModel.template;
+      templ.jsonString = JSON.stringify(configObj, null, 2);
 
       Identity.getAccessToken().then(function(token) {
         $.ajax({
-          url: env.ocelot_host + "/admin/template/save",
+          url: Env.ocelot_host + "/admin/template/save",
           contentType: "application/json",
           type: "POST",
-          data: JSON.stringify(jsonForm),
+          data: JSON.stringify(templ),
           beforeSend: function(xhr) {
             xhr.setRequestHeader("Authorization", "Bearer " + token);
           },
           success: function(data) {
-            _this.getData();
+            _this.refreshData();
           },
           error: function(XMLHttpRequest, textStatus, errorThrown) {
             console.log(textStatus + "," + errorThrown);
           }
         });
       });
-      console.log(jsonForm);
     },
-    onAdd() {
-      this.modal = true;
-      this.formData = {};
+    addNewTemplate() {
+      this.editState = true;
+      this.templateEditModel.template = modelTempl.getOcelotTemplate();
+      this.templateEditModel.forUpdate = false;
     },
-    onEdit(row) {
-      this.modal = true;
-      if (row) this.formData = row;
+    showTemplEditView(row) {
+      this.editState = true;
+      this.templateEditModel.template = row;
+      this.templateEditModel.forUpdate = true;
     },
-    onDelete(row) {
+    deleteTemplate(row) {
       var _this = this;
       _this.$Modal.confirm({
         title: "注意",
@@ -184,7 +165,7 @@ export default {
               },
               success: function(data) {
                 _this.$Message.success("删除成功");
-                _this.getData();
+                _this.refreshData();
               },
               error: function(XMLHttpRequest, textStatus, errorThrown) {
                 console.log(textStatus + "," + errorThrown);
@@ -197,7 +178,7 @@ export default {
     }
   },
   components: {
-    ConfigView
+    TemplEditView
   }
 };
 </script>

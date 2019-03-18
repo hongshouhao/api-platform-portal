@@ -1,6 +1,6 @@
 <template>
   <Content :style="{padding: '0 50px'}">
-    <Button :size="buttonSize" type="primary" @click="fffff">
+    <Button type="primary" @click="redirect">
       <Icon type="ios-arrow-back"/>Backward
     </Button>
   </Content>
@@ -13,7 +13,7 @@ export default {
     Identity.redirect();
   },
   methods: {
-    fffff() {
+    redirect() {
       Identity.redirect();
     }
   }

@@ -3,41 +3,63 @@
     <Tabs value="table" type="card">
       <TabPane label="Table View" name="table">
         <div class="content">
-          <Button icon="ios-refresh" type="info" :style="{margin:'10px'}" @click="initTable">刷新</Button>
-          <Button icon="md-add-circle" type="primary" @click="onAdd" :style="{margin:'10px 5px'}">新增</Button>
+          <Button icon="ios-refresh" type="primary" :style="{margin:'10px'}" @click="refreshData">刷新</Button>
+          <Button
+            icon="md-add-circle"
+            type="primary"
+            @click="addNewSection"
+            :style="{margin:'10px 5px'}"
+          >新增</Button>
           <Button
             icon="ios-locate-outline"
-            type="warning"
-            @click="onVerify"
+            type="primary"
+            @click="verifySelectedSections"
             :style="{margin:'10px 5px'}"
           >验证</Button>
           <Button
             icon="ios-code-working"
-            type="success"
+            type="primary"
             :style="{margin:'10px'}"
-            @click="GetCurrentMapping"
+            @click="getUsingGatawayConfig"
           >当前Mapping</Button>
           <Button
             icon="ios-cloud-circle"
-            type="error"
+            type="primary"
             :style="{margin:'10px 5px'}"
-            @click="onExcute"
+            @click="reBuildGatawayConfig"
           >生成</Button>
-          <Table ref="configTable" :columns="columns" :data="columnData" stripe :loading="loading"></Table>
+          <Table
+            ref="sectionTable"
+            :columns="columns"
+            :data="dataSource"
+            :loading="loading"
+            stripe
+            @on-row-click="editSection"
+          ></Table>
         </div>
       </TabPane>
 
-      <TabPane label="JSON View" name="json">
-        <highlight-code lang="JSON">{{json}}</highlight-code>
+      <TabPane label="JSON View">
+        <highlight-code lang="JSON">{{dataSourceJString}}</highlight-code>
       </TabPane>
     </Tabs>
-    <Modal v-model="modal" title="编辑网关信息" fullscreen @on-ok="onSave">
-      <edit-view ref="config" v-if="modal" :sectionModel="formData"></edit-view>
-    </Modal>
-    <Modal v-model="configModal" title="当前Mapping" width="800">
+    <Drawer title="Section Detail" :closable="false" width="640" v-model="sectionEditView">
+      <editView :sectionEditViewModel="sectionEditViewModel" v-if="sectionEditView"></editView>
+      <div class="drawer-footer-buttons">
+        <Button
+          type="error"
+          :disabled="sectionEditViewModel.forUpdate==false"
+          style="margin-right: 8px"
+          @click="deleteSection"
+        >Delete</Button>
+        <Button type="primary" @click="saveSection">Save</Button>
+      </div>
+    </Drawer>
+
+    <Modal v-model="showCurrentConfiguration" title="当前Mapping" width="800">
       <div class="mappingcontent">
         <pre>
-          <code>{{configData}}</code>
+          <code>{{currentConfiguration}}</code>
         </pre>
       </div>
     </Modal>
@@ -46,19 +68,18 @@
 
 <script>
 import { Ocelot } from "../../lib/ocelot";
-import { util } from "../../js/utils";
-import EditView from "./configpanel";
+import { modelTempl } from "../modelTempl.js";
+import editView from "./sectionEdit";
 
 export default {
   data() {
     return {
+      sectionEditViewModel: {
+        section: {},
+        forUpdate: true
+      },
       loading: false,
       columns: [
-        {
-          type: "selection",
-          width: 60,
-          align: "center"
-        },
         {
           title: "id",
           key: "id",
@@ -74,8 +95,7 @@ export default {
         {
           title: "jsonString",
           key: "jsonString",
-          ellipsis: true,
-          tooltip: true
+          ellipsis: true
         },
         {
           title: "enable",
@@ -100,80 +120,30 @@ export default {
           key: "modifiedTime",
           width: 180,
           align: "center"
-        },
-        {
-          title: "操作",
-          width: 180,
-          align: "center",
-          render: (h, params) => {
-            let hButton = [];
-            hButton.push(
-              h(
-                "Button",
-                {
-                  props: {
-                    type: "primary",
-                    ghost: true
-                  },
-                  on: {
-                    click: () => {
-                      this.onEdit(params.row);
-                    }
-                  }
-                },
-                "编辑"
-              ),
-              h(
-                "Button",
-                {
-                  props: {
-                    type: "error",
-                    ghost: true
-                  },
-                  on: {
-                    click: () => {
-                      this.onDelete(params.row);
-                    }
-                  }
-                },
-                "删除"
-              )
-            );
-            return h("div", hButton);
-          }
         }
       ],
-      columnData: [],
-      json: "",
-      modal: false,
-      configModal: false,
-      configData: [],
-      formData: {},
+      dataSource: [],
+      dataSourceJString: "",
+      sectionEditView: false,
+      showCurrentConfiguration: false,
+      currentConfiguration: {},
       template: false
     };
   },
   mounted() {
-    this.initTable();
+    this.refreshData();
   },
   methods: {
-    initTable() {
+    refreshData() {
       this.loading = true;
       var _this = this;
       Ocelot.GetAllSections(
-        function(json) {
-          _this.columnData = json.map(item => {
-            item.createTime = new Date(item.createTime).Format(
-              "yyyy-MM-dd hh:mm:ss"
-            );
-            if (item.modifiedTime) {
-              item.modifiedTime = new Date(item.modifiedTime).Format(
-                "yyyy-MM-dd hh:mm:ss"
-              );
-            }
+        function(data) {
+          _this.dataSource = data.map(item => {
+            item.sectionType = item.sectionType.toString();
             return item;
           });
-          _this.json = JSON.stringify(json, null, 2);
-          debugger;
+          _this.dataSourceJString = JSON.stringify(data, null, 2);
           _this.loading = false;
         },
         function(errorThrow) {
@@ -183,41 +153,42 @@ export default {
         }
       );
     },
-    onEdit(row) {
-      this.formData = row;
-      this.modal = true;
+    addNewSection() {
+      this.sectionEditViewModel.section = modelTempl.getConfigSection();
+      this.sectionEditViewModel.forUpdate = false;
+      this.sectionEditView = true;
     },
-    onAdd() {
-      this.modal = true;
-      this.formData = {};
+    editSection(row) {
+      this.sectionEditViewModel.section = row;
+      this.sectionEditViewModel.forUpdate = true;
+      this.sectionEditView = true;
     },
-    onSave() {
+    saveSection() {
       var _this = this;
-      var obj = _this.$refs.config.sectionModel;
       Ocelot.SaveSection(
-        obj,
+        _this.sectionEditViewModel.section,
         function() {
           _this.$Message.success("保存成功");
-          _this.initTable();
+          _this.sectionEditView = false;
+          _this.refreshData();
         },
         function(errorThrow) {
           _this.$Message.error("保存失败:" + errorThrow);
-          _this.initTable();
         }
       );
     },
-    onDelete(row) {
+    deleteSection() {
       var _this = this;
-      var id = row.id;
       _this.$Modal.confirm({
         title: "注意",
         content: "<p>是否删除当前行？</p>",
         onOk: () => {
           Ocelot.DeleteSection(
-            id,
+            _this.sectionEditViewModel.section.id,
             function() {
               _this.$Message.success("删除成功");
-              _this.initTable();
+              _this.sectionEditView = false;
+              _this.refreshData();
             },
             function(errorThrow) {
               _this.$Message.error("删除失败:" + errorThrow);
@@ -226,7 +197,7 @@ export default {
         }
       });
     },
-    onExcute() {
+    reBuildGatawayConfig() {
       var _this = this;
       Ocelot.ReBuiltConfiguration(
         function() {
@@ -237,9 +208,9 @@ export default {
         }
       );
     },
-    onVerify() {
+    verifySelectedSections() {
       var _this = this;
-      var rows = _this.$refs.configTable.getSelection();
+      var rows = _this.$refs.sectionTable.getSelection();
       Ocelot.ValidateSection(
         rows,
         function() {
@@ -250,12 +221,12 @@ export default {
         }
       );
     },
-    GetCurrentMapping() {
+    getUsingGatawayConfig() {
       var _this = this;
       Ocelot.GetConfiguration(
         function(data) {
-          _this.configModal = true;
-          _this.configData = JSON.stringify(data, null, 2);
+          _this.showCurrentConfiguration = true;
+          _this.currentConfiguration = JSON.stringify(data, null, 2);
         },
         function(errorThrow) {
           _this.$Message.error("获取失败" + errorThrow);
@@ -264,7 +235,7 @@ export default {
     }
   },
   components: {
-    EditView
+    editView
   }
 };
 </script>
