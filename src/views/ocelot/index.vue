@@ -81,6 +81,10 @@ export default {
       loading: false,
       columns: [
         {
+          type:"selection",
+          width:50
+        },
+        {
           title: "id",
           key: "id",
           width: 100,

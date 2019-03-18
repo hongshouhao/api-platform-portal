@@ -33,12 +33,6 @@
           :disabled="sectionEditViewModel.section.sectionType=='' || sectionEditViewModel.section.sectionType==null"
           @click="editState = true"
         >配置</Button>
-        <Input
-          v-model="sectionEditViewModel.section.jsonString"
-          type="textarea"
-          readonly
-          style="display: none"
-        ></Input>
       </FormItem>
       <FormItem label="enable">
         <i-switch v-model="sectionEditViewModel.section.enable" size="large">
@@ -123,8 +117,13 @@ export default {
       }
     }
   },
-  mounted() {
-    this.sectionTypeChanged("2");
+  // mounted() {
+  //   this.sectionTypeChanged("2");
+  // },
+  watch: {
+    sectionEditViewModel() {
+      console.log(this.sectionEditViewModel);
+    }
   },
   methods: {
     getTitle() {
@@ -220,6 +219,7 @@ export default {
           break;
       }
       this.editState = false;
+      console.log(this.sectionEditViewModel);
       this.sectionEditViewModel.section.jsonString = JSON.stringify(
         ocelotConfig,
         null,
