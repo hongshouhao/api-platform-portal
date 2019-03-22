@@ -1,9 +1,26 @@
 <template>
   <div class="form">
     <Form :model="model" :label-width="150">
-      <char-common class="mar10" title="ReRouteKeys" :array="model.DelegatingHandlers"></char-common>
-      <FormItem label="UpstreamPathTemplate">
-        <Input v-model="model.UpstreamPathTemplate"></Input>
+      <FormItem label="UpstreamPathTemplate" class="highlight">
+        <Row>
+          <Col span="1">
+            <Tooltip placement="bottom" content="网关地址" theme="light" :delay="500">
+              <Icon type="ios-information-circle"/>
+            </Tooltip>
+          </Col>
+          <Col span="23">
+            <Input v-model="model.UpstreamPathTemplate"></Input>
+          </Col>
+        </Row>
+      </FormItem>
+      <char-common
+        class="mar10 highlight"
+        title="ReRouteKeys"
+        tooltip="ReRoute.Key"
+        :array="model.DelegatingHandlers"
+      ></char-common>
+      <FormItem label="Aggregator">
+        <Input v-model="model.Aggregator"></Input>
       </FormItem>
       <FormItem label="UpstreamHost">
         <Input v-model="model.UpstreamHost"></Input>
@@ -11,9 +28,7 @@
       <FormItem label="ReRouteIsCaseSensitive">
         <i-switch v-model="model.ReRouteIsCaseSensitive"></i-switch>
       </FormItem>
-      <FormItem label="Aggregator">
-        <Input v-model="model.Aggregator"></Input>
-      </FormItem>
+
       <char-common class="mar10" title="UpstreamHttpMethod" :array="model.UpstreamHttpMethod"></char-common>
       <FormItem label="Priority">
         <Input v-model="model.Priority" :number="true"></Input>

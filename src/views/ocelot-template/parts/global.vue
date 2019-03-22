@@ -4,7 +4,7 @@
       <FormItem label="RequestIdKey">
         <Input v-model="model.RequestIdKey"></Input>
       </FormItem>
-      <Card class="mar10">
+      <Card class="mar10" dis-hover>
         <p slot="title">ServiceDiscoveryProvider</p>
         <FormItem label="Host">
           <Input v-model="model.ServiceDiscoveryProvider.Host"></Input>
@@ -25,7 +25,7 @@
           <Input v-model="model.ServiceDiscoveryProvider.PollingInterval" number></Input>
         </FormItem>
       </Card>
-      <Card class="mar10">
+      <Card class="mar10" dis-hover>
         <p slot="title">RateLimitOptions</p>
         <FormItem label="ClientIdHeader">
           <Input v-model="model.RateLimitOptions.ClientIdHeader"></Input>
@@ -43,7 +43,7 @@
           <Input v-model="model.RateLimitOptions.HttpStatusCode" number></Input>
         </FormItem>
       </Card>
-      <Card class="mar10">
+      <Card class="mar10" dis-hover>
         <p slot="title">QoSOptions</p>
         <FormItem label="ExceptionsAllowedBeforeBreaking">
           <Input v-model="model.QoSOptions.ExceptionsAllowedBeforeBreaking" number></Input>
@@ -58,7 +58,7 @@
       <FormItem label="BaseUrl">
         <Input v-model="model.BaseUrl"></Input>
       </FormItem>
-      <Card class="mar10">
+      <Card class="mar10" dis-hover>
         <p slot="title">LoadBalancerOptions</p>
         <FormItem label="Type">
           <Input v-model="model.LoadBalancerOptions.Type"></Input>
@@ -73,7 +73,7 @@
       <FormItem label="DownstreamScheme">
         <Input v-model="model.DownstreamScheme"></Input>
       </FormItem>
-      <Card class="mar10">
+      <Card class="mar10" dis-hover>
         <p slot="title">HttpHandlerOptions</p>
         <FormItem label="AllowAutoRedirect">
           <i-switch v-model="model.HttpHandlerOptions.AllowAutoRedirect"></i-switch>

@@ -4,7 +4,7 @@
       <FormItem label="ServiceName">
         <Input v-model="model.ServiceName"></Input>
       </FormItem>
-      <Card>
+      <Card dis-hover>
         <p slot="title">RateLimitRule</p>
         <char-common
           class="mar10"

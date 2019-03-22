@@ -20,3 +20,32 @@
     text-align: right;
     background: #fff;
 }
+
+.vue-form-label-icon .ivu-form-item .ivu-form-item-label {
+    padding-right: 4px
+}
+
+.vue-form-label-icon .ivu-form-item i {
+    font-size: 14px
+}
+
+.ivu-card-head {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.ivu-card-extra {
+    top: 6px
+}
+
+.ivu-form .highlight .ivu-form-item-label {
+    color: #2b85e4
+}
+
+.ivu-form .highlight p {
+    color: #2b85e4
+}
+
+.ivu-icon-ios-information-circle {
+    color: #515a6e
+}

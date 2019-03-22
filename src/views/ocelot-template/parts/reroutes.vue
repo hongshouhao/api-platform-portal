@@ -1,13 +1,130 @@
 <template>
   <div>
-    <Form :model="model" :label-width="150">
-      <FormItem label="DownstreamPathTemplate">
-        <Input v-model="model.DownstreamPathTemplate"></Input>
+    <FormItem label="Key">
+      <Input v-model="model.Key"></Input>
+    </FormItem>
+    <Form :model="model" :label-width="155" class="vue-form-label-icon">
+      <FormItem label="UpstreamPathTemplate" class="highlight">
+        <Row>
+          <Col span="1">
+            <Tooltip placement="bottom" content="网关地址" theme="light" :delay="500">
+              <Icon type="ios-information-circle"/>
+            </Tooltip>
+          </Col>
+          <Col span="23">
+            <Input v-model="model.UpstreamPathTemplate"></Input>
+          </Col>
+        </Row>
       </FormItem>
-      <FormItem label="UpstreamPathTemplate">
-        <Input v-model="model.UpstreamPathTemplate"></Input>
+
+      <FormItem label="DownstreamPathTemplate" class="highlight">
+        <Row>
+          <Col span="1">
+            <Tooltip placement="bottom" content="原始地址" theme="light" :delay="500">
+              <Icon type="ios-information-circle"/>
+            </Tooltip>
+          </Col>
+          <Col span="23">
+            <Input v-model="model.DownstreamPathTemplate"></Input>
+          </Col>
+        </Row>
       </FormItem>
-      <char-common class="mar10" title="UpstreamHttpMethod" :array="model.UpstreamHttpMethod"></char-common>
+
+      <FormItem label="DownstreamScheme" class="highlight">
+        <Row>
+          <Col span="1">
+            <Tooltip placement="bottom" content="http或https" theme="light" :delay="500">
+              <Icon type="ios-information-circle"/>
+            </Tooltip>
+          </Col>
+          <Col span="23">
+            <Input v-model="model.DownstreamScheme"></Input>
+          </Col>
+        </Row>
+      </FormItem>
+      <FormItem label="Timeout">
+        <Row>
+          <Col span="1">
+            <Tooltip placement="bottom" content="超时" theme="light" :delay="500">
+              <Icon type="ios-information-circle"/>
+            </Tooltip>
+          </Col>
+          <Col span="23">
+            <Input v-model="model.Timeout" number></Input>
+          </Col>
+        </Row>
+      </FormItem>
+      <FormItem label="Priority">
+        <Row>
+          <Col span="1">
+            <Tooltip placement="bottom" content="优先级" theme="light" :delay="500">
+              <Icon type="ios-information-circle"/>
+            </Tooltip>
+          </Col>
+          <Col span="23">
+            <Input v-model="model.Priority" number></Input>
+          </Col>
+        </Row>
+      </FormItem>
+
+      <char-common
+        class="mar10 highlight"
+        title="UpstreamHttpMethod"
+        tooltip="请求方式"
+        :array="model.UpstreamHttpMethod"
+      ></char-common>
+      <port-view
+        class="mar10 highlight"
+        title="DownstreamHostAndPorts"
+        tooltip="原始服务IP和端口"
+        :array="model.DownstreamHostAndPorts"
+      ></port-view>
+
+      <Card class="mar10 highlight" dis-hover>
+        <p slot="title">
+          AuthenticationOptions
+          <Tooltip placement="bottom" content="授权" theme="light" :delay="500">
+            <Icon type="ios-information-circle"/>
+          </Tooltip>
+        </p>
+        <FormItem label="AuthenticationProviderKey" class="highlight">
+          <Row>
+            <Col span="1">
+              <Tooltip placement="bottom" content="授权配置名" theme="light" :delay="500">
+                <Icon type="ios-information-circle"/>
+              </Tooltip>
+            </Col>
+            <Col span="23">
+              <Input v-model="model.AuthenticationOptions.AuthenticationProviderKey"></Input>
+            </Col>
+          </Row>
+        </FormItem>
+        <char-common
+          title="AllowedScopes"
+          class="highlight"
+          :array="model.AuthenticationOptions.AllowedScopes"
+        ></char-common>
+      </Card>
+
+      <Card class="mar10" dis-hover>
+        <p slot="title">
+          QoSOptions
+          <Tooltip placement="bottom" content="熔断" theme="light" :delay="500">
+            <Icon type="ios-information-circle"/>
+          </Tooltip>
+        </p>
+
+        <FormItem label="ExceptionsAllowedBeforeBreaking">
+          <Input v-model="model.QoSOptions.ExceptionsAllowedBeforeBreaking" number></Input>
+        </FormItem>
+        <FormItem label="DurationOfBreak">
+          <Input v-model="model.QoSOptions.DurationOfBreak" number></Input>
+        </FormItem>
+        <FormItem label="TimeoutValue">
+          <Input v-model="model.QoSOptions.TimeoutValue" number></Input>
+        </FormItem>
+      </Card>
+
       <KeyValueCommon
         class="mar10"
         title="AddHeadersToRequest"
@@ -41,7 +158,7 @@
       <FormItem label="RequestIdKey">
         <Input v-model="model.RequestIdKey"></Input>
       </FormItem>
-      <Card class="mar10">
+      <Card class="mar10" dis-hover>
         <p slot="title">FileCacheOptions</p>
         <FormItem label="TtlSeconds">
           <Input v-model="model.FileCacheOptions.TtlSeconds" number></Input>
@@ -53,25 +170,21 @@
       <FormItem label="ReRouteIsCaseSensitive">
         <i-switch v-model="model.ReRouteIsCaseSensitive"></i-switch>
       </FormItem>
+
       <FormItem label="ServiceName">
-        <Input v-model="model.ServiceName"></Input>
+        <Row>
+          <Col span="1">
+            <Tooltip placement="bottom" content="服务名(用于服务发现)" theme="light" :delay="500">
+              <Icon type="ios-information-circle"/>
+            </Tooltip>
+          </Col>
+          <Col span="23">
+            <Input v-model="model.ServiceName"></Input>
+          </Col>
+        </Row>
       </FormItem>
-      <FormItem label="DownstreamScheme">
-        <Input v-model="model.DownstreamScheme"></Input>
-      </FormItem>
-      <Card class="mar10">
-        <p slot="title">QoSOptions</p>
-        <FormItem label="ExceptionsAllowedBeforeBreaking">
-          <Input v-model="model.QoSOptions.ExceptionsAllowedBeforeBreaking" number></Input>
-        </FormItem>
-        <FormItem label="DurationOfBreak">
-          <Input v-model="model.QoSOptions.DurationOfBreak" number></Input>
-        </FormItem>
-        <FormItem label="TimeoutValue">
-          <Input v-model="model.QoSOptions.TimeoutValue" number></Input>
-        </FormItem>
-      </Card>
-      <Card class="mar10">
+
+      <Card class="mar10" dis-hover>
         <p slot="title">LoadBalancerOptions</p>
         <FormItem label="type">
           <Input v-model="model.LoadBalancerOptions.Type"></Input>
@@ -83,7 +196,7 @@
           <Input v-model="model.LoadBalancerOptions.Expiry" number></Input>
         </FormItem>
       </Card>
-      <Card class="mar10">
+      <Card class="mar10" dis-hover>
         <p slot="title">RateLimitOptions</p>
         <char-common title="ClientWhitelist" :array="model.RateLimitOptions.ClientWhitelist"></char-common>
         <FormItem label="EnableRateLimiting">
@@ -99,14 +212,8 @@
           <Input v-model="model.RateLimitOptions.Limit" number></Input>
         </FormItem>
       </Card>
-      <Card class="mar10">
-        <p slot="title">AuthenticationOptions</p>
-        <FormItem label="AuthenticationProviderKey">
-          <Input v-model="model.AuthenticationOptions.AuthenticationProviderKey"></Input>
-        </FormItem>
-        <char-common title="AllowedScopes" :array="model.AuthenticationOptions.AllowedScopes"></char-common>
-      </Card>
-      <Card class="mar10">
+
+      <Card class="mar10" dis-hover>
         <p slot="title">HttpHandlerOptions</p>
         <FormItem label="AllowAutoRedirect">
           <i-switch v-model="model.HttpHandlerOptions.AllowAutoRedirect"></i-switch>
@@ -121,25 +228,17 @@
           <i-switch v-model="model.HttpHandlerOptions.UseProxy"></i-switch>
         </FormItem>
       </Card>
-      <port-view class="mar10" title="DownstreamHostAndPorts" :array="model.DownstreamHostAndPorts"></port-view>
       <FormItem label="UpstreamHost">
         <Input v-model="model.UpstreamHost"></Input>
       </FormItem>
-      <FormItem label="Key">
-        <Input v-model="model.Key"></Input>
-      </FormItem>
+
       <char-common class="mar10" title="DelegatingHandlers" :array="model.DelegatingHandlers"></char-common>
-      <FormItem label="Priority">
-        <Input v-model="model.Priority" number></Input>
-      </FormItem>
-      <FormItem label="Timeout">
-        <Input v-model="model.Timeout" number></Input>
-      </FormItem>
-      <Card>
+
+      <Card dis-hover>
         <p slot="title">DangerousAcceptAnyServerCertificateValidator</p>
         <i-switch v-model="model.DangerousAcceptAnyServerCertificateValidator"></i-switch>
       </Card>
-      <Card class="mar10">
+      <Card class="mar10" dis-hover>
         <p slot="title">SecurityOptions</p>
         <char-common
           class="mar10"

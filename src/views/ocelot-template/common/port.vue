@@ -1,6 +1,12 @@
 <template>
-  <Card>
-    <p slot="title">{{title}}</p>
+  <Card dis-hover>
+    <p slot="title" class="highlight">
+      {{title}}
+      <Tooltip placement="bottom" content theme="light" :delay="500">
+        <p slot="content">{{tooltip}}</p>
+        <Icon type="ios-information-circle"/>
+      </Tooltip>
+    </p>
     <a href="#" slot="extra" @click.prevent="add">
       <Icon type="ios-add-circle-outline" size="18" style="margin-right:5px;"></Icon>新增
     </a>
@@ -37,6 +43,10 @@ export default {
   },
   props: {
     title: {
+      type: String,
+      default: ""
+    },
+    tooltip: {
       type: String,
       default: ""
     },
