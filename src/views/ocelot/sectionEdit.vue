@@ -183,13 +183,14 @@ export default {
       );
     },
     finishEdit() {
+      debugger;
       var ocelotConfig = {};
       switch (this.sectionEditViewModel.section.sectionType) {
         case "1":
           ocelotConfig.GlobalConfiguration = this.$refs.globalView.model;
           break;
         case "2":
-          var model = this.$refs.reroutesView.model;
+          var model = this.copyObject(this.$refs.reroutesView.model);
           model.AddHeadersToRequest = this.arrayToObj(
             model.AddHeadersToRequest
           );
@@ -232,6 +233,9 @@ export default {
         result[array[i].key] = array[i].value;
       }
       return result;
+    },
+    copyObject(obj) {
+      return JSON.parse(JSON.stringify(obj));
     }
   },
   components: {

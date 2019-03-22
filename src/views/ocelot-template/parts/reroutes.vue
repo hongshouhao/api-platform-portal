@@ -1,9 +1,9 @@
 <template>
   <div>
-    <FormItem label="Key">
-      <Input v-model="model.Key"></Input>
-    </FormItem>
     <Form :model="model" :label-width="155" class="vue-form-label-icon">
+      <FormItem label="Key">
+        <Input v-model="model.Key"></Input>
+      </FormItem>
       <FormItem label="UpstreamPathTemplate" class="highlight">
         <Row>
           <Col span="1">
@@ -264,7 +264,7 @@ import PortView from "../common/port";
 export default {
   data() {
     return {
-      model: {}
+      model: modelTempl.getOcelotConfigurationSchema().ReRoutes[0]
     };
   },
   props: {
@@ -274,7 +274,7 @@ export default {
     }
   },
   mounted() {
-    if (this.jsonString != "") {
+    if (this.jsonString) {
       var json = eval("(" + this.jsonString + ")");
       if (json.ReRoutes.length > 0) this.transfer(json.ReRoutes[0]);
     } else {
