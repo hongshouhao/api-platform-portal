@@ -165,7 +165,7 @@ import PortView from "../common/port";
 export default {
   data() {
     return {
-      model: modelTempl.getOcelotConfigurationSchema().ReRoutes[0]
+      model: {}
     };
   },
   props: {
@@ -175,9 +175,11 @@ export default {
     }
   },
   mounted() {
-    if (this.jsonString) {
+    if (this.jsonString != "") {
       var json = eval("(" + this.jsonString + ")");
       if (json.ReRoutes.length > 0) this.transfer(json.ReRoutes[0]);
+    } else {
+      this.model = modelTempl.getOcelotConfigurationSchema().ReRoutes[0];
     }
   },
   methods: {

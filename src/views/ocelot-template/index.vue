@@ -164,12 +164,18 @@ export default {
                 xhr.setRequestHeader("Authorization", "Bearer " + token);
               },
               success: function(data) {
-                _this.$Message.success("删除成功");
+                _this.$Notice.success({
+                  title: "删除成功"
+                });
                 _this.refreshData();
               },
               error: function(XMLHttpRequest, textStatus, errorThrown) {
-                console.log(textStatus + "," + errorThrown);
-                _this.$Message.error("删除失败：" + errorThrown);
+                console.log(XMLHttpRequest);
+                _this.$Notice.error({
+                  title: "删除失败",
+                  desc: XMLHttpRequest.responseJSON[0].message,
+                  duration: 0
+                });
               }
             });
           });

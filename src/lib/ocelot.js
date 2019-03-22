@@ -69,7 +69,8 @@ class OcelotClient {
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         console.log(textStatus + "," + errorThrown);
-                        ifError ? ifError(errorThrown) : function (errorThrown) {};
+                        var errorInfo = XMLHttpRequest.responseJSON[0].message
+                        ifError ? ifError(errorInfo) : function (errorInfo) {};
                     }
                 });
             });
@@ -91,7 +92,8 @@ class OcelotClient {
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         console.log(textStatus + "," + errorThrown);
-                        ifError ? ifError(errorThrown) : function (errorThrown) {};
+                        var errorInfo = XMLHttpRequest.responseJSON[0].message
+                        ifError ? ifError(errorInfo) : function (errorInfo) {};
                     }
                 });
             });
@@ -114,7 +116,8 @@ class OcelotClient {
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         console.log(textStatus + "," + errorThrown);
-                        ifError ? ifError(errorThrown) : function (errorThrown) {};
+                        var errorInfo = XMLHttpRequest.responseJSON[0].message
+                        ifError ? ifError(errorInfo) : function (errorInfo) {};
                     }
                 });
             });
@@ -156,7 +159,8 @@ class OcelotClient {
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         console.log(textStatus + "," + errorThrown);
-                        ifError ? ifError(errorThrown) : function (errorThrown) {};
+                        var errorInfo = XMLHttpRequest.responseJSON[0].message
+                        ifError ? ifError(errorInfo) : function (errorInfo) {};
                     }
                 });
             });
@@ -176,7 +180,8 @@ class OcelotClient {
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         console.log(textStatus + "," + errorThrown);
-                        ifError ? ifError(errorThrown) : function (errorThrown) {};
+                        var errorInfo = XMLHttpRequest.responseJSON[0].message
+                        ifError ? ifError(errorInfo) : function (errorInfo) {};
                     }
                 });
             });
