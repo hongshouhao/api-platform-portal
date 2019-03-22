@@ -38,6 +38,9 @@
 </template>
 
 <script>
+import { Env } from "../../lib/env";
+import { Identity } from "../../lib/identity";
+import DetailView from "./detail";
 export default {
   props: {
     id: {
@@ -98,7 +101,7 @@ export default {
       var _this = this;
       Identity.getAccessToken().then(function(token) {
         $.ajax({
-          url: env.butterfly_host + "/api/tracedetail/" + _this.id,
+          url: Env.butterfly_host + "/api/tracedetail/" + _this.id,
           type: "GET",
           success: function(data) {
             var dura = data.duration;
@@ -127,7 +130,7 @@ export default {
       var _this = this;
       Identity.getAccessToken().then(function(token) {
         $.ajax({
-          url: env.butterfly_host + "/api/spandetail/" + row.spanId,
+          url: Env.butterfly_host + "/api/spandetail/" + row.spanId,
           type: "GET",
           success: function(data) {
             _this.serviceName = data.serviceName;

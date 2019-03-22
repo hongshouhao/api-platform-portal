@@ -159,6 +159,7 @@ export default {
       this.sectionEditView = true;
     },
     editSection(row) {
+      debugger
       this.sectionEditViewModel.section = row;
       this.sectionEditViewModel.forUpdate = true;
       this.sectionEditView = true;
