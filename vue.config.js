@@ -38,10 +38,6 @@ module.exports = {
     //     }
     // },
     publicPath: './',
-    outputDir: 'dist',
-    lintOnSave: true,
-    runtimeCompiler: true, //关键点在这  
-    chainWebpack: () => {},
     configureWebpack: {
         plugins: [
             new webpack.ProvidePlugin({
