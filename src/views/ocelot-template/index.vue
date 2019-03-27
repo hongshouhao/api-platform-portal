@@ -94,7 +94,7 @@ export default {
       Identity.getAccessToken().then(function(token) {
         Identity.ensureLogedin();
         $.ajax({
-          url: Env.ocelot_host + "/admin/template/getall",
+          url: Env.apigateway_host + "/admin/template/getall",
           type: "GET",
           beforeSend: function(xhr) {
             xhr.setRequestHeader("Authorization", "Bearer " + token);
@@ -122,7 +122,7 @@ export default {
 
       Identity.getAccessToken().then(function(token) {
         $.ajax({
-          url: Env.ocelot_host + "/admin/template/save",
+          url: Env.apigateway_host + "/admin/template/save",
           contentType: "application/json",
           type: "POST",
           data: JSON.stringify(templ),
@@ -156,7 +156,7 @@ export default {
         onOk: () => {
           Identity.getAccessToken().then(function(token) {
             $.ajax({
-              url: env.ocelot_host + "/admin/template/delete",
+              url: Env.apigateway_host + "/admin/template/delete",
               contentType: "application/json",
               data: JSON.stringify(row.id),
               type: "POST",

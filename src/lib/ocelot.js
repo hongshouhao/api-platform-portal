@@ -11,7 +11,7 @@ class OcelotClient {
             Identity.ensureLogedin();
             Identity.getAccessToken().then(function (token) {
                 $.ajax({
-                    url: Env.ocelot_host + "/admin/configuration/getAllSections",
+                    url: Env.apigateway_host + "/admin/configuration/getAllSections",
                     dataType: "JSON",
                     type: "GET",
                     beforeSend: function (xhr) {
@@ -31,7 +31,7 @@ class OcelotClient {
             Identity.ensureLogedin();
             Identity.getAccessToken().then(function (token) {
                 $.ajax({
-                    url: Env.ocelot_host + "/admin/configuration/getSection",
+                    url: Env.apigateway_host + "/admin/configuration/getSection",
                     dataType: "JSON",
                     type: "GET",
                     data: {
@@ -55,7 +55,7 @@ class OcelotClient {
             Identity.ensureLogedin();
             Identity.getAccessToken().then(function (token) {
                 $.ajax({
-                    url: Env.ocelot_host + "/admin/configuration/saveSection",
+                    url: Env.apigateway_host + "/admin/configuration/saveSection",
                     contentType: "application/json",
                     data: JSON.stringify(json),
                     type: "POST",
@@ -79,7 +79,7 @@ class OcelotClient {
             Identity.ensureLogedin();
             Identity.getAccessToken().then(function (token) {
                 $.ajax({
-                    url: Env.ocelot_host + "/admin/configuration/deleteSection",
+                    url: Env.apigateway_host + "/admin/configuration/deleteSection",
                     contentType: "application/json",
                     data: JSON.stringify(id),
                     type: "POST",
@@ -102,7 +102,7 @@ class OcelotClient {
             Identity.ensureLogedin();
             Identity.getAccessToken().then(function (token) {
                 $.ajax({
-                    url: Env.ocelot_host + "/admin/configuration/validateSections",
+                    url: Env.apigateway_host + "/admin/configuration/validateSections",
                     contentType: "application/json",
                     dataType: "JSON",
                     data: JSON.stringify(json),
@@ -126,7 +126,7 @@ class OcelotClient {
             Identity.ensureLogedin();
             Identity.getAccessToken().then(function (token) {
                 $.ajax({
-                    url: Env.ocelot_host + "/admin/configuration/validateConfiguration",
+                    url: Env.apigateway_host + "/admin/configuration/validateConfiguration",
                     dataType: "JSON",
                     type: "GET",
                     beforeSend: function (xhr) {
@@ -147,7 +147,7 @@ class OcelotClient {
             Identity.ensureLogedin();
             Identity.getAccessToken().then(function (token) {
                 $.ajax({
-                    url: Env.ocelot_host + "/admin/configuration/getConfiguration",
+                    url: Env.apigateway_host + "/admin/configuration/getConfiguration",
                     dataType: "JSON",
                     type: "GET",
                     beforeSend: function (xhr) {
@@ -169,7 +169,7 @@ class OcelotClient {
             Identity.ensureLogedin();
             Identity.getAccessToken().then(function (token) {
                 $.ajax({
-                    url: Env.ocelot_host + "/admin/configuration/rebuiltConfiguration",
+                    url: Env.apigateway_host + "/admin/configuration/rebuiltConfiguration",
                     type: "GET",
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader('Authorization', 'Bearer ' + token);

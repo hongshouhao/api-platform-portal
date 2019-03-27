@@ -65,20 +65,24 @@ export default new Router({
           },
           component: AuthorityView,
         },
+        {
+          path: "/signincallback",
+          name: "signincallback",
+          meta: {
+            auth: true
+          },
+          component: SigninCallback
+        },
+        {
+          path: "/silentcallback",
+          name: "silentcallback"
+        }
       ]
     },
     {
       path: "/login",
       name: 'login',
       redirect: "signincallback",
-    },
-    {
-      path: "/signincallback",
-      name: "signincallback",
-      meta: {
-        auth: false
-      },
-      component: SigninCallback
     }
   ]
 })
