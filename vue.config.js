@@ -37,6 +37,11 @@ module.exports = {
     //         "ocelot": "./lib/ocelot",
     //     }
     // },
+    publicPath: './',
+    outputDir: 'dist',
+    lintOnSave: true,
+    runtimeCompiler: true, //关键点在这  
+    chainWebpack: () => {},
     configureWebpack: {
         plugins: [
             new webpack.ProvidePlugin({
