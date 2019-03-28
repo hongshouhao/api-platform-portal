@@ -80,6 +80,10 @@ export default new Router({
       ]
     },
     {
+      path: '*',
+      component: OcelotView
+    },
+    {
       path: "/login",
       name: 'login',
       redirect: "signincallback",
