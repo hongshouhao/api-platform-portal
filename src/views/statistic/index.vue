@@ -1,5 +1,6 @@
 <template>
   <div>
+    <EndpointSumHistogramView></EndpointSumHistogramView>
     <div class="searchPanel">
       <Row>
         <Col span="4" offset="1">Service:
@@ -62,6 +63,7 @@
 import { Env } from "../../lib/env";
 import { Identity } from "../../lib/identity";
 import DetailView from "./detail";
+import EndpointSumHistogramView from "./endpointSumHistogram";
 export default {
   data() {
     return {
@@ -293,7 +295,8 @@ export default {
     }
   },
   components: {
-    DetailView
+    DetailView,
+    EndpointSumHistogramView
   }
 };
 </script>
