@@ -16,7 +16,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
 
 class ModelTemplate {
     constructor() {
-        this.getConfigSection = function () {
+        this.getOcelotConfigSection = function () {
             return {
                 name: "V1",
                 sectionType: "2",
@@ -154,6 +154,18 @@ class ModelTemplate {
                 jsonString: JSON.stringify(this.getOcelotConfiguration(), null, 2),
                 description: "",
                 version: "v1"
+            }
+        };
+        this.getConsulServiceSchema = function () {
+            return {
+                name: "",
+                id: "",
+                tags: [],
+                address: "127.0.0.1",
+                port: 80,
+                check: {
+                    ttl: '15s'
+                }
             }
         };
     }
