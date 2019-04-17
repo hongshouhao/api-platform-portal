@@ -1,49 +1,82 @@
 <template>
-  <div class="layout">
+  <Layout class="main" style="height: 100%">
+    <Sider
+      hide-trigger
+      collapsible
+      :width="256"
+      :collapsed-width="64"
+      v-model="collapsed"
+      :style="{overflow: 'hidden'}"
+    >
+      <div class="logo-con" style="height:65px">
+        <!-- <img v-show="!collapsed" :src="maxLogo" key="max-logo">
+        <img v-show="collapsed" :src="minLogo" key="min-logo">-->
+      </div>
+      <Menu
+        v-show="!collapsed"
+        :active-name="activeName"
+        theme="dark"
+        width="auto"
+        @on-select="handleSelect"
+      >
+        <MenuItem name="monitor">
+          <Icon type="md-code"></Icon>服务器
+        </MenuItem>
+        <MenuItem name="ocelotconfig">
+          <Icon type="md-code"></Icon>网关配置
+        </MenuItem>
+        <MenuItem name="ocelotadmin">
+          <Icon type="md-code"></Icon>网关配置管理
+        </MenuItem>
+        <MenuItem name="template">
+          <Icon type="ios-clipboard"></Icon>模板配置
+        </MenuItem>
+        <MenuItem name="consuladmin">
+          <Icon type="md-code"></Icon>服务注册
+        </MenuItem>
+        <MenuItem name="statistic">
+          <Icon type="stats-bars"></Icon>接口统计
+        </MenuItem>
+        <MenuItem to="http://192.168.84.24:8611" target="_blank">
+          <Icon type="ios-people"></Icon>认证授权
+        </MenuItem>
+        <MenuItem to="http://192.168.84.24:8998" target="_blank">
+          <Icon type="md-code"></Icon>APM
+        </MenuItem>
+        <MenuItem name="alerts">
+          <Icon type="md-code"></Icon>监控
+        </MenuItem>
+      </Menu>
+    </Sider>
     <Layout>
-      <Header style="position:fixed;width:100%;z-index:999">
-        <Menu mode="horizontal" theme="dark" :active-name="activeName" @on-select="handleSelect">
-          <div class="layout-nav">
-            <MenuItem name="login">
-              <Icon type="md-code"></Icon>Login
-            </MenuItem>
-            <MenuItem name="ocelot">
-              <Icon type="md-code"></Icon>服务注册
-            </MenuItem>
-            <MenuItem name="template">
-              <Icon type="ios-clipboard"></Icon>模板配置
-            </MenuItem>
-            <MenuItem name="test">
-              <Icon type="ios-flower"></Icon>接口测试
-            </MenuItem>
-            <MenuItem name="statistic">
-              <Icon type="ios-podium"></Icon>接口统计
-            </MenuItem>
-            <MenuItem name="authority">
-              <Icon type="ios-people"></Icon>权限
-            </MenuItem>
-          </div>
-        </Menu>
-      </Header>
-      <Content :style="{margin: '88px 20px 0', minHeight: '500px',background:'#fff'}">
-        <router-view></router-view>
+      <Header class="header-con"></Header>
+      <Content class="main-content-con">
+        <Layout class="main-layout-con">
+          <Content class="content-wrapper">
+            <router-view/>
+          </Content>
+        </Layout>
       </Content>
-      <Footer class="layout-footer-center">2019 &copy;</Footer>
     </Layout>
-  </div>
+  </Layout>
 </template>
 
 <script>
 import { Identity } from "../lib/identity";
+import minLogo from "../assets/logo-min.jpg";
+import maxLogo from "../assets/logo.jpg";
 
 export default {
   data() {
     return {
-      activeName: "ocelot"
+      activeName: "ocelotconfig",
+      collapsed: false,
+      minLogo,
+      maxLogo
     };
   },
   mounted() {
-    Identity.ensureLogedin();
+    // Identity.ensureLogedin();
     var ajaxInterceptor = require("ajax-interceptor");
     ajaxInterceptor.addRequestCallback(function(xhr) {});
     ajaxInterceptor.wire();
@@ -65,17 +98,6 @@ export default {
   position: relative;
   border-radius: 4px;
   overflow: hidden;
-}
-.ivu-layout-header {
-  background: #fff;
-  padding: 0;
-}
-.ivu-menu-horizontal.ivu-menu-light:after {
-  display: none;
-}
-.layout-nav {
-  width: 670px;
-  margin: 0 auto;
 }
 .layout-footer-center {
   text-align: center;

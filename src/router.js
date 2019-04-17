@@ -1,12 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HomeView from '@/views/index.vue'
-import OcelotView from '@/views/ocelot/index.vue'
-import TemplateView from '@/views/ocelot-template/index.vue'
+import OcelotConfigView from '@/views/ocelotconfig/index.vue'
+import OcelotAdminView from '@/views/ocelotadmin/index.vue'
+import TemplateView from '@/views/ocelotconfig-template/index.vue'
 import StatisticView from '@/views/statistic/index.vue'
 import AuthorityView from '@/views/authority'
-import TestView from '@/views/test/'
+import ConsulAdminView from '@/views/consul'
 import SigninCallback from '@/views/callback'
+import AlertsView from '@/views/alerts/'
+import MonitorView from '@/views/dashbord/'
 
 Vue.use(Router)
 
@@ -21,13 +24,36 @@ export default new Router({
       },
       component: HomeView,
       children: [{
-          //网关配置
           path: '/',
-          name: 'ocelot',
+          name: 'monitor',
           meta: {
             auth: true
           },
-          component: OcelotView,
+          component: MonitorView,
+        }, {
+          //网关配置
+          path: '/ocelotconfig',
+          name: 'ocelotconfig',
+          meta: {
+            auth: true
+          },
+          component: OcelotConfigView,
+        },
+        {
+          path: '/ocelotadmin',
+          name: 'ocelotadmin',
+          meta: {
+            auth: true
+          },
+          component: OcelotAdminView,
+        },
+        {
+          path: '/consuladmin',
+          name: 'consuladmin',
+          meta: {
+            auth: true
+          },
+          component: ConsulAdminView,
         },
         {
           //模板配置
@@ -40,12 +66,12 @@ export default new Router({
         },
         {
           //接口测试
-          path: '/test',
-          name: 'test',
+          path: '/alerts',
+          name: 'alerts',
           meta: {
             auth: true
           },
-          component: TestView,
+          component: AlertsView,
         },
         {
           //接口统计
@@ -81,7 +107,7 @@ export default new Router({
     },
     {
       path: '*',
-      component: OcelotView
+      component: OcelotConfigView
     },
     {
       path: "/login",
