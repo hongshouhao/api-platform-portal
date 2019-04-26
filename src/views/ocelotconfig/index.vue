@@ -29,10 +29,11 @@
 
       <TabPane label="JSON View">
         <div style="overflow-y:scroll">
-        <highlight-code lang="JSON">{{dataSourceJString}}</highlight-code></div>
+          <highlight-code lang="JSON">{{dataSourceJString}}</highlight-code>
+        </div>
       </TabPane>
     </Tabs>
-    <Drawer title="Section Detail" :closable="false" width="640" v-model="sectionEditView">
+    <!-- <Drawer title="Section Detail" :closable="false" width="640" v-model="sectionEditView">
       <editView :sectionEditViewModel="sectionEditViewModel" v-if="sectionEditView"></editView>
       <div class="drawer-footer-buttons">
         <Button
@@ -43,8 +44,17 @@
         >Delete</Button>
         <Button type="primary" @click="saveSection">Save</Button>
       </div>
+    </Drawer> -->
+    <Drawer title="配置详情" :closable="false" width="800" v-model="sectionEditView">
+      <add-view style="margin:0 0 5px 0;"></add-view>
+      <Button
+        type="error"
+        :disabled="sectionEditViewModel.forUpdate==false"
+        style="margin-right: 8px"
+        @click="deleteSection"
+      >Delete</Button>
+      <Button type="primary" @click="saveSection">Save</Button>
     </Drawer>
-
     <Modal v-model="showCurrentConfiguration" title="当前Mapping" width="800">
       <div class="mappingcontent">
         <pre>
@@ -59,6 +69,7 @@
 import { Ocelot } from "../../lib/ocelot";
 import { modelTempl } from "../modelTempl.js";
 import editView from "./sectionEdit";
+import AddView from "./sectionAdd";
 
 export default {
   data() {
@@ -215,7 +226,8 @@ export default {
     }
   },
   components: {
-    editView
+    editView,
+    AddView
   }
 };
 </script>
