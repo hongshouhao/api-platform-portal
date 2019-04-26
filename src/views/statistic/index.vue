@@ -1,315 +1,360 @@
 <template>
   <div>
-    <EndpointSumHistogramView></EndpointSumHistogramView>
     <div class="searchPanel">
       <Row>
-        <Col span="4" offset="1">Service:
-          <Select v-model="service" style="width:200px">
-            <Option v-for="item in Services" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        <Col span="10">
+          <Select v-model="filter.uriPrefix" filterable>
+            <Option v-for="item in endpoints" :value="item" :key="item">{{ item }}</Option>
           </Select>
         </Col>
-        <Col span="4">Tags:
-          <Input v-model="tag" style="width:200px"/>
-        </Col>
-        <Col span="4">Start:
-          <DatePicker v-model="start" type="datetime" style="width:200px"></DatePicker>
-        </Col>
-        <Col span="4">End:
-          <DatePicker v-model="end" type="datetime" style="width:200px"></DatePicker>
-        </Col>
-        <Col span="4">Limit:
-          <Select v-model="limit" style="width:200px">
-            <Option v-for="item in limits" :value="item.value" :key="item.value">{{ item.label }}</Option>
-          </Select>
+        <Col span="4">
+          <DatePicker
+            type="daterange"
+            format="yyyy年MM月dd日"
+            :options="datePickerOptions"
+            placement="bottom-end"
+            placeholder="Select date"
+            style="width: 100%"
+            v-model="filter.dateRange"
+          ></DatePicker>
         </Col>
         <Col span="2">
-          <Button icon="md-search" type="primary" @click="onSearch">搜索</Button>
+          <Input v-model="filter.histogramInterval" placeholder="统计周期"></Input>
+        </Col>
+        <Col span="2">
+          <Button icon="md-search" type="primary" @click="loadChart">搜索</Button>
         </Col>
       </Row>
     </div>
-    <Divider></Divider>
-    <div id="lineChart" :style="{width: '100%', height: '350px'}"></div>
     <div id="barChart" :style="{width: '100%', height: '350px'}"></div>
-    <div class="listView">
-      <div
-        v-for="item in tableData"
-        :key="item.traceId"
-        class="list"
-        v-on:click="onShow(item.traceId)"
-      >
-        <Row>
-          <Col span="19">
-            <Progress :percent="item.per" :hide-info="true"/>
-          </Col>
-          <Col span="4" offset="1">
-            <a>{{item.dura}}</a>
-          </Col>
-          <Col span="20">
-            <tag v-for="service in item.services" :key="service.name">{{service.name}}</tag>
-          </Col>
-          <Col span="4">
-            <p>{{item.time}}</p>
-          </Col>
-        </Row>
-      </div>
-    </div>
-    <Modal v-model="model" title="查看详情" width="700">
-      <detail-view v-if="model" :id="id"></detail-view>
-    </Modal>
   </div>
 </template>
 
 <script>
 import { Env } from "../../lib/env";
-import { Identity } from "../../lib/identity";
-import DetailView from "./detail";
-import EndpointSumHistogramView from "./endpointSumHistogram";
+const { Client } = require("@elastic/elasticsearch");
+const client = new Client({ node: Env.elasticserach_host });
+var Enumerable = require("linq");
 export default {
   data() {
     return {
-      model: false,
-      id: "",
-      title: "",
-      Services: [],
-      limits: [
-        {
-          value: 10,
-          label: "10"
-        },
-        {
-          value: 20,
-          label: "20"
-        },
-        {
-          value: 50,
-          label: "50"
-        }
-      ],
-      columns: [
-        {
-          title: "traceId",
-          key: "traceId",
-          width: 100,
-          align: "center"
-        },
-        {
-          title: "duration",
-          key: "duration",
-          width: 150,
-          align: "center"
-        },
-        {
-          title: "finishTimestamp",
-          key: "finishTimestamp",
-          width: 150,
-          align: "center"
-        },
-        {
-          title: "services",
-          key: "services",
-          width: 150,
-          align: "center"
-        },
-        {
-          title: "duration",
-          key: "duration",
-          width: 150,
-          align: "center"
-        },
-        {
-          title: "duration",
-          key: "duration",
-          width: 150,
-          align: "center"
-        }
-      ],
-      columnData: [],
-      loading: false,
-      service: "",
-      tag: "",
-      start: new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 30),
-      end: new Date(),
-      limit: 10,
-      tableData: []
+      endpoints: [],
+      filter: {
+        uriPrefix: "",
+        histogramInterval: "30m",
+        dateRange: []
+      },
+      datePickerOptions: {
+        shortcuts: [
+          {
+            text: "近一周",
+            value() {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              return [start, end];
+            }
+          },
+          {
+            text: "近一月",
+            value() {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              return [start, end];
+            }
+          },
+          {
+            text: "近三月",
+            value() {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              return [start, end];
+            }
+          },
+          {
+            text: "近一年",
+            value() {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 365);
+              return [start, end];
+            }
+          }
+        ]
+      }
     };
   },
   mounted() {
-    this.getData();
-    this.onSearch();
+    var _this = this;
+    const end = new Date();
+    const start = new Date();
+    start.setTime(start.getTime() - 3600 * 1000 * 24 * 365);
+    _this.filter.dateRange = [start, end];
+
+    _this.getUriPatterns().then(function() {
+      _this.filter.uriPrefix = _this.endpoints[0];
+      _this.loadChart();
+    });
   },
   methods: {
-    getData() {
+    loadChart() {
       var _this = this;
-      Identity.getAccessToken().then(function(token) {
-        $.ajax({
-          url: Env.butterfly_host + "/api/service",
-          type: "GET",
-          success: function(data) {
-            data.forEach(function(item) {
-              _this.Services.push({
-                value: item,
-                label: item
-              });
-            });
-            _this.service = _this.Services[1].value;
-          },
-          error: function(XMLHttpRequest, textStatus, errorThrown) {
-            console.log(textStatus + "," + errorThrown);
-          }
-        });
-      });
-    },
-    onSearch() {
-      var Obj = {
-        service: this.service,
-        tags: this.tag,
-        startTimestamp: new Date(this.start).getTime(),
-        finishTimestamp: new Date(this.end).getTime(),
-        limit: this.limit
-      };
-      this.getTableData(Obj);
-      this.getChartData(Obj);
-      this.getStatistic(Obj);
-    },
-    getStatistic(Obj) {
-      var _this = this;
-      Identity.getAccessToken().then(function(token) {
-        $.ajax({
-          url: Env.butterfly_host + "/api/statistic/histogram",
-          type: "GET",
-          data: Obj,
-          success: function(data) {
-            console.log(data);
-            let myChart = _this.$echarts.init(
-              document.getElementById("barChart")
-            );
-            var dataList = data.map(function(item) {
-              return item.count;
-            });
-            var dateList = data.map(function(item) {
-              return item.time;
-            });
-            var options = {
-              xAxis: {
-                data: dateList
-              },
-              yAxis: {
-                splitLine: { show: false }
-              },
-              tooltip: {
-                trigger: "axis"
-              },
-              series: [
-                {
-                  data: dataList,
-                  type: "bar",
-                  showSymbol: false
+      client
+        .search({
+          index: "filebeat-iis-apigateway-*",
+          body: {
+            aggs: {
+              datehistogram_terms: {
+                date_histogram: {
+                  field: "@timestamp",
+                  interval: _this.filter.histogramInterval,
+                  time_zone: "Asia/Shanghai",
+                  min_doc_count: 1
+                },
+                aggs: {
+                  by_ip: {
+                    terms: {
+                      field: "c-ip.keyword",
+                      size: 10,
+                      order: {
+                        _count: "desc"
+                      }
+                    },
+                    aggs: {
+                      by_uri: {
+                        terms: {
+                          field: "cs-uri-stem.keyword",
+                          size: 5,
+                          order: {
+                            _count: "desc"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
-              ]
-            };
-            myChart.setOption(options);
-          },
-          error: function(XMLHttpRequest, textStatus, errorThrown) {
-            console.log(textStatus + "," + errorThrown);
-          }
-        });
-      });
-    },
-    onShow(id) {
-      this.id = id;
-      this.model = true;
-    },
-    getTableData(Obj) {
-      var _this = this;
-      Identity.getAccessToken().then(function(token) {
-        $.ajax({
-          url: Env.butterfly_host + "/api/trace",
-          type: "GET",
-          data: Obj,
-          success: function(data) {
-            _this.tableData = data.map(function(item) {
-              if (item.duration < 1000) {
-                item.dura = item.duration + "μs";
-              } else {
-                item.dura = (item.duration / 1000).toFixed(2) + "ms";
               }
-              item.per = item.duration / 20;
-              return item;
-            });
-          },
-          error: function(XMLHttpRequest, textStatus, errorThrown) {
-            console.log(textStatus + "," + errorThrown);
+            },
+            size: 0,
+            _source: {
+              excludes: []
+            },
+            stored_fields: ["*"],
+            script_fields: {},
+            docvalue_fields: [
+              {
+                field: "@timestamp",
+                format: "date_time"
+              }
+            ],
+            query: {
+              bool: {
+                must: [
+                  {
+                    range: {
+                      "@timestamp": {
+                        gte: _this.filter.dateRange[0].getTime(),
+                        lte: _this.filter.dateRange[1].getTime(),
+                        format: "epoch_millis"
+                      }
+                    }
+                  },
+                  {
+                    match_phrase: { "cs.keyword": { query: "-" } }
+                  },
+                  {
+                    match_phrase_prefix: {
+                      "cs-uri-stem": _this.filter.uriPrefix.replace("/", "\\/")
+                    }
+                  }
+                ],
+                filter: [],
+                should: []
+              }
+            },
+            timeout: "30000ms"
           }
+        })
+        .then(function(response) {
+          var chartoptions = {
+            theme: "infographic",
+            title: {
+              text: "IP/API访问频次"
+            },
+            legend: {
+              orient: "horizontal",
+              y: "bottom",
+              icon: "circle",
+              itemWidth: 10,
+              itemHeight: 10,
+              itemGap: 20
+            },
+            xAxis: _this.readXAxis(response),
+            yAxis: [
+              {
+                type: "value"
+              }
+            ],
+            series: _this.readYAxis(response)
+          };
+          let myChart = _this.$echarts.init(
+            document.getElementById("barChart")
+          );
+          myChart.setOption(chartoptions);
         });
-      });
     },
-    getChartData(Obj) {
-      var _this = this;
-      Identity.getAccessToken().then(function(token) {
-        $.ajax({
-          url: Env.butterfly_host + "/api/trace/histogram",
-          type: "GET",
-          data: Obj,
-          success: function(data) {
-            let myChart = _this.$echarts.init(
-              document.getElementById("lineChart")
-            );
-            var dataList = data.map(function(item) {
-              return item.count;
-            });
-            var dateList = data.map(function(item) {
-              return item.time;
-            });
-            var options = {
-              visualMap: {
-                show: false,
-                type: "continuous",
-                seriesIndex: 0,
-                min: 0,
-                max: 20
-              },
-              xAxis: {
-                data: dateList
-              },
-              yAxis: {
-                splitLine: { show: false }
-              },
-              tooltip: {
-                trigger: "axis"
-              },
-              series: [
-                {
-                  data: dataList,
-                  type: "line",
-                  showSymbol: false
-                }
-              ]
-            };
-            myChart.setOption(options);
-          },
-          error: function(XMLHttpRequest, textStatus, errorThrown) {
-            console.log(textStatus + "," + errorThrown);
+    readXAxis(res) {
+      var xdates = new Array();
+      var topbuckets = res.body.aggregations.datehistogram_terms.buckets;
+      for (var i = 0; i < topbuckets.length; i++) {
+        xdates.push(topbuckets[i].key_as_string);
+      }
+      return [
+        {
+          type: "category",
+          data: xdates
+        }
+      ];
+    },
+    readYAxis(res) {
+      var topbuckets = res.body.aggregations.datehistogram_terms.buckets;
+      var ipbuckets = Enumerable.from(topbuckets).selectMany(
+        s => s.by_ip.buckets
+      );
+      var uribuckets = Enumerable.from(ipbuckets).selectMany(
+        s => s.by_uri.buckets
+      );
+
+      var iplist = ipbuckets
+        .select(s => s.key)
+        .distinct()
+        .toArray();
+      var urilist = uribuckets
+        .select(s => s.key)
+        .distinct()
+        .toArray();
+
+      var barItems = new Array();
+      for (var j = 0; j < iplist.length; j++) {
+        var ip = iplist[j];
+        var barItem = {};
+        barItem.name = ip;
+        barItem.type = "bar";
+        barItem.data = new Array();
+
+        for (var i = 0; i < topbuckets.length; i++) {
+          var ipItem = Enumerable.from(
+            topbuckets[i].by_ip.buckets
+          ).firstOrDefault(s => s.key === ip);
+          var count = 0;
+          if (ipItem) {
+            count = ipItem.doc_count;
           }
+          barItem.data.push(count);
+        }
+
+        barItems.push(barItem);
+      }
+
+      for (var j = 0; j < urilist.length; j++) {
+        var uri = urilist[j];
+        for (var i = 0; i < iplist.length; i++) {
+          var ip = iplist[i];
+          var stackItem = {};
+          stackItem.name = uri;
+          stackItem.type = "bar";
+          stackItem.stack = ip;
+          stackItem.data = new Array();
+          for (var i = 0; i < topbuckets.length; i++) {
+            var ipItem = Enumerable.from(
+              topbuckets[i].by_ip.buckets
+            ).firstOrDefault(s => s.key === ip);
+            var count = 0;
+            if (ipItem) {
+              var uriItem = Enumerable.from(
+                ipItem.by_uri.buckets
+              ).firstOrDefault(s => s.key === uri);
+              if (uriItem) {
+                count = uriItem.doc_count;
+              }
+            }
+            stackItem.data.push(count);
+          }
+          barItems.push(stackItem);
+        }
+      }
+
+      return barItems;
+    },
+    getUriPatterns() {
+      var _this = this;
+      return client
+        .search({
+          index: "filebeat-iis-apigateway-*",
+          body: {
+            query: {
+              bool: {
+                must: [
+                  {
+                    range: {
+                      "@timestamp": {
+                        gte: _this.filter.dateRange[0].getTime(),
+                        lte: _this.filter.dateRange[1].getTime(),
+                        format: "epoch_millis"
+                      }
+                    }
+                  },
+                  {
+                    match_phrase: {
+                      "cs.keyword": {
+                        query: "-"
+                      }
+                    }
+                  }
+                ],
+                filter: [],
+                should: []
+              }
+            },
+            aggs: {
+              uri_aggs: {
+                terms: {
+                  field: "cs-uri-stem.keyword"
+                }
+              }
+            }
+          }
+        })
+        .then(function(response) {
+          var fulluris = Enumerable.from(
+            response.body.aggregations.uri_aggs.buckets
+          )
+            .select(s => s.key)
+            .distinct()
+            .toArray();
+          _this.endpoints = Enumerable.from(fulluris)
+            .selectMany(s => {
+              var uris = new Array();
+              var curind = s.indexOf("/");
+              if (curind == 0) {
+                curind = s.indexOf("/", 1);
+              }
+              while (curind >= 1) {
+                var sub = s.substring(0, curind);
+                uris.push(sub);
+                curind = s.indexOf("/", curind + 1);
+              }
+              uris.push(s.trimRight("/"));
+              return uris;
+            })
+            .distinct()
+            .toArray();
         });
-      });
     }
   },
-  components: {
-    DetailView,
-    EndpointSumHistogramView
-  }
+  components: {}
 };
 </script>
 
-<style scoped lang="less">
-.searchPanel {
-  padding: 10px;
-}
-.listView {
-  padding: 10px;
-  .list {
-    margin: 15px 0;
-    cursor: pointer;
-  }
-}
-</style>

@@ -5,7 +5,6 @@ import OcelotConfigView from '@/views/ocelotconfig/index.vue'
 import OcelotAdminView from '@/views/ocelotadmin/index.vue'
 import TemplateView from '@/views/ocelotconfig-template/index.vue'
 import StatisticView from '@/views/statistic/index.vue'
-import AuthorityView from '@/views/authority'
 import ConsulAdminView from '@/views/consul'
 import SigninCallback from '@/views/callback'
 import AlertsView from '@/views/alerts/'
@@ -81,15 +80,6 @@ export default new Router({
             auth: true
           },
           component: StatisticView,
-        },
-        {
-          //权限
-          path: '/authority',
-          name: 'authority',
-          meta: {
-            auth: true
-          },
-          component: AuthorityView,
         },
         {
           path: "/signincallback",

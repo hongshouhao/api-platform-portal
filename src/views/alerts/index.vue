@@ -1,14 +1,16 @@
 <template>
   <div style="width:100%; height:100%">
-    <iframe
-      style="width:100%; height:100%"
-      frameborder="0"
-      scrolling="auto"
-      src="http://192.168.84.24:9098"
-    ></iframe>
+    <iframe style="width:100%; height:100%" frameborder="0" scrolling="auto" :src="alertUrl"></iframe>
   </div>
 </template>
 
 <script>
-export default {};
+import { Env } from "../../lib/env";
+export default {
+  data() {
+    return {
+      alertUrl: Env.karma_host
+    };
+  }
+};
 </script>

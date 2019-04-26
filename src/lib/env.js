@@ -9,7 +9,10 @@ class EnvVar {
         this.identityServerAdmin_host = "http://192.168.84.24:8611";
         this.ocelotConfig_host = "http://192.168.84.24:9001";
         this.ocelot_host = "http://192.168.84.24:9000";
-        this.butterfly_host = "http://192.168.84.24:9618";
+        this.elasticserach_host = "http://192.168.84.24:9200";
+        this.consul_host = "192.168.84.24";
+        this.prometheus_host = "http://192.168.122.11:9090";
+        this.karma_host = "http://192.168.122.11:9098";
     }
 }
 

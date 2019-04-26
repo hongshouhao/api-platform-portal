@@ -21,11 +21,11 @@ class OcelotConfigClient {
                         xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                     },
                     success: function (data) {
-                        ifSuccess ? ifSuccess(data) : function () {};
+                        ifSuccess ? ifSuccess(data) : function () { };
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         console.log(textStatus + "," + errorThrown);
-                        ifError ? ifError(errorThrown) : function (errorThrown) {};
+                        ifError ? ifError(errorThrown) : function (errorThrown) { };
                     }
                 });
             });
@@ -45,11 +45,11 @@ class OcelotConfigClient {
                     },
                     success: function (data) {
                         console.log(data);
-                        ifSuccess ? ifSuccess(data) : function () {};
+                        ifSuccess ? ifSuccess(data) : function () { };
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         console.log(textStatus + "," + errorThrown);
-                        ifError ? ifError(errorThrown) : function (errorThrown) {};
+                        ifError ? ifError(errorThrown) : function (errorThrown) { };
                     }
                 });
             });
@@ -68,12 +68,12 @@ class OcelotConfigClient {
                     },
                     success: function (data) {
                         console.log(data);
-                        ifSuccess ? ifSuccess(data) : function () {};
+                        ifSuccess ? ifSuccess(data) : function () { };
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         console.log(textStatus + "," + errorThrown);
                         var errorInfo = XMLHttpRequest.responseJSON[0].message
-                        ifError ? ifError(errorInfo) : function (errorInfo) {};
+                        ifError ? ifError(errorInfo) : function (errorInfo) { };
                     }
                 });
             });
@@ -91,12 +91,12 @@ class OcelotConfigClient {
                     },
                     success: function (data) {
                         console.log(data);
-                        ifSuccess ? ifSuccess(data) : function () {};
+                        ifSuccess ? ifSuccess(data) : function () { };
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         console.log(textStatus + "," + errorThrown);
                         var errorInfo = XMLHttpRequest.responseJSON[0].message
-                        ifError ? ifError(errorInfo) : function (errorInfo) {};
+                        ifError ? ifError(errorInfo) : function (errorInfo) { };
                     }
                 });
             });
@@ -114,11 +114,11 @@ class OcelotConfigClient {
                     },
                     success: function (data) {
                         console.log(data);
-                        ifSuccess ? ifSuccess(data) : function () {};
+                        ifSuccess ? ifSuccess(data) : function () { };
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         var errorInfo = XMLHttpRequest.responseJSON[0].message
-                        ifError ? ifError(errorInfo) : function (errorInfo) {};
+                        ifError ? ifError(errorInfo) : function (errorInfo) { };
                     }
                 });
             });
@@ -134,12 +134,12 @@ class OcelotConfigClient {
                     },
                     success: function (data) {
                         console.log(data);
-                        ifSuccess ? ifSuccess(data) : function () {};
+                        ifSuccess ? ifSuccess(data) : function () { };
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         console.log(textStatus + "," + errorThrown);
                         var errorInfo = XMLHttpRequest.responseJSON[0].message
-                        ifError ? ifError(errorInfo) : function (errorInfo) {};
+                        ifError ? ifError(errorInfo) : function (errorInfo) { };
                     }
                 });
             });
@@ -156,12 +156,12 @@ class OcelotConfigClient {
                     },
                     success: function (data) {
                         console.log(data);
-                        ifSuccess ? ifSuccess(data) : function () {};
+                        ifSuccess ? ifSuccess(data) : function () { };
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         console.log(textStatus + "," + errorThrown);
                         var errorInfo = XMLHttpRequest.responseJSON[0].message
-                        ifError ? ifError(errorInfo) : function (errorInfo) {};
+                        ifError ? ifError(errorInfo) : function (errorInfo) { };
                     }
                 });
             });
@@ -177,11 +177,11 @@ class OcelotConfigClient {
                         xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                     },
                     success: function (data) {
-                        ifSuccess ? ifSuccess(data) : function () {};
+                        ifSuccess ? ifSuccess(data) : function () { };
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         console.log(textStatus + "," + errorThrown);
-                        ifError ? ifError(errorThrown) : function (errorThrown) {};
+                        ifError ? ifError(errorThrown) : function (errorThrown) { };
                     }
                 });
             });
@@ -196,11 +196,11 @@ class OcelotConfigClient {
                         xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                     },
                     success: function (data) {
-                        ifSuccess ? ifSuccess(data) : function () {};
+                        ifSuccess ? ifSuccess(data) : function () { };
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         console.log(textStatus + "," + errorThrown);
-                        ifError ? ifError(errorThrown) : function (errorThrown) {};
+                        ifError ? ifError(errorThrown) : function (errorThrown) { };
                     }
                 });
             });
@@ -215,11 +215,11 @@ class OcelotConfigClient {
                         xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                     },
                     success: function (data) {
-                        ifSuccess ? ifSuccess(data) : function () {};
+                        ifSuccess ? ifSuccess(data) : function () { };
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         console.log(textStatus + "," + errorThrown);
-                        ifError ? ifError(errorThrown) : function (errorThrown) {};
+                        ifError ? ifError(errorThrown) : function (errorThrown) { };
                     }
                 });
             });
@@ -234,11 +234,11 @@ class OcelotConfigClient {
                         xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                     },
                     success: function (data) {
-                        ifSuccess ? ifSuccess(data) : function () {};
+                        ifSuccess ? ifSuccess(data) : function () { };
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         console.log(textStatus + "," + errorThrown);
-                        ifError ? ifError(errorThrown) : function (errorThrown) {};
+                        ifError ? ifError(errorThrown) : function (errorThrown) { };
                     }
                 });
             });

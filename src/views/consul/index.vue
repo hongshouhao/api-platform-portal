@@ -23,8 +23,9 @@
 </template>
 
 <script>
+import { Env } from "../../lib/env";
 import ServiceEditView from "./serviceEdit";
-var consul = require("consul")({ host: "192.168.84.24" });
+var consul = require("consul")({ host: Env.consul_host });
 export default {
   data() {
     return {

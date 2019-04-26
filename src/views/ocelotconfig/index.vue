@@ -29,7 +29,8 @@
 
       <TabPane label="JSON View">
         <div style="overflow-y:scroll">
-        <highlight-code lang="JSON">{{dataSourceJString}}</highlight-code></div>
+          <highlight-code lang="JSON">{{dataSourceJString}}</highlight-code>
+        </div>
       </TabPane>
     </Tabs>
     <Drawer title="Section Detail" :closable="false" width="640" v-model="sectionEditView">

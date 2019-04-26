@@ -2,6 +2,7 @@
   <div id="cpuchart" style="width: 100%;height:100%;"></div>
 </template>
 <script>
+import { Env } from "../../lib/env";
 export default {
   data() {
     return {
@@ -11,28 +12,10 @@ export default {
   mounted() {
     var _this = this;
     var chartoptions = {
+      theme: "infographic",
       title: {
         text: "% CPU利用率"
       },
-      // tooltip: {
-      //   trigger: "axis",
-      //   formatter: function(params) {
-      //     params = params[0];
-      //     var date = new Date(params.name);
-      //     return (
-      //       date.getDate() +
-      //       "/" +
-      //       (date.getMonth() + 1) +
-      //       "/" +
-      //       date.getFullYear() +
-      //       " : " +
-      //       params.value[1]
-      //     );
-      //   },
-      //   axisPointer: {
-      //     animation: false
-      //   }
-      // },
       xAxis: {
         type: "time",
         splitLine: {
@@ -40,7 +23,7 @@ export default {
         },
         axisLabel: {
           formatter: function(value, index) {
-            return new Date(value).getFullYear();
+            return "";
           }
         }
       },
@@ -69,7 +52,8 @@ export default {
       var date = new Date().getTime() / 1000;
       _this.$axios
         .get(
-          'http://192.168.84.24:9090/api/v1/query_range?query=(sum by(instance)(irate(wmi_cpu_time_total{mode!="idle"}[5m]))/sum by(instance)(irate(wmi_cpu_time_total[5m])))*100&start=' +
+          Env.prometheus_host +
+            '/api/v1/query_range?query=(sum by(instance)(irate(wmi_cpu_time_total{mode!="idle"}[5m]))/sum by(instance)(irate(wmi_cpu_time_total[5m])))*100&start=' +
             (date - 70) +
             "&end=" +
             date +
