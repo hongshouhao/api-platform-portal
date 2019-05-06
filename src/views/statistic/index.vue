@@ -161,9 +161,9 @@ export default {
                       }
                     }
                   },
-                  {
-                    match_phrase: { "cs.keyword": { query: "-" } }
-                  },
+                  // {
+                  //   match_phrase: { "cs.keyword": { query: "-" } }
+                  // },
                   {
                     match_phrase_prefix: {
                       "cs-uri-stem": _this.filter.uriPrefix.replace("/", "\\/")
@@ -179,7 +179,6 @@ export default {
         })
         .then(function(response) {
           var chartoptions = {
-            theme: "infographic",
             title: {
               text: "IP/API访问频次"
             },
@@ -200,7 +199,8 @@ export default {
             series: _this.readYAxis(response)
           };
           let myChart = _this.$echarts.init(
-            document.getElementById("barChart")
+            document.getElementById("barChart"),
+            "shine"
           );
           myChart.setOption(chartoptions);
         });

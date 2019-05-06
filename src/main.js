@@ -13,6 +13,7 @@ import json from '../node_modules/highlight.js/lib/languages/json';
 import '../node_modules/highlight.js/styles/paraiso-dark.css';
 
 import './assets/global.less'
+import 'echarts/theme/shine'
 
 import App from './App.vue'
 

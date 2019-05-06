@@ -5,7 +5,7 @@
         <i-option v-for="item in datacenters" :value="item" :key="item">{{ item }}</i-option>
       </i-select>
       <Button
-        icon="md-add-circle"
+        icon="md-add"
         type="primary"
         :style="{margin:'10px 5px'}"
         @click="editState=true"
@@ -25,7 +25,8 @@
 <script>
 import { Env } from "../../lib/env";
 import ServiceEditView from "./serviceEdit";
-var consul = require("consul")({ host: Env.consul_host });
+var consul = require("consul")({ host: new URL(Env.consul_host).hostname });
+var Enumerable = require("linq");
 export default {
   data() {
     return {
@@ -37,7 +38,7 @@ export default {
       columns: [
         {
           title: "Name",
-          key: "ServiceName"
+          key: "Service"
         },
         {
           title: "Host",
@@ -48,9 +49,41 @@ export default {
           key: "Node"
         },
         {
+          title: "Status",
+          key: "Status",
+          align: "center",
+          render: (h, params) => {
+            return h(
+              "Icon",
+              {
+                props: {
+                  size: 20,
+                  type:
+                    params.row.Status === "passing"
+                      ? "md-checkmark-circle"
+                      : "md-close-circle",
+                  color: params.row.Status === "passing" ? "#19be6b" : "#ed4014"
+                }
+              },
+              params.row.Status
+            );
+          }
+        },
+        {
           title: "Tags",
           key: "ServiceTags",
-          align: "center"
+          align: "center",
+          render: (h, params) => {
+            return h(
+              "Tag",
+              {
+                props: {
+                  color: "blue"
+                }
+              },
+              params.row.ServiceTags
+            );
+          }
         },
         {
           title: "Action",
@@ -99,27 +132,67 @@ export default {
     dcChanged(dc) {
       if (!dc) return;
       var _this = this;
-      consul.catalog.service.list(dc, function(err1, services) {
+      var svcarr = new Array();
+      var svcEnum = Enumerable.from(svcarr);
+      consul.catalog.node.list(dc, function(err1, nodes) {
         if (err1) throw err1;
 
-        var svcArray = new Array();
-        for (let svcName in services) {
-          consul.catalog.service.nodes(svcName, function(err2, nodeArr) {
-            if (err2) throw err2;
+        for (var j = 0; j < nodes.length; j++) {
+          {
+            var node = nodes[j];
+            consul.catalog.node.services(node.Node, function(
+              err2,
+              nodeservices
+            ) {
+              if (err2) throw err2;
+              for (var svc in nodeservices.Services) {
+                var svcobj = svcEnum.firstOrDefault(s => s.Service === svc);
+                if (!svcobj) {
+                  svcobj = nodeservices.Services[svc];
+                  svcobj.Node = node.Address + ":" + node.Node;
+                  svcobj.ServiceHost = svcobj.Address + ":" + svcobj.Port;
+                  svcobj.ServiceTags = svcobj.Tags.join(",");
 
-            nodeArr.map(function(item, index) {
-              item.ServiceHost = item.Address + ":" + item.ServicePort;
-              svcArray.push(item);
+                  svcarr.push(svcobj);
+                }
+              }
+
+              consul.health.node(node.Node, function(err3, checks) {
+                if (err3) throw err3;
+
+                for (var i = 0; i < checks.length; i++) {
+                  svcobj = svcEnum.firstOrDefault(
+                    s => s.Service === checks[i].ServiceName
+                  );
+                  if (svcobj) {
+                    svcobj.Status = checks[i].Status;
+                  }
+                }
+
+                svcarr = svcarr.sort(function(a, b) {
+                  a.ServiceHost - b.ServiceHost;
+                });
+              });
             });
-          });
+          }
         }
-
-        svcArray.sort(function(a, b) {
-          a.ServiceHost - b.ServiceHost;
-        });
-
-        _this.services = svcArray;
       });
+
+      // consul.catalog.service.list(dc, function(err1, services) {
+      //   if (err1) throw err1;
+      //   var svcArray = new Array();
+      //   for (let svcName in services) {
+      //     consul.catalog.service.nodes(svcName, function(err2, nodeArr) {
+      //       if (err2) throw err2;
+      //       nodeArr.map(function(item, index) {
+      //         item.ServiceHost = item.Address + ":" + item.ServicePort;
+      //         svcArray.push(item);
+      //       });
+      //     });
+      //   }
+
+      _this.services = svcarr;
+      // });
     },
     deregister(row) {
       var _this = this;
@@ -127,7 +200,7 @@ export default {
         title: "警告",
         content: "<p>确定注销此服务实例？</p>",
         onOk: () => {
-          consul.agent.service.deregister(row.ServiceID, function(err) {
+          consul.agent.service.deregister(row.ID, function(err) {
             if (err) {
               _this.$Notice.error({
                 title: "注销失败:",
@@ -137,17 +210,36 @@ export default {
               _this.$Notice.success({
                 title: "注销成功"
               });
-              _this.refreshData();
+              _this.dcChanged(_this.selecteddc);
             }
           });
         }
       });
     },
     save() {
+      var _this = this;
       var options = this.$refs.ServiceEditView.model;
       consul.agent.service.register(options, function(err) {
-        if (err) throw err;
+        if (err) {
+          _this.$Notice.error({
+            title: "服务注册失败:",
+            desc: err
+          });
+        } else {
+          _this.$Notice.success({
+            title: "服务注册成功"
+          });
+          _this.editState = false;
+          _this.dcChanged(_this.selecteddc);
+        }
       });
+    },
+    getUrlPort(url) {
+      var protocolReg = /^\w+:\/\//;
+      if (!protocolReg.test(url)) {
+        url = "http://" + url;
+      }
+      return new URL(url).port;
     }
   },
   components: {

@@ -17,20 +17,19 @@ Date.prototype.Format = function (fmt) { //author: meizz
 class ModelTemplate {
     constructor() {
         this.getOcelotConfigSection = function () {
-            return {
-                name: "V1",
-                sectionType: "2",
-                jsonString: JSON.stringify({
-                    ReRoutes: this.getOcelotConfigurationSchema().ReRoutes
-                }, null, 2),
+            var templ = {
+                name: new Date().getTime(),
+                jsonString: JSON.stringify(this.getOcelotConfigurationSchema(), null, 2),
                 enable: false,
                 description: "",
                 createTime: new Date().Format("yyyy-MM-dd hh:mm:ss"),
                 modifiedTime: new Date().Format("yyyy-MM-dd hh:mm:ss")
             }
+
+            return JSON.parse(JSON.stringify(templ));
         };
         this.getOcelotConfigurationSchema = function () {
-            return {
+            var templ = {
                 GlobalConfiguration: {
                     RequestIdKey: "",
                     ServiceDiscoveryProvider: {
@@ -71,12 +70,12 @@ class ModelTemplate {
                     DownstreamPathTemplate: "/",
                     UpstreamPathTemplate: "/",
                     UpstreamHttpMethod: ["get", "post"],
-                    AddHeadersToRequest: [],
-                    UpstreamHeaderTransform: [],
-                    DownstreamHeaderTransform: [],
-                    AddClaimsToRequest: [],
-                    RouteClaimsRequirement: [],
-                    AddQueriesToRequest: [],
+                    AddHeadersToRequest: {},
+                    UpstreamHeaderTransform: {},
+                    DownstreamHeaderTransform: {},
+                    AddClaimsToRequest: {},
+                    RouteClaimsRequirement: {},
+                    AddQueriesToRequest: {},
                     RequestIdKey: "",
                     FileCacheOptions: {
                         TtlSeconds: 0,
@@ -147,14 +146,7 @@ class ModelTemplate {
                     }
                 }]
             }
-        };
-        this.getOcelotConfigurationTemplate = function () {
-
-            return {
-                jsonString: JSON.stringify(this.getOcelotConfiguration(), null, 2),
-                description: "",
-                version: "v1"
-            }
+            return JSON.parse(JSON.stringify(templ));
         };
         this.getConsulServiceSchema = function () {
             return {
@@ -167,6 +159,14 @@ class ModelTemplate {
                     ttl: '15s'
                 }
             }
+        };
+        this.getOcelotTemplate = function () {
+            var templ = {
+                jsonString: JSON.stringify(this.getOcelotConfigurationSchema(), null, 2),
+                description: "",
+                version: new Date().getTime().toString()
+            }
+            return JSON.parse(JSON.stringify(templ));
         };
     }
 }

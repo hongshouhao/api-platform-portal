@@ -1,11 +1,11 @@
 <template>
   <div class="panel main-content-con">
-    <Tabs value="table" type="card">
+    <Tabs value="table">
       <TabPane label="Table View" name="table">
         <div class="content">
           <Button icon="ios-refresh" type="primary" :style="{margin:'10px'}" @click="refreshData">刷新</Button>
           <Button
-            icon="md-add-circle"
+            icon="md-add"
             type="primary"
             @click="addNewSection"
             :style="{margin:'10px 5px'}"
@@ -16,14 +16,7 @@
             @click="verifySelectedSections"
             :style="{margin:'10px 5px'}"
           >验证</Button>
-          <Table
-            ref="sectionTable"
-            :columns="columns"
-            :data="dataSource"
-            :loading="loading"
-            stripe
-            @on-row-click="editSection"
-          ></Table>
+          <Table ref="sectionTable" :columns="columns" :data="dataSource" :loading="loading" stripe></Table>
         </div>
       </TabPane>
 
@@ -33,25 +26,21 @@
         </div>
       </TabPane>
     </Tabs>
-    <Drawer title="Section Detail" :closable="false" width="640" v-model="sectionEditView">
-      <editView :sectionEditViewModel="sectionEditViewModel" v-if="sectionEditView"></editView>
-      <div class="drawer-footer-buttons">
+    <Drawer :closable="false" width="800" v-model="showEditView">
+      <div slot="header" class="drawerheader">
+        <span>配置详情</span>
+        <Button type="success" style="float: right;margin-right: 8px" @click="saveSection">Save</Button>
         <Button
           type="error"
-          :disabled="sectionEditViewModel.forUpdate==false"
-          style="margin-right: 8px"
+          :disabled="forUpdate==false"
+          style="float: right;margin-right: 8px"
           @click="deleteSection"
         >Delete</Button>
-        <Button type="primary" @click="saveSection">Save</Button>
       </div>
+      <EditView :section="vsection" :forUpdate="forUpdate" style="margin:0 0 5px 0;"></EditView>
     </Drawer>
-
-    <Modal v-model="showCurrentConfiguration" title="当前Mapping" width="800">
-      <div class="mappingcontent">
-        <pre>
-          <code>{{currentConfiguration}}</code>
-        </pre>
-      </div>
+    <Modal v-model="viewJsonString" footer-hide width="800">
+      <highlight-code lang="JSON">{{json}}</highlight-code>
     </Modal>
   </div>
 </template>
@@ -59,33 +48,60 @@
 <script>
 import { Ocelot } from "../../lib/ocelot";
 import { modelTempl } from "../modelTempl.js";
-import editView from "./sectionEdit";
+import EditView from "./sectionEdit";
 
 export default {
   data() {
     return {
-      sectionEditViewModel: {
-        section: {},
-        forUpdate: true
-      },
-      loading: false,
+      vsection: {},
       columns: [
-        {
-          title: "id",
-          key: "id",
-          width: 100,
-          align: "center"
-        },
         {
           title: "name",
           key: "name",
           width: 150,
-          align: "center"
+          align: "center",
+          render: (h, params) => {
+            return h(
+              "a",
+              {
+                attrs: {
+                  href: "#"
+                },
+                on: {
+                  click: () => {
+                    this.editSection(params.row);
+                  }
+                }
+              },
+              params.row.name
+            );
+          }
         },
         {
           title: "jsonString",
           key: "jsonString",
-          ellipsis: true
+          ellipsis: true,
+          render: (h, params) => {
+            return h(
+              "a",
+              {
+                attrs: {
+                  href: "#"
+                },
+                on: {
+                  click: () => {
+                    this.viewJsonString = true;
+                    this.json = JSON.stringify(
+                      JSON.parse(params.row.jsonString),
+                      null,
+                      2
+                    );
+                  }
+                }
+              },
+              "{...}"
+            );
+          }
         },
         {
           title: "enable",
@@ -114,10 +130,12 @@ export default {
       ],
       dataSource: [],
       dataSourceJString: "",
-      sectionEditView: false,
-      showCurrentConfiguration: false,
-      currentConfiguration: {},
-      template: false
+      showEditView: false,
+      viewJsonString: false,
+      json: {},
+      modalTitle: "",
+      forUpdate: false,
+      loading: false
     };
   },
   mounted() {
@@ -125,8 +143,8 @@ export default {
   },
   methods: {
     refreshData() {
-      this.loading = true;
       var _this = this;
+      _this.loading = true;
       Ocelot.GetAllSections(
         function(data) {
           _this.dataSourceJString = JSON.stringify(data, null, 2);
@@ -141,32 +159,30 @@ export default {
       );
     },
     addNewSection() {
-      this.sectionEditViewModel.section = modelTempl.getOcelotConfigSection();
-      this.sectionEditViewModel.forUpdate = false;
-      this.sectionEditView = true;
+      this.vsection = modelTempl.getOcelotConfigSection();
+      this.forUpdate = false;
+      this.showEditView = true;
     },
     editSection(row) {
-      debugger;
-      this.sectionEditViewModel.section = row;
-      this.sectionEditViewModel.forUpdate = true;
-      this.sectionEditView = true;
+      this.vsection = row;
+      this.forUpdate = true;
+      this.showEditView = true;
     },
     saveSection() {
       var _this = this;
       Ocelot.SaveSection(
-        _this.sectionEditViewModel.section,
+        _this.vsection,
         function() {
           _this.$Notice.success({
             title: "保存成功"
           });
-          _this.sectionEditView = false;
+          _this.showEditView = false;
           _this.refreshData();
         },
         function(errorThrown) {
           _this.$Notice.error({
             title: "保存失败",
-            desc: errorThrown,
-            duration: 0
+            desc: errorThrown
           });
         }
       );
@@ -178,19 +194,18 @@ export default {
         content: "<p>是否删除当前行？</p>",
         onOk: () => {
           Ocelot.DeleteSection(
-            _this.sectionEditViewModel.section.id,
+            _this.vsection.name,
             function() {
               _this.$Notice.success({
                 title: "删除成功"
               });
-              _this.sectionEditView = false;
+              _this.showEditView = false;
               _this.refreshData();
             },
             function(errorThrownn) {
               _this.$Notice.error({
                 title: "删除失败:",
-                desc: errorThrownn,
-                duration: 0
+                desc: errorThrownn
               });
             }
           );
@@ -208,15 +223,14 @@ export default {
         function(errorThrown) {
           _this.$Notice.error({
             title: "验证失败：",
-            desc: errorThrown,
-            duration: 0
+            desc: errorThrown
           });
         }
       );
     }
   },
   components: {
-    editView
+    EditView
   }
 };
 </script>

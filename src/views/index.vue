@@ -26,7 +26,7 @@
           <Icon type="md-code"></Icon>网关配置
         </MenuItem>
         <MenuItem name="ocelotadmin">
-          <Icon type="md-code"></Icon>网关配置管理
+          <Icon type="md-code"></Icon>网关配置发布
         </MenuItem>
         <MenuItem name="template">
           <Icon type="ios-clipboard"></Icon>模板配置
@@ -37,19 +37,27 @@
         <MenuItem name="statistic">
           <Icon type="stats-bars"></Icon>接口统计
         </MenuItem>
-        <MenuItem to="http://192.168.84.24:8611" target="_blank">
+        <MenuItem :to="identityAdmin" target="_blank">
           <Icon type="ios-people"></Icon>认证授权
-        </MenuItem>
-        <MenuItem to="http://192.168.84.24:8998" target="_blank">
-          <Icon type="md-code"></Icon>APM
         </MenuItem>
         <MenuItem name="alerts">
           <Icon type="md-code"></Icon>监控
         </MenuItem>
+        <MenuItem :to="skywalking" target="_blank">
+          <Icon type="md-code"></Icon>APM
+        </MenuItem>
+        <MenuItem :to="uiconsul" target="_blank">
+          <Icon type="md-code"></Icon>Consul
+        </MenuItem>
+        <MenuItem :to="kibana" target="_blank">
+          <Icon type="md-code"></Icon>Kibana
+        </MenuItem>
       </Menu>
     </Sider>
     <Layout>
-      <Header class="header-con"></Header>
+      <Header class="header-con">
+        <div>{{user}}</div>
+      </Header>
       <Content class="main-content-con">
         <Layout class="main-layout-con">
           <Content class="content-wrapper">
@@ -62,6 +70,7 @@
 </template>
 
 <script>
+import { Env } from "../lib/env";
 import { Identity } from "../lib/identity";
 import minLogo from "../assets/logo-min.jpg";
 import maxLogo from "../assets/logo.jpg";
@@ -69,17 +78,22 @@ import maxLogo from "../assets/logo.jpg";
 export default {
   data() {
     return {
+      user: "",
       activeName: "ocelotconfig",
+      kibana: Env.kibana_home,
+      uiconsul: Env.consul_host,
+      skywalking: Env.skywalking_home,
+      identityAdmin: Env.identityServerAdmin_host,
       collapsed: false,
       minLogo,
       maxLogo
     };
   },
+  created() {
+    Identity.ensureLogedin();
+    this.user = Identity.getUser().name;
+  },
   mounted() {
-    // Identity.ensureLogedin();
-    var ajaxInterceptor = require("ajax-interceptor");
-    ajaxInterceptor.addRequestCallback(function(xhr) {});
-    ajaxInterceptor.wire();
     this.activeName = this.$route.name;
   },
   methods: {

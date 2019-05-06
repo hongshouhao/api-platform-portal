@@ -10,7 +10,8 @@
 import { Identity } from "../../lib/identity";
 export default {
   created() {
-    Identity.redirect();
+    debugger;
+    this.redirect();
   },
   methods: {
     redirect() {

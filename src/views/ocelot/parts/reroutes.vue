@@ -1,8 +1,8 @@
 <template>
   <div>
-    <Form :model="model" :label-width="155" class="vue-form-label-icon">
+    <Form :model="vmodel" :label-width="155" class="vue-form-label-icon">
       <FormItem label="Key">
-        <Input v-model="model.Key"></Input>
+        <Input v-model="vmodel.Key"></Input>
       </FormItem>
       <FormItem label="UpstreamPathTemplate" class="highlight">
         <Row>
@@ -12,7 +12,7 @@
             </Tooltip>
           </Col>
           <Col span="23">
-            <Input v-model="model.UpstreamPathTemplate"></Input>
+            <Input v-model="vmodel.UpstreamPathTemplate"></Input>
           </Col>
         </Row>
       </FormItem>
@@ -25,7 +25,7 @@
             </Tooltip>
           </Col>
           <Col span="23">
-            <Input v-model="model.DownstreamPathTemplate"></Input>
+            <Input v-model="vmodel.DownstreamPathTemplate"></Input>
           </Col>
         </Row>
       </FormItem>
@@ -38,7 +38,7 @@
             </Tooltip>
           </Col>
           <Col span="23">
-            <Input v-model="model.DownstreamScheme"></Input>
+            <Input v-model="vmodel.DownstreamScheme"></Input>
           </Col>
         </Row>
       </FormItem>
@@ -50,7 +50,7 @@
             </Tooltip>
           </Col>
           <Col span="23">
-            <Input v-model="model.Timeout" number></Input>
+            <Input v-model="vmodel.Timeout" number></Input>
           </Col>
         </Row>
       </FormItem>
@@ -62,22 +62,22 @@
             </Tooltip>
           </Col>
           <Col span="23">
-            <Input v-model="model.Priority" number></Input>
+            <Input v-model="vmodel.Priority" number></Input>
           </Col>
         </Row>
       </FormItem>
 
-      <char-common
+      <StringList
         class="mar10 highlight"
         title="UpstreamHttpMethod"
         tooltip="请求方式"
-        :array="model.UpstreamHttpMethod"
-      ></char-common>
+        :array="vmodel.UpstreamHttpMethod"
+      ></StringList>
       <port-view
         class="mar10 highlight"
         title="DownstreamHostAndPorts"
         tooltip="原始服务IP和端口"
-        :array="model.DownstreamHostAndPorts"
+        :array="vmodel.DownstreamHostAndPorts"
       ></port-view>
 
       <Card class="mar10 highlight" dis-hover>
@@ -95,15 +95,15 @@
               </Tooltip>
             </Col>
             <Col span="23">
-              <Input v-model="model.AuthenticationOptions.AuthenticationProviderKey"></Input>
+              <Input v-model="vmodel.AuthenticationOptions.AuthenticationProviderKey"></Input>
             </Col>
           </Row>
         </FormItem>
-        <char-common
+        <StringList
           title="AllowedScopes"
           class="highlight"
-          :array="model.AuthenticationOptions.AllowedScopes"
-        ></char-common>
+          :array="vmodel.AuthenticationOptions.AllowedScopes"
+        ></StringList>
       </Card>
 
       <Card class="mar10" dis-hover>
@@ -115,60 +115,72 @@
         </p>
 
         <FormItem label="ExceptionsAllowedBeforeBreaking">
-          <Input v-model="model.QoSOptions.ExceptionsAllowedBeforeBreaking" number></Input>
+          <Input v-model="vmodel.QoSOptions.ExceptionsAllowedBeforeBreaking" number></Input>
         </FormItem>
         <FormItem label="DurationOfBreak">
-          <Input v-model="model.QoSOptions.DurationOfBreak" number></Input>
+          <Input v-model="vmodel.QoSOptions.DurationOfBreak" number></Input>
         </FormItem>
         <FormItem label="TimeoutValue">
-          <Input v-model="model.QoSOptions.TimeoutValue" number></Input>
+          <Input v-model="vmodel.QoSOptions.TimeoutValue" number></Input>
         </FormItem>
       </Card>
 
-      <KeyValueCommon
+      <KeyValueEditor
         class="mar10"
         title="AddHeadersToRequest"
-        :kvarray="model.AddHeadersToRequest"
-      ></KeyValueCommon>
-      <KeyValueCommon
+        :property="vmodel.AddHeadersToRequest"
+        propertyName="AddHeadersToRequest"
+        @onPropertyChanged="onPropertyChanged"
+      ></KeyValueEditor>
+      <KeyValueEditor
         class="mar10"
         title="UpstreamHeaderTransform"
-        :kvarray="model.UpstreamHeaderTransform"
-      ></KeyValueCommon>
-      <KeyValueCommon
+        :property="vmodel.UpstreamHeaderTransform"
+        propertyName="UpstreamHeaderTransform"
+        @onPropertyChanged="onPropertyChanged"
+      ></KeyValueEditor>
+      <KeyValueEditor
         class="mar10"
         title="DownstreamHeaderTransform"
-        :kvarray="model.DownstreamHeaderTransform"
-      ></KeyValueCommon>
-      <key-value-common
+        :property="vmodel.DownstreamHeaderTransform"
+        propertyName="DownstreamHeaderTransform"
+        @onPropertyChanged="onPropertyChanged"
+      ></KeyValueEditor>
+      <KeyValueEditor
         class="mar10"
         title="AddClaimsToRequest"
-        :kvarray="model.AddClaimsToRequest"
-      ></key-value-common>
-      <key-value-common
+        :property="vmodel.AddClaimsToRequest"
+        propertyName="AddClaimsToRequest"
+        @onPropertyChanged="onPropertyChanged"
+      ></KeyValueEditor>
+      <KeyValueEditor
         class="mar10"
         title="RouteClaimsRequirement"
-        :kvarray="model.RouteClaimsRequirement"
-      ></key-value-common>
-      <key-value-common
+        :property="vmodel.RouteClaimsRequirement"
+        propertyName="RouteClaimsRequirement"
+        @onPropertyChanged="onPropertyChanged"
+      ></KeyValueEditor>
+      <KeyValueEditor
         class="mar10"
         title="AddQueriesToRequest"
-        :kvarray="model.AddQueriesToRequest"
-      ></key-value-common>
+        :property="vmodel.AddQueriesToRequest"
+        propertyName="AddQueriesToRequest"
+        @onPropertyChanged="onPropertyChanged"
+      ></KeyValueEditor>
       <FormItem label="RequestIdKey">
-        <Input v-model="model.RequestIdKey"></Input>
+        <Input v-model="vmodel.RequestIdKey"></Input>
       </FormItem>
       <Card class="mar10" dis-hover>
         <p slot="title">FileCacheOptions</p>
         <FormItem label="TtlSeconds">
-          <Input v-model="model.FileCacheOptions.TtlSeconds" number></Input>
+          <Input v-model="vmodel.FileCacheOptions.TtlSeconds" number></Input>
         </FormItem>
         <FormItem label="Region">
-          <Input v-model="model.FileCacheOptions.Region"></Input>
+          <Input v-model="vmodel.FileCacheOptions.Region"></Input>
         </FormItem>
       </Card>
       <FormItem label="ReRouteIsCaseSensitive">
-        <i-switch v-model="model.ReRouteIsCaseSensitive"></i-switch>
+        <i-switch v-model="vmodel.ReRouteIsCaseSensitive"></i-switch>
       </FormItem>
 
       <FormItem label="ServiceName">
@@ -179,7 +191,7 @@
             </Tooltip>
           </Col>
           <Col span="23">
-            <Input v-model="model.ServiceName"></Input>
+            <Input v-model="vmodel.ServiceName"></Input>
           </Col>
         </Row>
       </FormItem>
@@ -187,69 +199,68 @@
       <Card class="mar10" dis-hover>
         <p slot="title">LoadBalancerOptions</p>
         <FormItem label="type">
-          <Input v-model="model.LoadBalancerOptions.Type"></Input>
+          <Input v-model="vmodel.LoadBalancerOptions.Type"></Input>
         </FormItem>
         <FormItem label="key">
-          <Input v-model="model.LoadBalancerOptions.Key"></Input>
+          <Input v-model="vmodel.LoadBalancerOptions.Key"></Input>
         </FormItem>
         <FormItem label="expiry">
-          <Input v-model="model.LoadBalancerOptions.Expiry" number></Input>
+          <Input v-model="vmodel.LoadBalancerOptions.Expiry" number></Input>
         </FormItem>
       </Card>
       <Card class="mar10" dis-hover>
         <p slot="title">RateLimitOptions</p>
-        <char-common title="ClientWhitelist" :array="model.RateLimitOptions.ClientWhitelist"></char-common>
+        <StringList title="ClientWhitelist" :array="vmodel.RateLimitOptions.ClientWhitelist"></StringList>
         <FormItem label="EnableRateLimiting">
-          <i-switch v-model="model.RateLimitOptions.EnableRateLimiting"></i-switch>
+          <i-switch v-model="vmodel.RateLimitOptions.EnableRateLimiting"></i-switch>
         </FormItem>
         <FormItem label="Period">
-          <Input v-model="model.RateLimitOptions.Period"></Input>
+          <Input v-model="vmodel.RateLimitOptions.Period"></Input>
         </FormItem>
         <FormItem label="PeriodTimespan">
-          <Input v-model="model.RateLimitOptions.PeriodTimespan" number></Input>
+          <Input v-model="vmodel.RateLimitOptions.PeriodTimespan" number></Input>
         </FormItem>
         <FormItem label="Limit">
-          <Input v-model="model.RateLimitOptions.Limit" number></Input>
+          <Input v-model="vmodel.RateLimitOptions.Limit" number></Input>
         </FormItem>
       </Card>
 
       <Card class="mar10" dis-hover>
         <p slot="title">HttpHandlerOptions</p>
         <FormItem label="AllowAutoRedirect">
-          <i-switch v-model="model.HttpHandlerOptions.AllowAutoRedirect"></i-switch>
+          <i-switch v-model="vmodel.HttpHandlerOptions.AllowAutoRedirect"></i-switch>
         </FormItem>
         <FormItem label="UseCookieContainer">
-          <i-switch v-model="model.HttpHandlerOptions.UseCookieContainer"></i-switch>
+          <i-switch v-model="vmodel.HttpHandlerOptions.UseCookieContainer"></i-switch>
         </FormItem>
         <FormItem label="UseTracing">
-          <i-switch v-model="model.HttpHandlerOptions.UseTracing"></i-switch>
+          <i-switch v-model="vmodel.HttpHandlerOptions.UseTracing"></i-switch>
         </FormItem>
         <FormItem label="UseProxy">
-          <i-switch v-model="model.HttpHandlerOptions.UseProxy"></i-switch>
+          <i-switch v-model="vmodel.HttpHandlerOptions.UseProxy"></i-switch>
         </FormItem>
       </Card>
       <FormItem label="UpstreamHost">
-        <Input v-model="model.UpstreamHost"></Input>
+        <Input v-model="vmodel.UpstreamHost"></Input>
       </FormItem>
 
-      <char-common class="mar10" title="DelegatingHandlers" :array="model.DelegatingHandlers"></char-common>
-
+      <StringList class="mar10" title="DelegatingHandlers" :array="vmodel.DelegatingHandlers"></StringList>
       <Card dis-hover>
         <p slot="title">DangerousAcceptAnyServerCertificateValidator</p>
-        <i-switch v-model="model.DangerousAcceptAnyServerCertificateValidator"></i-switch>
+        <i-switch v-model="vmodel.DangerousAcceptAnyServerCertificateValidator"></i-switch>
       </Card>
       <Card class="mar10" dis-hover>
         <p slot="title">SecurityOptions</p>
-        <char-common
+        <StringList
           class="mar10"
           title="IpAllowedList"
-          :array="model.SecurityOptions.IpAllowedList"
-        ></char-common>
-        <char-common
+          :array="vmodel.SecurityOptions.IpAllowedList"
+        ></StringList>
+        <StringList
           class="mar10"
           title="IpBlockedList"
-          :array="model.SecurityOptions.IpBlockedList"
-        ></char-common>
+          :array="vmodel.SecurityOptions.IpBlockedList"
+        ></StringList>
       </Card>
     </Form>
   </div>
@@ -257,59 +268,31 @@
 
 <script>
 import { modelTempl } from "../../modelTempl.js";
-import KeyValueCommon from "../common/keyvalue";
-import CharCommon from "../common/char";
-import PortView from "../common/port";
+import KeyValueEditor from "../../common/keyvalueeditor";
+import StringList from "../../common/stringlist";
+import PortView from "../../common/port";
 
 export default {
   data() {
     return {
-      model: modelTempl.getOcelotConfigurationSchema().ReRoutes[0]
     };
   },
   props: {
-    jsonString: {
-      type: String,
-      default: ""
-    }
+    vmodel: {}
   },
   mounted() {
-    if (this.jsonString) {
-      var json = eval("(" + this.jsonString + ")");
-      if (json.ReRoutes.length > 0) this.transfer(json.ReRoutes[0]);
-    } else {
-      this.model = modelTempl.getOcelotConfigurationSchema().ReRoutes[0];
-    }
   },
   methods: {
-    transfer(json) {
-      this.model = json;
-      this.objToArray(json.AddHeadersToRequest, "AddHeadersToRequest");
-      this.objToArray(json.UpstreamHeaderTransform, "UpstreamHeaderTransform");
-      this.objToArray(
-        json.DownstreamHeaderTransform,
-        "DownstreamHeaderTransform"
-      );
-      this.objToArray(json.AddClaimsToRequest, "AddClaimsToRequest");
-      this.objToArray(json.RouteClaimsRequirement, "RouteClaimsRequirement");
-      this.objToArray(json.AddQueriesToRequest, "AddQueriesToRequest");
-    },
-    objToArray(obj, name) {
-      this.model[name] = [];
-      if (obj) {
-        for (let prop in obj) {
-          this.model[name].push({
-            id: prop,
-            key: prop,
-            value: obj[prop]
-          });
-        }
-      }
+    onPropertyChanged(propVal, propertyName) {
+      this.vmodel[propertyName] = propVal;
     }
   },
+  watch: {
+    vmodel(val) {}
+  },
   components: {
-    KeyValueCommon,
-    CharCommon,
+    KeyValueEditor,
+    StringList,
     PortView
   }
 };

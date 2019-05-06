@@ -1,10 +1,6 @@
-import {
-    Env
-} from './env'
+import axios from "axios"
 import Oidc from 'oidc-client'
-import {
-    debug
-} from 'util';
+import { Env } from './env'
 
 class IdentityClass {
     constructor() {
@@ -32,7 +28,7 @@ class IdentityClass {
         function handleCallback() {
             mgr.signinRedirectCallback().then(function (user) {
                 var hash = window.location.hash.substr(1);
-                var result = hash.split('&').reduce(function (result, item) {
+                hash.split('&').reduce(function (result, item) {
                     var parts = item.split('=');
                     result[parts[0]] = parts[1];
                     return result;
@@ -53,27 +49,29 @@ class IdentityClass {
             mgr.revokeAccessToken();
         };
         this.getUser = function () {
-            var user = mgr.getUser();
-            return user;
+            return mgr.getUser();
         };
         this.ensureLogedin = function () {
-            if (window.location.hash) {
-                handleCallback();
-            } else {
-                mgr.getUser().then(function (user) {
-                    if (!user) {
-                        mgr.signinRedirect();
-                    } else if (user.expired) {
-                        mgr.signinRedirect();
-                    }
-                });
-            }
+            // mgr.getUser().then(function (user) {
+            //     if (!user) {
+            //         mgr.signinRedirect();
+            //     } else if (user.expired) {
+            //         mgr.signinRedirect();
+            //     }
+            //     else {
+            //         if (window.location.hash) {
+            //             handleCallback();
+            //         } else {
+            //             window.location = window.location.origin;
+            //         }
+            //     }
+            // });
         };
         this.getAccessToken = async function () {
-            var user = await mgr.getUser();
-            if (user) {
-                return user.access_token;
-            }
+            // var user = await mgr.getUser();
+            // if (user) {
+            //     return user.access_token;
+            // }
         };
         this.redirect = function () {
             mgr.signinRedirectCallback().then(function (user) {
@@ -86,10 +84,17 @@ class IdentityClass {
         this.silentRedirect = function () {
             mgr.signinSilentCallback();
         };
-        mgr.events.addUserLoaded(function (user) {});
-        mgr.events.addUserUnloaded(function () {});
-        mgr.events.addAccessTokenExpiring(function () {});
-        mgr.events.addUserSignedOut(function () {});
+        mgr.events.addUserLoaded(function (user) {
+            user.getAcessToken().then(
+                acessToken => {
+                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + acessToken
+                }, err => {
+                    console.log(err)
+                })
+        });
+        mgr.events.addUserUnloaded(function () { });
+        mgr.events.addAccessTokenExpiring(function () { });
+        mgr.events.addUserSignedOut(function () { });
     }
 }
 

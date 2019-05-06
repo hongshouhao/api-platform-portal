@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HomeView from '@/views/index.vue'
-import OcelotConfigView from '@/views/ocelotconfig/index.vue'
-import OcelotAdminView from '@/views/ocelotadmin/index.vue'
-import TemplateView from '@/views/ocelotconfig-template/index.vue'
+import OcelotConfigView from '@/views/ocelot/config.vue'
+import OcelotAdminView from '@/views/ocelot/admin.vue'
+import TemplateView from '@/views/ocelot/template.vue'
 import StatisticView from '@/views/statistic/index.vue'
 import ConsulAdminView from '@/views/consul'
 import SigninCallback from '@/views/callback'
@@ -13,9 +13,15 @@ import MonitorView from '@/views/dashbord/'
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
+  // mode: 'history',
   base: process.env.BASE_URL,
-  routes: [{
+  routes: [
+    {
+      path: "/login",
+      name: 'login',
+      redirect: "signincallback",
+    },
+    {
       path: '/',
       name: 'home',
       meta: {
@@ -23,86 +29,76 @@ export default new Router({
       },
       component: HomeView,
       children: [{
-          path: '/',
-          name: 'monitor',
-          meta: {
-            auth: true
-          },
-          component: MonitorView,
-        }, {
-          //网关配置
-          path: '/ocelotconfig',
-          name: 'ocelotconfig',
-          meta: {
-            auth: true
-          },
-          component: OcelotConfigView,
+        path: '/',
+        name: 'monitor',
+        meta: {
+          auth: true
         },
-        {
-          path: '/ocelotadmin',
-          name: 'ocelotadmin',
-          meta: {
-            auth: true
-          },
-          component: OcelotAdminView,
+        component: MonitorView,
+      }, {
+        //网关配置
+        path: '/ocelotconfig',
+        name: 'ocelotconfig',
+        meta: {
+          auth: true
         },
-        {
-          path: '/consuladmin',
-          name: 'consuladmin',
-          meta: {
-            auth: true
-          },
-          component: ConsulAdminView,
+        component: OcelotConfigView,
+      },
+      {
+        path: '/ocelotadmin',
+        name: 'ocelotadmin',
+        meta: {
+          auth: true
         },
-        {
-          //模板配置
-          path: '/template',
-          name: 'template',
-          meta: {
-            auth: true
-          },
-          component: TemplateView,
+        component: OcelotAdminView,
+      },
+      {
+        path: '/consuladmin',
+        name: 'consuladmin',
+        meta: {
+          auth: true
         },
-        {
-          //接口测试
-          path: '/alerts',
-          name: 'alerts',
-          meta: {
-            auth: true
-          },
-          component: AlertsView,
+        component: ConsulAdminView,
+      },
+      {
+        //模板配置
+        path: '/template',
+        name: 'template',
+        meta: {
+          auth: true
         },
-        {
-          //接口统计
-          path: '/statistic',
-          name: 'statistic',
-          meta: {
-            auth: true
-          },
-          component: StatisticView,
+        component: TemplateView,
+      },
+      {
+        //接口测试
+        path: '/alerts',
+        name: 'alerts',
+        meta: {
+          auth: true
         },
-        {
-          path: "/signincallback",
-          name: "signincallback",
-          meta: {
-            auth: true
-          },
-          component: SigninCallback
+        component: AlertsView,
+      },
+      {
+        //接口统计
+        path: '/statistic',
+        name: 'statistic',
+        meta: {
+          auth: true
         },
-        {
-          path: "/silentcallback",
-          name: "silentcallback"
-        }
+        component: StatisticView,
+      },
+      {
+        path: "/signincallback",
+        name: "signincallback",
+        meta: {
+          auth: true
+        },
+        component: SigninCallback
+      },
+      {
+        path: "/silentcallback",
+        name: "silentcallback"
+      }
       ]
-    },
-    {
-      path: '*',
-      component: OcelotConfigView
-    },
-    {
-      path: "/login",
-      name: 'login',
-      redirect: "signincallback",
-    }
-  ]
+    }]
 })

@@ -46,7 +46,10 @@ export default {
       series: []
     };
 
-    let myChart = _this.$echarts.init(document.getElementById("cpuchart"));
+    let myChart = _this.$echarts.init(
+      document.getElementById("cpuchart"),
+      "shine"
+    );
     myChart.setOption(chartoptions);
     setInterval(function() {
       var date = new Date().getTime() / 1000;
@@ -61,7 +64,6 @@ export default {
             date
         )
         .then(function(response) {
-          console.log(response);
           var series = response.data.data.result.map(function(instanceItem) {
             var values = instanceItem.values.map(function(valueItem) {
               return {
@@ -84,7 +86,10 @@ export default {
           myChart.setOption(chartoptions);
         })
         .catch(function(error) {
-          console.log(error);
+          _this.$Notice.error({
+            title: "获取数据失败",
+            desc: error
+          });
         });
     }, 2000);
   },

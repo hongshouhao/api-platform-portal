@@ -1,6 +1,6 @@
 <template>
   <div class="panel">
-    <Tabs value="table" type="card">
+    <Tabs value="table">
       <TabPane label="Table View" name="table">
         <div class="content">
           <Button icon="ios-refresh" type="primary" :style="{margin:'10px'}" @click="refreshData">刷新</Button>
@@ -19,21 +19,25 @@
           <Table ref="configTable" :columns="columns" :data="dataSource" :loading="loading" stripe></Table>
         </div>
       </TabPane>
-
       <TabPane label="JSON View">
         <highlight-code lang="JSON">{{dataSourceJString}}</highlight-code>
       </TabPane>
     </Tabs>
+    <Modal v-model="viewJsonString" footer-hide width="800">
+      <highlight-code lang="JSON">{{json}}</highlight-code>
+    </Modal>
   </div>
 </template>
 
 <script>
 import { Ocelot } from "../../lib/ocelot";
-
+import { truncate } from "fs";
 export default {
   data() {
     return {
       loading: false,
+      viewJsonString: false,
+      json: {},
       columns: [
         {
           title: "description",
@@ -44,13 +48,47 @@ export default {
         {
           title: "jsonString",
           key: "jsonString",
-          ellipsis: true
+          ellipsis: true,
+          render: (h, params) => {
+            return h(
+              "a",
+              {
+                attrs: {
+                  href: "#"
+                },
+                on: {
+                  click: () => {
+                    this.viewJsonString = true;
+                    this.json = JSON.stringify(
+                      JSON.parse(params.row.jsonString),
+                      null,
+                      2
+                    );
+                  }
+                }
+              },
+              "{...}"
+            );
+          }
         },
         {
           title: "enable",
           key: "enable",
           width: 150,
-          align: "center"
+          align: "center",
+          render: (h, params) => {
+            return h(
+              "Icon",
+              {
+                props: {
+                  size: 20,
+                  type: params.row.enable === true ? "md-checkmark-circle" : "",
+                  color: "#19be6b"
+                }
+              },
+              params.row.Status
+            );
+          }
         },
         {
           title: "createTime",
@@ -101,7 +139,8 @@ export default {
       ],
       dataSource: [],
       dataSourceJString: "",
-      template: false
+      template: false,
+      description: ""
     };
   },
   mounted() {
@@ -141,8 +180,7 @@ export default {
             function(errorThrownn) {
               _this.$Notice.error({
                 title: "删除失败:",
-                desc: errorThrownn,
-                duration: 0
+                desc: errorThrownn
               });
             }
           );
@@ -150,51 +188,67 @@ export default {
       });
     },
     buildConfig(row) {
-      Ocelot.BuildConfig(
-        "test",
-        function() {
-          _this.$Notice.success({
-            title: "生成成功"
+      var _this = this;
+      _this.$Modal.confirm({
+        render: h => {
+          return h("Input", {
+            props: {
+              value: _this.description,
+              autofocus: true,
+              placeholder: "输入备注信息"
+            },
+            on: {
+              input: val => {
+                _this.description = val;
+              }
+            }
           });
-          _this.refreshData();
         },
-        function(errorThrownn) {
-          _this.$Notice.error({
-            title: "生成失败:",
-            desc: errorThrownn,
-            duration: 0
-          });
+        onOk: () => {
+          Ocelot.BuildConfig(
+            _this.description,
+            function() {
+              _this.$Notice.success({
+                title: "生成成功"
+              });
+              _this.refreshData();
+            },
+            function(errorThrownn) {
+              _this.$Notice.error({
+                title: "生成失败:",
+                desc: errorThrownn
+              });
+            }
+          );
         }
-      );
+      });
     },
     enableConfig(row) {
+      var _this = this;
       Ocelot.EnableConfig(
         row.id,
         function() {
           Ocelot.ReLoadConfig(
             function() {
-              Ocelot.ReLoadConfig();
               _this.$Notice.success({
                 title: "应用成功"
               });
+              _this.refreshData();
             },
             function(errorThrownn) {
               _this.$Notice.error({
-                title: "配置成功置为当前, 但重新加载映射配置过程失败:",
-                desc: errorThrownn,
-                duration: 0
+                title: "网关加载映射失败",
+                desc: errorThrownn
               });
             }
           );
-
-          _this.refreshData();
         },
         function(errorThrownn) {
           _this.$Notice.error({
             title: "应用失败:",
-            desc: errorThrownn,
-            duration: 0
+            desc: errorThrownn
           });
+          _this.refreshData();
         }
       );
     },
@@ -202,18 +256,18 @@ export default {
       var _this = this;
       Ocelot.CurrentConfig(
         function(data) {
-          _this.showCurrentConfiguration = true;
-          _this.currentConfiguration = JSON.stringify(data, null, 2);
+          _this.viewJsonString = true;
+          _this.json = JSON.stringify(data, null, 2);
         },
         function(errorThrown) {
           _this.$Notice.error({
             title: "获取失败",
-            desc: errorThrown,
-            duration: 0
+            desc: errorThrown
           });
         }
       );
-    }
+    },
+    inputDesc() {}
   },
   components: {}
 };

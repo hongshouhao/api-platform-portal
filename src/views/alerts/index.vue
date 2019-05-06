@@ -9,7 +9,7 @@ import { Env } from "../../lib/env";
 export default {
   data() {
     return {
-      alertUrl: Env.karma_host
+      alertUrl: Env.karma_home
     };
   }
 };

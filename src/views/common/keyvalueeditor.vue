@@ -11,7 +11,7 @@
     <a href="#" slot="extra" @click.prevent="add">
       <Icon type="ios-add-circle-outline" size="18" style="margin-right:5px;"></Icon>新增
     </a>
-    <div v-for="(item,index) in data" :key="title+index" style="margin-bottom:5px;">
+    <div v-for="(item,index) in arr" :key="title+index" style="margin-bottom:5px;">
       <Row>
         <Col span="22">
           <Row>
@@ -39,7 +39,7 @@
 export default {
   data() {
     return {
-      data: []
+      arr: []
     };
   },
   props: {
@@ -51,33 +51,46 @@ export default {
       type: String,
       default: ""
     },
-    kvarray: {
-      type: Array,
-      default() {
-        return [
-          {
-            id: 0,
-            key: "",
-            value: ""
-          }
-        ];
-      }
-    }
+    property: {},
+    propertyName: ""
+  },
+  mounted() {
+    this.arr = this.objToArray(this.property, this.propertyName);
   },
   watch: {
-    kvarray() {
-      this.data = this.kvarray;
+    arr: {
+      handler(val, oldVal) {
+        var obj = {};
+        val.forEach(ele => {
+          obj[ele.key] = ele.value;
+        });
+        this.$emit("onPropertyChanged", obj, this.propertyName);
+      },
+      deep: true
     }
   },
   methods: {
     add() {
-      this.data.push({
+      this.arr.push({
         key: "",
         value: ""
       });
     },
     onDelete(index) {
-      this.data.splice(index, 1);
+      this.arr.splice(index, 1);
+    },
+    objToArray(property, name) {
+      var result = new Array();
+      if (property) {
+        for (let prop in property) {
+          result[name].push({
+            id: prop,
+            key: prop,
+            value: property[prop]
+          });
+        }
+      }
+      return result;
     }
   },
   components: {}
