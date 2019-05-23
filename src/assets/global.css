@@ -1,0 +1,85 @@
+.ivu-form-item {
+  margin-bottom: 10px;
+}
+.hjs {
+  margin-top: 0px;
+}
+.ivu-drawer-body code {
+  height: 600px;
+}
+.drawer-footer-buttons {
+  width: 640px;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  border-top: 1px solid #e8e8e8;
+  padding: 10px 16px;
+  text-align: right;
+  background: #fff;
+}
+.vue-form-label-icon .ivu-form-item .ivu-form-item-label {
+  padding-right: 4px;
+}
+.vue-form-label-icon .ivu-form-item i {
+  font-size: 14px;
+}
+.ivu-card-head {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.ivu-card-extra {
+  top: 6px;
+}
+.ivu-form .highlight .ivu-form-item-label {
+  color: #2b85e4;
+}
+.ivu-form .highlight p {
+  color: #2b85e4;
+}
+.ivu-icon-ios-information-circle {
+  color: #515a6e;
+}
+.main .logo-con {
+  height: 64px;
+  padding: 10px;
+}
+.main .logo-con img {
+  height: 44px;
+  width: auto;
+  display: block;
+  margin: 0 auto;
+}
+.main .header-con {
+  padding: 0 20px;
+  width: 100%;
+}
+.main .main-layout-con {
+  height: 100%;
+  overflow: hidden;
+}
+.main .main-content-con {
+  height: calc(100% - 60px);
+  overflow: hidden;
+}
+.main .tag-nav-wrapper {
+  padding: 0;
+  height: 40px;
+  background: #F0F0F0;
+}
+.main .content-wrapper {
+  padding: 18px;
+  height: calc(100% - 80px);
+  overflow: auto;
+}
+.main .left-sider .ivu-layout-sider-children {
+  overflow-y: scroll;
+  margin-right: -18px;
+}
+.ivu-divider-horizontal {
+  margin-top: 10px;
+}
+.drawerheader {
+  font-weight: 700;
+  font-size: 14px;
+  height: 32px;
+}

@@ -14,7 +14,9 @@ export default {
     };
   },
   mounted() {
-    this.init();
+    setTimeout(() => {
+      this.init();
+    }, 500);
   },
   methods: {
     init() {
@@ -24,38 +26,48 @@ export default {
           text: "内存利用率(%)",
           x: "center"
         },
-        theme: "infographic",
         tooltip: {
           trigger: "axis"
         },
         xAxis: {
           type: "time",
           splitLine: {
-            show: true
+            show: false
           }
         },
         yAxis: {
           type: "value",
-          min: 0,
-          max: 100,
           splitLine: {
             show: false
           }
         },
         legend: {
-          orient: "horizontal", // 'vertical'
-          y: "bottom", // 'center' | 'bottom' | {number}
+          type: "scroll",
+          y: "bottom",
           icon: "circle",
           itemWidth: 10,
           itemHeight: 10,
-          itemGap: 20
+          itemGap: 20,
+          left: 20,
+          right: 20
         },
-        series: []
+        series: [],
+        color: [
+          "#EAC14D",
+          "#4CBDFF",
+          "#FF944C",
+          "#2E2BF7",
+          "#60E1B8",
+          "#E5383E",
+          "#7351E4",
+          "#59E441",
+          "#1EB5A4"
+        ]
       };
 
       let myChart = _this.$echarts.init(
         document.getElementById("memochart"),
-        "shine"
+        "light"
       );
       myChart.setOption(chartoptions);
       setInterval(function() {
@@ -76,17 +88,22 @@ export default {
               var values = instanceItem.values.map(function(valueItem) {
                 return {
                   name: valueItem[0],
-                  value: [new Date(valueItem[0] * 1000), valueItem[1]]
+                  value: [
+                    new Date(valueItem[0] * 1000),
+                    valueItem[1].replace(/([0-9]+\.[0-9]{2})[0-9]*/, "$1")
+                  ]
                 };
               });
-
               return {
                 name: instanceItem.metric.instance,
                 data: values,
                 type: "line",
                 smooth: "spline",
                 showSymbol: false,
-                hoverAnimation: false
+                hoverAnimation: false,
+                lineStyle: {
+                  width: 1
+                }
               };
             });
 
@@ -100,6 +117,7 @@ export default {
             });
           });
       }, 2000);
+      myChart.resize();
       window.addEventListener("resize", () => {
         myChart.resize();
       });

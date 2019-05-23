@@ -21,9 +21,9 @@
         <MenuItem name="monitor">
           <Icon type="md-desktop"></Icon>服务器
         </MenuItem>
-        <MenuItem name="statistic">
+        <!-- <MenuItem name="statistic">
           <Icon type="md-stats"></Icon>接口统计
-        </MenuItem>
+        </MenuItem> -->
         <MenuItem name="ocelotconfig">
           <Icon type="md-cog"></Icon>网关配置
         </MenuItem>
@@ -54,9 +54,9 @@
       </Menu>
     </Sider>
     <Layout>
-      <!-- <Header class="header-con">
+      <Header class="header-con">
         <div>{{user}}</div>
-      </Header>-->
+      </Header>
       <Content class="main-content-con">
         <Layout class="main-layout-con">
           <Content class="content-wrapper">
@@ -110,6 +110,7 @@ export default {
   border-radius: 4px;
   overflow: hidden;
 }
+
 .layout-footer-center {
   text-align: center;
 }
