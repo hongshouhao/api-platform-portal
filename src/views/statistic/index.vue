@@ -1,12 +1,14 @@
 <template>
-  <div>
+  <Card>
     <div class="searchPanel">
       <Row>
-        <Col span="10">
+        <Col span="2" class="searchPanel_label">统计范围：</Col>
+        <Col span="4">
           <Select v-model="filter.uriPrefix" filterable>
             <Option v-for="item in endpoints" :value="item" :key="item">{{ item }}</Option>
           </Select>
         </Col>
+        <Col span="1" class="searchPanel_label">时间：</Col>
         <Col span="4">
           <DatePicker
             type="daterange"
@@ -18,16 +20,18 @@
             v-model="filter.dateRange"
           ></DatePicker>
         </Col>
+        <Col span="2" class="searchPanel_label">统计周期：</Col>
         <Col span="2">
           <Input v-model="filter.histogramInterval" placeholder="统计周期"></Input>
         </Col>
-        <Col span="2">
+        <Col span="2" offset="1">
           <Button icon="md-search" type="primary" @click="loadChart">搜索</Button>
         </Col>
       </Row>
     </div>
+    <br>
     <div id="barChart" :style="{width: '100%', height: '350px'}"></div>
-  </div>
+  </Card>
 </template>
 
 <script>
@@ -180,15 +184,20 @@ export default {
         .then(function(response) {
           var chartoptions = {
             title: {
-              text: "IP/API访问频次"
+              text: "IP/API访问频次",
+              x: "center"
+            },
+            tooltip: {
+              trigger: "axis"
             },
             legend: {
+              type: "scroll",
               orient: "horizontal",
               y: "bottom",
               icon: "circle",
               itemWidth: 10,
               itemHeight: 10,
-              itemGap: 20
+              itemGap: 20,
             },
             xAxis: _this.readXAxis(response),
             yAxis: [
@@ -209,7 +218,20 @@ export default {
       var xdates = new Array();
       var topbuckets = res.body.aggregations.datehistogram_terms.buckets;
       for (var i = 0; i < topbuckets.length; i++) {
-        xdates.push(topbuckets[i].key_as_string);
+        var date = new Date(topbuckets[i].key_as_string);
+        var xdate =
+          date.getFullYear() +
+          "-" +
+          date.getMonth() +
+          "-" +
+          date.getDate() +
+          " " +
+          this.PrefixInteger(date.getHours(), 2) +
+          ":" +
+          this.PrefixInteger(date.getMinutes(), 2) +
+          ":" +
+          this.PrefixInteger(date.getSeconds(), 2);
+        xdates.push(xdate);
       }
       return [
         {
@@ -217,6 +239,9 @@ export default {
           data: xdates
         }
       ];
+    },
+    PrefixInteger(num, n) {
+      return (Array(n).join(0) + num).slice(-n);
     },
     readYAxis(res) {
       var topbuckets = res.body.aggregations.datehistogram_terms.buckets;
@@ -358,3 +383,9 @@ export default {
 };
 </script>
 
+<style lang="less" scoped>
+.searchPanel_label {
+  line-height: 30px;
+  text-align: right;
+}
+</style>

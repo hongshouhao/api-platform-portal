@@ -1,26 +1,28 @@
 <template>
-  <div class="panel">
-    <Button icon="md-add" type="primary" @click="addNewTemplate" :style="{margin:'10px 5px'}">新增</Button>
-    <Table ref="configTable" :columns="columns" :data="dataSource" stripe :loading="loading"></Table>
-    <Drawer
-      title="Template Edit"
-      :closable="false"
-      width="800"
-      v-model="editState"
-      style="overflow:hidden"
-    >
-      <div slot="header" class="drawerheader">
-        <span>配置详情</span>
-        <Button type="success" style="float: right;margin-right: 8px" @click="saveTemplate">Save</Button>
-        <Button type="error" style="float: right;margin-right: 8px" @click="deleteTemplate">Delete</Button>
-      </div>
-      <TemplEditView :vtempl="vtempl"></TemplEditView>
-      <div class="drawer-footer-buttons"></div>
-    </Drawer>
-    <Modal v-model="viewJsonString" footer-hide width="800">
-      <highlight-code lang="JSON">{{json}}</highlight-code>
-    </Modal>
-  </div>
+  <Card>
+    <div class="panel">
+      <Button icon="md-add" type="primary" @click="addNewTemplate" :style="{margin:'10px 5px'}">新增</Button>
+      <Table ref="configTable" :columns="columns" :data="dataSource" stripe :loading="loading"></Table>
+      <Drawer
+        title="Template Edit"
+        :closable="false"
+        width="800"
+        v-model="editState"
+        style="overflow:hidden"
+      >
+        <div slot="header" class="drawerheader">
+          <span>配置详情</span>
+          <Button type="success" style="float: right;margin-right: 8px" @click="saveTemplate">Save</Button>
+          <Button type="error" style="float: right;margin-right: 8px" @click="deleteTemplate">Delete</Button>
+        </div>
+        <TemplEditView :vtempl="vtempl"></TemplEditView>
+        <div class="drawer-footer-buttons"></div>
+      </Drawer>
+      <Modal v-model="viewJsonString" footer-hide width="800">
+        <highlight-code lang="JSON">{{json}}</highlight-code>
+      </Modal>
+    </div>
+  </Card>
 </template>
 
 <script>
@@ -41,6 +43,10 @@ export default {
       forUpdate: false,
       viewJsonString: false,
       columns: [
+        {
+          type: "index",
+          width: 80
+        },
         {
           title: "version",
           key: "version",
@@ -169,7 +175,11 @@ export default {
         onOk: () => {
           Identity.getAccessToken().then(function(token) {
             axios
-              .post(Env.ocelotConfig_host + "/admin/template/delete?version=" + _this.vtempl.version)
+              .post(
+                Env.ocelotConfig_host +
+                  "/admin/template/delete?version=" +
+                  _this.vtempl.version
+              )
               .then(response => {
                 _this.$Notice.success({
                   title: "删除成功"

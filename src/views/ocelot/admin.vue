@@ -1,32 +1,45 @@
 <template>
-  <div class="panel">
-    <Tabs value="table">
-      <TabPane label="Table View" name="table">
-        <div class="content">
-          <Button icon="ios-refresh" type="primary" :style="{margin:'10px'}" @click="refreshData">刷新</Button>
-          <Button
-            icon="ios-cloud-circle"
-            type="primary"
-            :style="{margin:'10px 5px'}"
-            @click="buildConfig"
-          >生成</Button>
-          <Button
-            icon="ios-code-working"
-            type="primary"
-            :style="{margin:'10px'}"
-            @click="currentConfig"
-          >当前Mapping</Button>
-          <Table ref="configTable" :columns="columns" :data="dataSource" :loading="loading" stripe></Table>
-        </div>
-      </TabPane>
-      <TabPane label="JSON View">
-        <highlight-code lang="JSON">{{dataSourceJString}}</highlight-code>
-      </TabPane>
-    </Tabs>
-    <Modal v-model="viewJsonString" footer-hide width="800">
-      <highlight-code lang="JSON">{{json}}</highlight-code>
-    </Modal>
-  </div>
+  <Card>
+    <div class="panel">
+      <Tabs value="table">
+        <TabPane label="Table View" name="table">
+          <div class="content">
+            <Button
+              icon="ios-refresh"
+              type="primary"
+              :style="{margin:'10px'}"
+              @click="refreshData"
+            >刷新</Button>
+            <Button
+              icon="ios-cloud-circle"
+              type="primary"
+              :style="{margin:'10px 5px'}"
+              @click="buildConfig"
+            >生成</Button>
+            <Button
+              icon="ios-code-working"
+              type="primary"
+              :style="{margin:'10px'}"
+              @click="currentConfig"
+            >当前Mapping</Button>
+            <Table
+              ref="configTable"
+              :columns="columns"
+              :data="dataSource"
+              :loading="loading"
+              stripe
+            ></Table>
+          </div>
+        </TabPane>
+        <TabPane label="JSON View">
+          <highlight-code lang="JSON">{{dataSourceJString}}</highlight-code>
+        </TabPane>
+      </Tabs>
+      <Modal v-model="viewJsonString" footer-hide width="800">
+        <highlight-code lang="JSON">{{json}}</highlight-code>
+      </Modal>
+    </div>
+  </Card>
 </template>
 
 <script>
@@ -39,6 +52,10 @@ export default {
       viewJsonString: false,
       json: {},
       columns: [
+        {
+          type: "index",
+          width: 80
+        },
         {
           title: "description",
           key: "description",
@@ -82,8 +99,11 @@ export default {
               {
                 props: {
                   size: 20,
-                  type: params.row.enable === true ? "md-checkmark-circle" : "",
-                  color: "#19be6b"
+                  type:
+                    params.row.enable === true
+                      ? "md-checkmark-circle"
+                      : "md-close-circle",
+                  color: params.row.enable === true ? "#19be6b" : "#ed4014"
                 }
               },
               params.row.Status

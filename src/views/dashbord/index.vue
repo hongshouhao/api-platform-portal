@@ -1,13 +1,12 @@
 <template>
   <div class="panel">
-    <Row>
-      <Col span="12">
-        <CPUView style="width: 800px;height:300px;"></CPUView>
-      </Col>
-      <Col span="12">
-        <MEMView style="width: 800px;height:300px;"></MEMView>
-      </Col>
-    </Row>
+    <Card :bordered="false">
+      <CPUView style="width: 95%;height:300px;"></CPUView>
+    </Card>
+    <br>
+    <Card :bordered="false">
+      <MEMView style="width: 95%;height:300px;"></MEMView>
+    </Card>
   </div>
 </template>
 <script>
@@ -18,7 +17,6 @@ export default {
   data() {
     return {};
   },
-  mounted() {},
   components: {
     CPUView,
     MEMView

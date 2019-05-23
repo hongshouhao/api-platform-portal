@@ -1,48 +1,61 @@
 <template>
-  <div class="panel main-content-con">
-    <Tabs value="table">
-      <TabPane label="Table View" name="table">
-        <div class="content">
-          <Button icon="ios-refresh" type="primary" :style="{margin:'10px'}" @click="refreshData">刷新</Button>
-          <Button
-            icon="md-add"
-            type="primary"
-            @click="addNewSection"
-            :style="{margin:'10px 5px'}"
-          >新增</Button>
-          <Button
-            icon="ios-locate-outline"
-            type="primary"
-            @click="verifySelectedSections"
-            :style="{margin:'10px 5px'}"
-          >验证</Button>
-          <Table ref="sectionTable" :columns="columns" :data="dataSource" :loading="loading" stripe></Table>
-        </div>
-      </TabPane>
+  <Card>
+    <div class="panel main-content-con">
+      <Tabs value="table">
+        <TabPane label="Table View" name="table">
+          <div class="content">
+            <Button
+              icon="ios-refresh"
+              type="primary"
+              :style="{margin:'10px'}"
+              @click="refreshData"
+            >刷新</Button>
+            <Button
+              icon="md-add"
+              type="primary"
+              @click="addNewSection"
+              :style="{margin:'10px 5px'}"
+            >新增</Button>
+            <Button
+              icon="ios-locate-outline"
+              type="primary"
+              @click="verifySelectedSections"
+              :style="{margin:'10px 5px'}"
+            >验证</Button>
+            <Table
+              ref="sectionTable"
+              :columns="columns"
+              :data="dataSource"
+              :loading="loading"
+              stripe
+            ></Table>
+          </div>
+        </TabPane>
 
-      <TabPane label="JSON View">
-        <div style="overflow-y:scroll">
-          <highlight-code lang="JSON">{{dataSourceJString}}</highlight-code>
+        <TabPane label="JSON View">
+          <div style="overflow-y:scroll">
+            <highlight-code lang="JSON">{{dataSourceJString}}</highlight-code>
+          </div>
+        </TabPane>
+      </Tabs>
+      <Drawer :closable="false" width="800" v-model="showEditView">
+        <div slot="header" class="drawerheader">
+          <span>配置详情</span>
+          <Button type="success" style="float: right;margin-right: 8px" @click="saveSection">Save</Button>
+          <Button
+            type="error"
+            :disabled="forUpdate==false"
+            style="float: right;margin-right: 8px"
+            @click="deleteSection"
+          >Delete</Button>
         </div>
-      </TabPane>
-    </Tabs>
-    <Drawer :closable="false" width="800" v-model="showEditView">
-      <div slot="header" class="drawerheader">
-        <span>配置详情</span>
-        <Button type="success" style="float: right;margin-right: 8px" @click="saveSection">Save</Button>
-        <Button
-          type="error"
-          :disabled="forUpdate==false"
-          style="float: right;margin-right: 8px"
-          @click="deleteSection"
-        >Delete</Button>
-      </div>
-      <EditView :section="vsection" :forUpdate="forUpdate" style="margin:0 0 5px 0;"></EditView>
-    </Drawer>
-    <Modal v-model="viewJsonString" footer-hide width="800">
-      <highlight-code lang="JSON">{{json}}</highlight-code>
-    </Modal>
-  </div>
+        <EditView :section="vsection" :forUpdate="forUpdate" style="margin:0 0 5px 0;"></EditView>
+      </Drawer>
+      <Modal v-model="viewJsonString" footer-hide width="800">
+        <highlight-code lang="JSON">{{json}}</highlight-code>
+      </Modal>
+    </div>
+  </Card>
 </template>
 
 <script>
@@ -55,6 +68,10 @@ export default {
     return {
       vsection: {},
       columns: [
+        {
+          type: "index",
+          width: 80
+        },
         {
           title: "name",
           key: "name",

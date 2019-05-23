@@ -9,8 +9,7 @@
       :style="{overflow: 'hidden'}"
     >
       <div class="logo-con" style="height:65px">
-        <!-- <img v-show="!collapsed" :src="maxLogo" key="max-logo">
-        <img v-show="collapsed" :src="minLogo" key="min-logo">-->
+        <p class="title">Ocelot</p>
       </div>
       <Menu
         v-show="!collapsed"
@@ -20,44 +19,44 @@
         @on-select="handleSelect"
       >
         <MenuItem name="monitor">
-          <Icon type="md-code"></Icon>服务器
+          <Icon type="md-desktop"></Icon>服务器
+        </MenuItem>
+        <MenuItem name="statistic">
+          <Icon type="md-stats"></Icon>接口统计
         </MenuItem>
         <MenuItem name="ocelotconfig">
-          <Icon type="md-code"></Icon>网关配置
+          <Icon type="md-cog"></Icon>网关配置
         </MenuItem>
         <MenuItem name="ocelotadmin">
-          <Icon type="md-code"></Icon>网关配置发布
+          <Icon type="md-code-working"></Icon>网关配置发布
         </MenuItem>
         <MenuItem name="template">
           <Icon type="ios-clipboard"></Icon>模板配置
         </MenuItem>
         <MenuItem name="consuladmin">
-          <Icon type="md-code"></Icon>服务注册
+          <Icon type="ios-create-outline"></Icon>服务注册
         </MenuItem>
-        <MenuItem name="statistic">
-          <Icon type="stats-bars"></Icon>接口统计
+        <MenuItem name="alerts">
+          <Icon type="md-eye"></Icon>监控
         </MenuItem>
         <MenuItem :to="identityAdmin" target="_blank">
           <Icon type="ios-people"></Icon>认证授权
         </MenuItem>
-        <MenuItem name="alerts">
-          <Icon type="md-code"></Icon>监控
-        </MenuItem>
         <MenuItem :to="skywalking" target="_blank">
-          <Icon type="md-code"></Icon>APM
+          <Icon type="md-navigate"></Icon>APM
         </MenuItem>
         <MenuItem :to="uiconsul" target="_blank">
-          <Icon type="md-code"></Icon>Consul
+          <Icon type="md-contrast"></Icon>Consul
         </MenuItem>
         <MenuItem :to="kibana" target="_blank">
-          <Icon type="md-code"></Icon>Kibana
+          <Icon type="md-recording"></Icon>Kibana
         </MenuItem>
       </Menu>
     </Sider>
     <Layout>
-      <Header class="header-con">
+      <!-- <Header class="header-con">
         <div>{{user}}</div>
-      </Header>
+      </Header>-->
       <Content class="main-content-con">
         <Layout class="main-layout-con">
           <Content class="content-wrapper">
@@ -72,7 +71,6 @@
 <script>
 import { Env } from "../lib/env";
 import { Identity } from "../lib/identity";
-import minLogo from "../assets/logo-min.jpg";
 import maxLogo from "../assets/logo.jpg";
 
 export default {
@@ -85,7 +83,6 @@ export default {
       skywalking: Env.skywalking_home,
       identityAdmin: Env.identityServerAdmin_host,
       collapsed: false,
-      minLogo,
       maxLogo
     };
   },
@@ -115,5 +112,10 @@ export default {
 }
 .layout-footer-center {
   text-align: center;
+}
+.title {
+  color: #fff;
+  font-size: 24px;
+  line-height: 50px;
 }
 </style> 

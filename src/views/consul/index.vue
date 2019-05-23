@@ -1,25 +1,40 @@
 <template>
-  <div class="panel">
-    <div class="content">
-      <i-select style="width:200px" @on-change="dcChanged" v-model="selecteddc">
-        <i-option v-for="item in datacenters" :value="item" :key="item">{{ item }}</i-option>
-      </i-select>
-      <Button
-        icon="md-add"
-        type="primary"
-        :style="{margin:'10px 5px'}"
-        @click="editState=true"
-      >注册新服务</Button>
-      <Table ref="svcTable" :columns="columns" :data="services" :loading="loading" stripe></Table>
-    </div>
-
-    <Drawer title="服务信息" :closable="false" width="800" v-model="editState" style="overflow:hidden">
-      <ServiceEditView ref="ServiceEditView" v-if="editState" :model="model"></ServiceEditView>
-      <div class="drawer-footer-buttons">
-        <Button type="primary" @click="save">Save</Button>
+  <Card>
+    <div class="panel">
+      <div class="content">
+        <i-select style="width:200px" @on-change="dcChanged" v-model="selecteddc">
+          <i-option v-for="item in datacenters" :value="item" :key="item">{{ item }}</i-option>
+        </i-select>
+        <Button
+          icon="md-add"
+          type="primary"
+          :style="{margin:'10px 5px'}"
+          @click="editState=true"
+        >注册新服务</Button>
+        <Table
+          ref="svcTable"
+          :columns="columns"
+          :data="services_per_page"
+          :loading="loading"
+          stripe
+        ></Table>
+        <br/>
+        <Page :total="serviceCount" show-elevator @on-change="pageChange"/>
       </div>
-    </Drawer>
-  </div>
+      <Drawer
+        title="服务信息"
+        :closable="false"
+        width="800"
+        v-model="editState"
+        style="overflow:hidden"
+      >
+        <ServiceEditView ref="ServiceEditView" v-if="editState" :model="model"></ServiceEditView>
+        <div class="drawer-footer-buttons">
+          <Button type="primary" @click="save">Save</Button>
+        </div>
+      </Drawer>
+    </div>
+  </Card>
 </template>
 
 <script>
@@ -35,18 +50,27 @@ export default {
       selecteddc: "",
       datacenters: [],
       services: [],
+      services_per_page: [],
+      serviceCount: 0,
       columns: [
+        {
+          type: "index",
+          width: 60,
+          align: "center"
+        },
         {
           title: "Name",
           key: "Service"
         },
         {
           title: "Host",
-          key: "ServiceHost"
+          key: "ServiceHost",
+          width: 150
         },
         {
           title: "Node",
-          key: "Node"
+          key: "Node",
+          width: 200
         },
         {
           title: "Status",
@@ -67,7 +91,8 @@ export default {
               },
               params.row.Status
             );
-          }
+          },
+          width: 100
         },
         {
           title: "Tags",
@@ -83,12 +108,14 @@ export default {
               },
               params.row.ServiceTags
             );
-          }
+          },
+          width: 100
         },
         {
           title: "Action",
           key: "action",
           align: "center",
+          width: 100,
           render: (h, params) => {
             return h("div", [
               h(
@@ -172,27 +199,14 @@ export default {
                 svcarr = svcarr.sort(function(a, b) {
                   a.ServiceHost - b.ServiceHost;
                 });
+                _this.serviceCount = svcarr.length;
+                _this.services = svcarr;
+                _this.pageChange(1);
               });
             });
           }
         }
       });
-
-      // consul.catalog.service.list(dc, function(err1, services) {
-      //   if (err1) throw err1;
-      //   var svcArray = new Array();
-      //   for (let svcName in services) {
-      //     consul.catalog.service.nodes(svcName, function(err2, nodeArr) {
-      //       if (err2) throw err2;
-      //       nodeArr.map(function(item, index) {
-      //         item.ServiceHost = item.Address + ":" + item.ServicePort;
-      //         svcArray.push(item);
-      //       });
-      //     });
-      //   }
-
-      _this.services = svcarr;
-      // });
     },
     deregister(row) {
       var _this = this;
@@ -240,6 +254,13 @@ export default {
         url = "http://" + url;
       }
       return new URL(url).port;
+    },
+    pageChange(page) {
+      var offset = (page - 1) * 10;
+      this.services_per_page =
+        offset + 10 >= this.services.length
+          ? this.services.slice(offset, this.services.length)
+          : this.services.slice(offset, offset + 10);
     }
   },
   components: {
