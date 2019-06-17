@@ -9,7 +9,7 @@
       :style="{overflow: 'hidden'}"
     >
       <div class="logo-con" style="height:65px">
-        <p class="title">Ocelot</p>
+        <p class="title">API Platform</p>
       </div>
       <Menu
         v-show="!collapsed"
