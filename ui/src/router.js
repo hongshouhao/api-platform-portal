@@ -9,6 +9,7 @@ import ConsulAdminView from '@/views/consul'
 import SigninCallback from '@/views/callback'
 import AlertsView from '@/views/alerts/'
 import MonitorView from '@/views/dashbord/'
+import AuthOptionsView from '@/views/auth/'
 
 Vue.use(Router)
 
@@ -35,8 +36,8 @@ export default new Router({
           auth: true
         },
         component: MonitorView,
-      }, {
-        //网关配置
+      },
+      {
         path: '/ocelotconfig',
         name: 'ocelotconfig',
         meta: {
@@ -53,15 +54,6 @@ export default new Router({
         component: OcelotAdminView,
       },
       {
-        path: '/consuladmin',
-        name: 'consuladmin',
-        meta: {
-          auth: true
-        },
-        component: ConsulAdminView,
-      },
-      {
-        //模板配置
         path: '/template',
         name: 'template',
         meta: {
@@ -70,7 +62,22 @@ export default new Router({
         component: TemplateView,
       },
       {
-        //接口测试
+        path: '/authoptions',
+        name: 'authoptions',
+        meta: {
+          auth: true
+        },
+        component: AuthOptionsView,
+      },
+      {
+        path: '/consuladmin',
+        name: 'consuladmin',
+        meta: {
+          auth: true
+        },
+        component: ConsulAdminView,
+      },
+      {
         path: '/alerts',
         name: 'alerts',
         meta: {
@@ -79,7 +86,6 @@ export default new Router({
         component: AlertsView,
       },
       {
-        //接口统计
         path: '/statistic',
         name: 'statistic',
         meta: {

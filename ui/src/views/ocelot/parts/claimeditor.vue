@@ -13,15 +13,22 @@
     </a>
     <div v-for="(item,index) in arr" :key="title+index" style="margin-bottom:5px;">
       <Row>
-        <Col span="12">
-          <Input v-model="item.key" class="key">
-            <span slot="prepend">Key</span>
-          </Input>
-        </Col>
-        <Col span="12">
-          <Input v-model="item.value" class="value">
-            <span slot="prepend">Value</span>
-            <Button slot="append" icon="md-close" size="24" @click="onDelete(index)"></Button>
+        <Col span="24">
+          <Input v-model="item.value">
+            <Select
+              slot="prepend"
+              v-model="item.key"
+              not-found-text="请选择一个授权方案"
+              @on-change="sltedClaimChanged"
+              style="width: 150px"
+            >
+              <Option
+                v-for="(claim, cidx) in wellKnown.claims_supported"
+                :value="claim"
+                :key="cidx"
+              >{{claim}}</Option>
+            </Select>
+            <Button slot="append" icon="md-close" @click="onDelete(index)"></Button>
           </Input>
         </Col>
       </Row>
@@ -33,7 +40,8 @@
 export default {
   data() {
     return {
-      arr: []
+      arr: [],
+      wellKnown: {}
     };
   },
   props: {
@@ -42,6 +50,10 @@ export default {
       default: ""
     },
     tooltip: {
+      type: String,
+      default: ""
+    },
+    idsHost: {
       type: String,
       default: ""
     },
@@ -61,6 +73,9 @@ export default {
         this.$emit("onPropertyChanged", obj, this.propertyName);
       },
       deep: true
+    },
+    idsHost() {
+      this.loadWellKnown();
     }
   },
   methods: {
@@ -85,19 +100,38 @@ export default {
         }
       }
       return result;
-    }
+    },
+    loadWellKnown() {
+      debugger;
+      var _this = this;
+      if (_this.idsHost) {
+        _this.$axios
+          .get(_this.idsHost.CombineWellKnownUri())
+          .then(function(response) {
+            _this.wellKnown = response.data;
+          })
+          .catch(function(error) {
+            _this.$Notice.error({
+              title: "服务连接失败!",
+              desc: error
+            });
+          });
+      }
+    },
+    sltedClaimChanged() {}
   },
   components: {}
 };
 </script>
 
 <style>
-.key input {
+/* .key input {
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
-}
-.value .ivu-input-group-prepend {
+  border-right: 0px !important;
+} */
+/* .value .ivu-input-group-prepend {
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
-}
+} */
 </style>

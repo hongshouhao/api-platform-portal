@@ -130,6 +130,9 @@ export default {
                     type: "primary",
                     size: "small"
                   },
+                  style: {
+                    marginRight: "5px"
+                  },
                   on: {
                     click: () => {
                       this.enableConfig(params.row);

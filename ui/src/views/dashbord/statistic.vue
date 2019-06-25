@@ -303,7 +303,7 @@ export default {
           var ip = iplist[i];
           var stackItem = {};
           stackItem.name = uri;
-          stackItem.type = "line";
+          stackItem.type = "bar";
           stackItem.stack = ip;
           stackItem.data = new Array();
           for (var i = 0; i < topbuckets.length; i++) {
@@ -324,8 +324,6 @@ export default {
           barItems.push(stackItem);
         }
       }
-      console.log(barItems);
-
       return barItems;
     },
     getUriPatterns() {
@@ -402,6 +400,5 @@ export default {
 .searchPanel_label {
   line-height: 30px;
   text-align: right;
-//   color: #fff;
 }
 </style>

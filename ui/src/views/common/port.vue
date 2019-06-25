@@ -2,32 +2,30 @@
   <Card dis-hover>
     <p slot="title" class="highlight">
       {{title}}
-      <Tooltip placement="bottom" content theme="light" :delay="500">
+      <Tooltip placement="right" content theme="light" :delay="500">
         <p slot="content">{{tooltip}}</p>
         <Icon type="ios-information-circle"/>
       </Tooltip>
     </p>
     <a href="#" slot="extra" @click.prevent="add">
-      <Icon type="ios-add-circle-outline" size="18" style="margin-right:5px;"></Icon>新增
+      <Icon type="md-add" size="18" style="margin-right:5px;"></Icon>
     </a>
     <div v-for="(item,index) in data" :key="index" style="margin-bottom:5px;">
       <Row>
-        <Col span="22">
+        <Col>
           <Row>
-            <Col span="11">
+            <Col span="11" class="host">
               <Input v-model="item.Host">
                 <span slot="prepend">Host</span>
               </Input>
             </Col>
-            <Col span="11" offset="1">
+            <Col span="11" class="port">
               <Input v-model="item.Port" number>
                 <span slot="prepend">Port</span>
+                <Button slot="append" icon="md-close" size="24" @click="onDelete(index)"></Button>
               </Input>
             </Col>
           </Row>
-        </Col>
-        <Col span="2">
-          <Button type="warning" ghost @click="onDelete(index)">删除</Button>
         </Col>
       </Row>
     </div>
@@ -80,4 +78,13 @@ export default {
 </script>
 
 <style>
+.host input {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-right: 0px !important;
+}
+.port .ivu-input-group-prepend {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
 </style>

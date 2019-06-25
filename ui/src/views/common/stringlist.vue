@@ -2,25 +2,20 @@
   <Card dis-hover>
     <p slot="title">
       {{title}}
-      <Tooltip placement="bottom" content theme="light" :delay="500">
+      <Tooltip placement="right" content theme="light" :delay="500">
         <p slot="content">{{tooltip}}</p>
         <Icon type="ios-information-circle"/>
       </Tooltip>
     </p>
     <a href="#" slot="extra" @click.prevent="add">
-      <Icon type="ios-add-circle-outline" size="18" style="margin-right:5px;"></Icon>新增
+      <Icon type="md-add" size="18" style="margin-right:5px;"></Icon>
     </a>
     <Row>
       <div v-for="(item,index) in data" :key="index">
         <Col span="12" style="margin-bottom:5px;">
-          <Row>
-            <Col span="14">
-              <Input v-model="array[index]"></Input>
-            </Col>
-            <Col span="8" offset="1">
-              <Button type="warning" ghost @click="onDelete(index)">删除</Button>
-            </Col>
-          </Row>
+          <Input v-model="array[index]">
+            <Button slot="append" icon="md-close" size="24" @click="onDelete(index)"></Button>
+          </Input>
         </Col>
       </div>
     </Row>

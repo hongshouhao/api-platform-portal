@@ -19,37 +19,45 @@
         @on-select="handleSelect"
       >
         <MenuItem name="monitor">
-          <Icon type="md-desktop"></Icon>服务器
+          <Icon type="md-desktop"/>服务器监控
         </MenuItem>
-        <!-- <MenuItem name="statistic">
-          <Icon type="md-stats"></Icon>接口统计
-        </MenuItem> -->
-        <MenuItem name="ocelotconfig">
-          <Icon type="md-cog"></Icon>网关配置
-        </MenuItem>
-        <MenuItem name="ocelotadmin">
-          <Icon type="md-code-working"></Icon>网关配置发布
-        </MenuItem>
-        <MenuItem name="template">
-          <Icon type="ios-clipboard"></Icon>模板配置
+        <Submenu name="apigateway">
+          <template slot="title">
+            <Icon type="md-cube"/>网关
+          </template>
+          <MenuItem name="ocelotconfig">
+            <Icon type="md-cog"/>跳转配置
+          </MenuItem>
+          <MenuItem name="ocelotadmin">
+            <Icon type="md-code-working"/>配置发布
+          </MenuItem>
+          <MenuItem name="template">
+            <Icon type="md-clipboard"/>模板配置
+          </MenuItem>
+        </Submenu>
+        <MenuItem name="authoptions">
+          <Icon type="md-lock"/>认证方案
         </MenuItem>
         <MenuItem name="consuladmin">
-          <Icon type="ios-create-outline"></Icon>服务注册
+          <Icon type="md-swap"/>服务注册
+        </MenuItem>
+        <MenuItem name="statistic">
+          <Icon type="md-stats"/>访问统计
         </MenuItem>
         <MenuItem name="alerts">
-          <Icon type="md-eye"></Icon>监控
+          <Icon type="md-eye"/>报警
         </MenuItem>
         <MenuItem :to="identityAdmin" target="_blank">
-          <Icon type="ios-people"></Icon>认证授权
+          <Icon type="md-people"/>认证授权
         </MenuItem>
         <MenuItem :to="skywalking" target="_blank">
-          <Icon type="md-navigate"></Icon>APM
+          <Icon type="md-navigate"/>APM
         </MenuItem>
         <MenuItem :to="uiconsul" target="_blank">
-          <Icon type="md-contrast"></Icon>Consul
+          <Icon type="md-contrast"/>Consul
         </MenuItem>
         <MenuItem :to="kibana" target="_blank">
-          <Icon type="md-recording"></Icon>Kibana
+          <Icon type="md-recording"/>Kibana
         </MenuItem>
       </Menu>
     </Sider>
@@ -69,6 +77,7 @@
 </template>
 
 <script>
+import "./utility";
 import { Env } from "../lib/env";
 import { Identity } from "../lib/identity";
 import maxLogo from "../assets/logo.jpg";

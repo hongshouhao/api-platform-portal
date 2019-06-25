@@ -9,6 +9,7 @@ class EnvVar {
         this.identityServerAdmin_host = "http://192.168.122.17:8620";
 
         this.ocelotConfig_host = "http://192.168.122.17:9620";
+        //this.ocelotConfig_host = "http://localhost:48969";
         this.ocelot_host = "http://192.168.122.17:9610";
         this.consul_host = "http://192.168.84.24:8500";
 
@@ -18,6 +19,10 @@ class EnvVar {
         this.elasticserach_host = "http://192.168.84.24:9200";
         this.kibana_home = "http://192.168.84.24:5601";
         this.skywalking_home = "http://192.168.84.24:8998";
+
+        this.combineWellKnownConfigUri = function (host) {
+            return host + "/.well-known/openid-configuration";
+        }
     }
 }
 

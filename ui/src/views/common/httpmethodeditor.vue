@@ -1,0 +1,33 @@
+<template>
+  <Select v-model="httpMethods" multiple>
+    <Option v-for="item in supportedHttpMethods" :value="item.toLowerCase()" :key="item">{{ item }}</Option>
+  </Select>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      supportedHttpMethods: [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "OPTIONS",
+        "PATCH",
+        "HEAD",
+        "TRACE",
+        "CONNECT"
+      ]
+    };
+  },
+  props: {
+    httpMethods: {
+      type: Array,
+      default: []
+    }
+  },
+  mounted() {},
+  methods: {}
+};
+</script>

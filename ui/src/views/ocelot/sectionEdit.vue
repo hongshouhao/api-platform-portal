@@ -33,25 +33,26 @@
       </Row>
     </Form>
     <Divider/>
-    <span>选择模板</span>
-    <Select
-      v-model="sltedTempl"
-      @on-open-change="loadTempls"
-      :disabled="forUpdate==true"
-      :loading="loadingTempl"
-      style="width:200px"
-    >
-      <Option
-        v-for="(item, index) in templates"
-        :value="item.jsonString"
-        :key="index"
-      >{{item.version}}</Option>
-    </Select>
+
     <Tabs value="ReRoute" @on-click="tabChanged" style="margin:5px 0;">
+      <Select
+        placeholder="模板"
+        slot="extra"
+        v-model="sltedTempl"
+        @on-open-change="loadTempls"
+        :loading="loadingTempl"
+        style="width:150px;margin:0 10px 5px 0"
+      >
+        <Option
+          v-for="(item, index) in templates"
+          :value="item.jsonString"
+          :key="index"
+        >{{item.version}}</Option>
+      </Select>
       <Button
         type="primary"
         slot="extra"
-        icon="md-add" 
+        icon="md-add"
         @click="addConfigItem"
         style="margin:0 0 5px 0;"
       >{{configType}}</Button>
@@ -62,6 +63,13 @@
               {{item.DownstreamPathTemplate}}
               <div slot="content">
                 <ReRoutesView class="content" :vmodel="item"></ReRoutesView>
+              </div>
+              <div
+                style="width:30px;float:right;margin-right:18px;"
+                align="center"
+                @click="removeReRoute($event, index)"
+              >
+                <Icon type="md-trash" size="18"/>
               </div>
             </Panel>
           </template>
@@ -78,6 +86,13 @@
               <div slot="content">
                 <DynamicReRoutesView class="content" :vmodel="item"></DynamicReRoutesView>
               </div>
+              <div
+                style="width:30px;float:right;margin-right:18px;"
+                align="center"
+                @click="removeDynamicReRoute($event, index)"
+              >
+                <Icon type="md-trash" size="18"/>
+              </div>
             </Panel>
           </template>
         </Collapse>
@@ -90,6 +105,13 @@
               <div slot="content">
                 <AggregatesView class="content" :vmodel="item"></AggregatesView>
               </div>
+              <div
+                style="width:30px;float:right;margin-right:18px;"
+                align="center"
+                @click="removeAggregateItem($event, index)"
+              >
+                <Icon type="md-trash" size="18"/>
+              </div>
             </Panel>
           </template>
         </Collapse>
@@ -101,10 +123,10 @@
 <script>
 import { Env } from "../../lib/env";
 import { Ocelot } from "../../lib/ocelot";
+import { modelTempl } from "../modelTempl";
 import ReRoutesView from "./parts/reroutes";
 import DynamicReRoutesView from "./parts/dynamic";
 import AggregatesView from "./parts/aggregates";
-import { modelTempl } from "../modelTempl";
 
 export default {
   data() {
@@ -199,6 +221,18 @@ export default {
             _this.templates = response.data;
           });
       }
+    },
+    removeReRoute(ev, index) {
+      ev.cancelBubble = true;
+      this.vconfig.ReRoutes.splice(index, 1);
+    },
+    removeDynamicReRoute(ev, index) {
+      ev.cancelBubble = true;
+      this.vconfig.DynamicReRoutes.splice(index, 1);
+    },
+    removeAggregateItem(ev, index) {
+      ev.cancelBubble = true;
+      this.vconfig.Aggregates.splice(index, 1);
     }
   },
   components: {

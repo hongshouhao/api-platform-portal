@@ -84,6 +84,7 @@ class IdentityClass {
         this.silentRedirect = function () {
             mgr.signinSilentCallback();
         };
+
         mgr.events.addUserLoaded(function (user) {
             user.getAcessToken().then(
                 acessToken => {

@@ -18,7 +18,7 @@
           :loading="loading"
           stripe
         ></Table>
-        <br/>
+        <br>
         <Page :total="serviceCount" show-elevator @on-change="pageChange"/>
       </div>
       <Drawer
@@ -256,11 +256,11 @@ export default {
       return new URL(url).port;
     },
     pageChange(page) {
-      var offset = (page - 1) * 10;
+      var offset = (page - 1) * 15;
       this.services_per_page =
-        offset + 10 >= this.services.length
+        offset + 15 >= this.services.length
           ? this.services.slice(offset, this.services.length)
-          : this.services.slice(offset, offset + 10);
+          : this.services.slice(offset, offset + 15);
     }
   },
   components: {

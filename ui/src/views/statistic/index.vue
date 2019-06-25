@@ -1,10 +1,10 @@
 <template>
-  <Card>
+  <div>
     <div class="searchPanel">
       <Row>
         <Col span="2" class="searchPanel_label">统计范围：</Col>
         <Col span="4">
-          <Select v-model="filter.uriPrefix" filterable>
+          <Select v-model="filter.uriPrefix" filterable @on-change="loadChart">
             <Option v-for="item in endpoints" :value="item" :key="item">{{ item }}</Option>
           </Select>
         </Col>
@@ -16,22 +16,22 @@
             :options="datePickerOptions"
             placement="bottom-end"
             placeholder="Select date"
-            style="width: 100%"
             v-model="filter.dateRange"
+            @on-change="loadChart"
+            style="width:100%"
           ></DatePicker>
         </Col>
         <Col span="2" class="searchPanel_label">统计周期：</Col>
         <Col span="2">
-          <Input v-model="filter.histogramInterval" placeholder="统计周期"></Input>
-        </Col>
-        <Col span="2" offset="1">
-          <Button icon="md-search" type="primary" @click="loadChart">搜索</Button>
+          <Input v-model="filter.histogramInterval" placeholder="统计周期" @on-enter="loadChart"></Input>
         </Col>
       </Row>
     </div>
     <br>
-    <div id="barChart" :style="{width: '100%', height: '350px'}"></div>
-  </Card>
+    <div style="position:relative">
+      <div id="barChart" :style="{width: '100%', height: '350px'}"></div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -165,9 +165,6 @@ export default {
                       }
                     }
                   },
-                  // {
-                  //   match_phrase: { "cs.keyword": { query: "-" } }
-                  // },
                   {
                     match_phrase_prefix: {
                       "cs-uri-stem": _this.filter.uriPrefix.replace("/", "\\/")
@@ -197,7 +194,7 @@ export default {
               icon: "circle",
               itemWidth: 10,
               itemHeight: 10,
-              itemGap: 20,
+              itemGap: 20
             },
             xAxis: _this.readXAxis(response),
             yAxis: [
@@ -205,13 +202,30 @@ export default {
                 type: "value"
               }
             ],
-            series: _this.readYAxis(response)
+            series: _this.readYAxis(response),
+            color: [
+              "#EAC14D",
+              "#4CBDFF",
+              "#FF944C",
+              "#2E2BF7",
+              "#60E1B8",
+              "#E5383E",
+              "#7351E4",
+              "#59E441",
+              "#1EB5A4",
+              "#c23531",
+              "#2f4554",
+              "#61a0a8"
+            ]
           };
           let myChart = _this.$echarts.init(
             document.getElementById("barChart"),
-            "shine"
+            "light"
           );
           myChart.setOption(chartoptions);
+          window.addEventListener("resize", () => {
+            myChart.resize();
+          });
         });
     },
     readXAxis(res) {
@@ -310,7 +324,6 @@ export default {
           barItems.push(stackItem);
         }
       }
-
       return barItems;
     },
     getUriPatterns() {

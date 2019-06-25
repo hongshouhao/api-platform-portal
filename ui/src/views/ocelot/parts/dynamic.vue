@@ -6,13 +6,11 @@
       </FormItem>
       <Card dis-hover>
         <p slot="title">RateLimitRule</p>
-        <StringList
-          class="mar10"
-          title="ClientWhitelist"
-          :array="vmodel.RateLimitRule.ClientWhitelist"
-        ></StringList>
         <FormItem label="EnableRateLimiting">
           <i-switch v-model="vmodel.RateLimitRule.EnableRateLimiting"></i-switch>
+        </FormItem>
+        <FormItem label="Limit">
+          <Input v-model="vmodel.RateLimitRule.Limit"></Input>
         </FormItem>
         <FormItem label="Period">
           <Input v-model="vmodel.RateLimitRule.Period"></Input>
@@ -20,9 +18,11 @@
         <FormItem label="PeriodTimespan">
           <Input v-model="vmodel.RateLimitRule.PeriodTimespan"></Input>
         </FormItem>
-        <FormItem label="Limit">
-          <Input v-model="vmodel.RateLimitRule.Limit"></Input>
-        </FormItem>
+        <StringList
+          class="mar10"
+          title="ClientWhitelist"
+          :array="vmodel.RateLimitRule.ClientWhitelist"
+        ></StringList>
       </Card>
     </Form>
   </div>
