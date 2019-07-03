@@ -1,0 +1,80 @@
+.main {
+  height: 100%;
+
+  .logo-con {
+    height: 64px;
+    text-align: center;
+    background: #009688;
+
+    .title {
+      color: #fff;
+      font-size: 25px;
+      line-height: 50px;
+    }
+  }
+
+  .header-con {
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 2px 5px 2px #888888;
+  }
+
+  .layout {
+    background: #efefef;
+    height: 100%;
+  }
+
+  .content-con {
+    margin-top: 32px;
+    padding: 0 32px 0 32px;
+    background-color: #efefef;
+  }
+}
+
+.menu-icon {
+  transition: all .3s;
+}
+
+.rotate-icon {
+  transform: rotate(-90deg);
+}
+
+.menu-item span {
+  display: inline-block;
+  overflow: hidden;
+  width: 69px;
+  white-space: nowrap;
+  vertical-align: bottom;
+  transition: width .2s ease .2s;
+}
+
+.menu-item i {
+  transform: translateX(0px);
+  transition: font-size .2s ease, transform .2s ease;
+  vertical-align: middle;
+  font-size: 16px;
+}
+
+.collapsed-menu span {
+  width: 0px;
+  transition: width .2s ease;
+}
+
+.collapsed-menu i {
+  transform: translateX(5px);
+  transition: font-size .2s ease .2s, transform .2s ease .2s;
+  vertical-align: middle;
+  font-size: 22px;
+}
+
+.ivu-layout-sider {
+  background: #262B33 !important;
+}
+
+.ivu-menu {
+  background: #262B33 !important;
+}
+
+.ivu-menu-item-selected {
+  color: #ecf0ff !important;
+}
