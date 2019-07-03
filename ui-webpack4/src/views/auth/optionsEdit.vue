@@ -188,8 +188,8 @@
 </template>
 
 <script>
+import env from '../../global'
 import modelTempl from '../modelTempl.js'
-import Identity from '../../lib/identity'
 export default {
   data () {
     return {
@@ -221,7 +221,7 @@ export default {
     displayWellKnown () {
       var _this = this
       _this.$axios
-        .get(_this.voptions.Authority + Identity.WellKnownUri)
+        .get(_this.voptions.Authority + env.identityServerWellKnownUri)
         .then(function (response) {
           _this.wellKnownResponse = response
           _this.showWellKnownDialog = true

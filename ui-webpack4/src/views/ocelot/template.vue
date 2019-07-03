@@ -17,7 +17,7 @@
               style="overflow:hidden">
         <div slot="header"
              class="drawerheader">
-          <span>配置详情</span>
+          <p>配置详情</p>
           <Button type="success"
                   style="float: right;margin-right: 8px"
                   @click="saveTemplate">Save</Button>
