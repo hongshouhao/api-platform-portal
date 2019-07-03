@@ -1,14 +1,11 @@
-import axios from "axios"
-import { Env } from './env';
-import { Identity } from './identity';
-import { debug } from "util";
+import env from './env';
 
-class OcelotConfigClient {
-    constructor() {
+export default class OcelotClient {
+    constructor(axios, identity) {
         this.GetAllSections = async function (ifSuccess, ifError) {
-            Identity.ensureLogedin();
-            Identity.getAccessToken().then(function (token) {
-                axios.get(Env.ocelotConfig_host + "/admin/configuration/getAllSections")
+            identity.ensureLogedin();
+            identity.getAccessToken().then(function (token) {
+                axios.get(env.ocelotConfig_host + "/admin/configuration/getAllSections")
                     .then(response =>
                         ifSuccess(response.data)
                     ).catch(error => {
@@ -18,9 +15,9 @@ class OcelotConfigClient {
             });
         };
         this.GetSection = async function (name, ifSuccess, ifError) {
-            Identity.ensureLogedin();
-            Identity.getAccessToken().then(function (token) {
-                axios.get(Env.ocelotConfig_host + "/admin/configuration/getSection")
+            identity.ensureLogedin();
+            identity.getAccessToken().then(function (token) {
+                axios.get(env.ocelotConfig_host + "/admin/configuration/getSection")
                     .then(response =>
                         ifSuccess(response.data)
                     ).catch(error => {
@@ -29,9 +26,9 @@ class OcelotConfigClient {
             });
         };
         this.SaveSection = function (json, ifSuccess, ifError) {
-            Identity.ensureLogedin();
-            Identity.getAccessToken().then(function (token) {
-                axios.post(Env.ocelotConfig_host + "/admin/configuration/saveSection", json)
+            identity.ensureLogedin();
+            identity.getAccessToken().then(function (token) {
+                axios.post(env.ocelotConfig_host + "/admin/configuration/saveSection", json)
                     .then(response =>
                         ifSuccess(response.data)
                     ).catch(error => {
@@ -40,9 +37,9 @@ class OcelotConfigClient {
             });
         };
         this.DeleteSection = function (sectionName, ifSuccess, ifError) {
-            Identity.ensureLogedin();
-            Identity.getAccessToken().then(function (token) {
-                axios.post(Env.ocelotConfig_host + "/admin/configuration/deleteSection?name=" + sectionName)
+            identity.ensureLogedin();
+            identity.getAccessToken().then(function (token) {
+                axios.post(env.ocelotConfig_host + "/admin/configuration/deleteSection?name=" + sectionName)
                     .then(response =>
                         ifSuccess(response.data)
                     ).catch(error => {
@@ -51,9 +48,9 @@ class OcelotConfigClient {
             });
         };
         this.ValidateSection = function (json, ifSuccess, ifError) {
-            Identity.ensureLogedin();
-            Identity.getAccessToken().then(function (token) {
-                axios.post(Env.ocelotConfig_host + "/admin/configuration/validateSections", json)
+            identity.ensureLogedin();
+            identity.getAccessToken().then(function (token) {
+                axios.post(env.ocelotConfig_host + "/admin/configuration/validateSections", json)
                     .then(response =>
                         ifSuccess(response.data)
                     ).catch(error => {
@@ -62,9 +59,9 @@ class OcelotConfigClient {
             });
         };
         this.BuildConfig = function (description, ifSuccess, ifError) {
-            Identity.ensureLogedin();
-            Identity.getAccessToken().then(function (token) {
-                axios.post(Env.ocelotConfig_host + "/admin/configuration/buildConfig?description=" + description)
+            identity.ensureLogedin();
+            identity.getAccessToken().then(function (token) {
+                axios.post(env.ocelotConfig_host + "/admin/configuration/buildConfig?description=" + description)
                     .then(response =>
                         ifSuccess(response.data)
                     ).catch(error => {
@@ -74,9 +71,9 @@ class OcelotConfigClient {
         };
 
         this.EnableConfig = function (id, ifSuccess, ifError) {
-            Identity.ensureLogedin();
-            Identity.getAccessToken().then(function (token) {
-                axios.post(Env.ocelotConfig_host + "/admin/configuration/enableConfig?id=" + id)
+            identity.ensureLogedin();
+            identity.getAccessToken().then(function (token) {
+                axios.post(env.ocelotConfig_host + "/admin/configuration/enableConfig?id=" + id)
                     .then(response =>
                         ifSuccess(response.data)
                     ).catch(error => {
@@ -85,9 +82,9 @@ class OcelotConfigClient {
             });
         };
         this.GetAllConfigs = async function (ifSuccess, ifError) {
-            Identity.ensureLogedin();
-            Identity.getAccessToken().then(function (token) {
-                axios.get(Env.ocelotConfig_host + "/admin/configuration/getAllConfigs")
+            identity.ensureLogedin();
+            identity.getAccessToken().then(function (token) {
+                axios.get(env.ocelotConfig_host + "/admin/configuration/getAllConfigs")
                     .then(response =>
                         ifSuccess(response.data)
                     ).catch(error => {
@@ -96,9 +93,9 @@ class OcelotConfigClient {
             });
         };
         this.DeleteConfig = async function (id, ifSuccess, ifError) {
-            Identity.ensureLogedin();
-            Identity.getAccessToken().then(function (token) {
-                axios.post(Env.ocelotConfig_host + "/admin/configuration/deleteConfig?id=" + id)
+            identity.ensureLogedin();
+            identity.getAccessToken().then(function (token) {
+                axios.post(env.ocelotConfig_host + "/admin/configuration/deleteConfig?id=" + id)
                     .then(response =>
                         ifSuccess(response.data)
                     ).catch(error => {
@@ -107,9 +104,9 @@ class OcelotConfigClient {
             });
         };
         this.ReLoadConfig = async function (ifSuccess, ifError) {
-            Identity.ensureLogedin();
-            Identity.getAccessToken().then(function (token) {
-                axios.post(Env.ocelot_host + "/admin/configuration/reLoad")
+            identity.ensureLogedin();
+            identity.getAccessToken().then(function (token) {
+                axios.post(env.ocelot_host + "/admin/configuration/reLoad")
                     .then(response =>
                         ifSuccess(response.data)
                     ).catch(error => {
@@ -118,9 +115,9 @@ class OcelotConfigClient {
             });
         };
         this.CurrentConfig = async function (ifSuccess, ifError) {
-            Identity.ensureLogedin();
-            Identity.getAccessToken().then(function (token) {
-                axios.get(Env.ocelot_host + "/admin/configuration/get")
+            identity.ensureLogedin();
+            identity.getAccessToken().then(function (token) {
+                axios.get(env.ocelot_host + "/admin/configuration/get")
                     .then(response =>
                         ifSuccess(response.data)
                     ).catch(error => {
@@ -129,8 +126,4 @@ class OcelotConfigClient {
             });
         };
     }
-}
-var Ocelot = new OcelotConfigClient()
-export {
-    Ocelot
-}
+} 

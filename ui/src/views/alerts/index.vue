@@ -5,11 +5,11 @@
 </template>
 
 <script>
-import { Env } from "../../lib/env";
+import env from "../../lib/env";
 export default {
   data() {
     return {
-      alertUrl: Env.karma_home
+      alertUrl: env.karma_home
     };
   }
 };

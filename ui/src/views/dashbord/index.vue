@@ -3,12 +3,12 @@
     <Row :gutter="16">
       <Col span="12">
         <Card :bordered="false">
-          <CPUView style="height:300px;"></CPUView>
+          <cpuView style="height:300px;"></cpuView>
         </Card>
       </Col>
       <Col span="12">
         <Card :bordered="false">
-          <MEMView style="height:300px;"></MEMView>
+          <memView style="height:300px;"></memView>
         </Card>
       </Col>
     </Row>
@@ -16,25 +16,25 @@
     <Row>
       <Col span="24">
         <Card :bordered="false">
-          <statistic-view style="height:400px;"></statistic-view>
+          <statisticView style="height:400px;"></statisticView>
         </Card>
       </Col>
     </Row>
   </div>
 </template>
 <script>
-import CPUView from "./cpu";
-import MEMView from "./memory";
-import StatisticView from "./statistic";
+import cpuView from "./cpu";
+import memView from "./memory";
+import statisticView from "./statistic";
 
 export default {
   data() {
     return {};
   },
   components: {
-    CPUView,
-    MEMView,
-    StatisticView
+    cpuView,
+    memView,
+    statisticView
   }
 };
 </script>

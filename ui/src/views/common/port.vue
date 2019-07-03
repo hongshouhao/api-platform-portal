@@ -20,9 +20,9 @@
               </Input>
             </Col>
             <Col span="11" class="port">
-              <Input v-model="item.Port" number>
+              <Input v-model="item.Port" Number>
                 <span slot="prepend">Port</span>
-                <Button slot="append" icon="md-close" size="24" @click="onDelete(index)"></Button>
+                <Button slot="append" icon="md-close" size="small" @click="onDelete(index)"></Button>
               </Input>
             </Col>
           </Row>

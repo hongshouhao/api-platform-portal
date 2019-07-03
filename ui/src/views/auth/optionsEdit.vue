@@ -174,10 +174,7 @@
 </template>
 
 <script>
-import { modelTempl } from "../modelTempl.js";
-import { stringify } from "querystring";
-import { Env } from "../../lib/env";
-import { truncate } from "fs";
+import modelTempl from "../modelTempl.js";
 export default {
   data() {
     return {

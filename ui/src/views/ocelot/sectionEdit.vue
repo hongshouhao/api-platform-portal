@@ -121,9 +121,8 @@
 </template>
 
 <script>
-import { Env } from "../../lib/env";
-import { Ocelot } from "../../lib/ocelot";
-import { modelTempl } from "../modelTempl";
+import Env from "../../lib/env";
+import modelTempl from "../modelTempl";
 import ReRoutesView from "./parts/reroutes";
 import DynamicReRoutesView from "./parts/dynamic";
 import AggregatesView from "./parts/aggregates";

@@ -5,7 +5,7 @@
   </div>
 </template>
 <script>
-import { Env } from "../../lib/env";
+import env from "../../lib/env";
 export default {
   data() {
     return {
@@ -74,7 +74,7 @@ export default {
         var date = new Date().getTime() / 1000;
         _this.$axios
           .get(
-            Env.prometheus_host +
+            env.prometheus_host +
               '/api/v1/query_range?query=(sum by(instance)(irate(wmi_cpu_time_total{mode!="idle"}[5m]))/sum by(instance)(irate(wmi_cpu_time_total[5m])))*100&start=' +
               (date - 70) +
               "&end=" +

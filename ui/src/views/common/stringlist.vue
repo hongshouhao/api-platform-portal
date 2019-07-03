@@ -14,7 +14,7 @@
       <div v-for="(item,index) in data" :key="index">
         <Col span="12" style="margin-bottom:5px;">
           <Input v-model="array[index]">
-            <Button slot="append" icon="md-close" size="24" @click="onDelete(index)"></Button>
+            <Button slot="append" icon="md-close" size="small" @click="onDelete(index)"></Button>
           </Input>
         </Col>
       </div>

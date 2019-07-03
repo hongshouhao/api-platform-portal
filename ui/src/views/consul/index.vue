@@ -28,7 +28,7 @@
         v-model="editState"
         style="overflow:hidden"
       >
-        <ServiceEditView ref="ServiceEditView" v-if="editState" :model="model"></ServiceEditView>
+        <serviceEditView ref="serviceEditView" v-if="editState" :model="model"></serviceEditView>
         <div class="drawer-footer-buttons">
           <Button type="primary" @click="save">Save</Button>
         </div>
@@ -38,9 +38,9 @@
 </template>
 
 <script>
-import { Env } from "../../lib/env";
-import ServiceEditView from "./serviceEdit";
-var consul = require("consul")({ host: new URL(Env.consul_host).hostname });
+import env from "../../lib/env";
+import serviceEditView from "./serviceEdit";
+var consul = require("consul")({ host: new URL(env.consul_host).hostname });
 var Enumerable = require("linq");
 export default {
   data() {
@@ -232,7 +232,7 @@ export default {
     },
     save() {
       var _this = this;
-      var options = this.$refs.ServiceEditView.model;
+      var options = this.$refs.serviceEditView.model;
       consul.agent.service.register(options, function(err) {
         if (err) {
           _this.$Notice.error({
@@ -264,7 +264,7 @@ export default {
     }
   },
   components: {
-    ServiceEditView
+    serviceEditView
   }
 };
 </script>

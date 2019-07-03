@@ -59,8 +59,7 @@
 </template>
 
 <script>
-import { Ocelot } from "../../lib/ocelot";
-import { modelTempl } from "../modelTempl.js";
+import modelTempl from "../modelTempl.js";
 import EditView from "./sectionEdit";
 
 export default {
@@ -81,9 +80,6 @@ export default {
             return h(
               "a",
               {
-                attrs: {
-                  href: "#"
-                },
                 on: {
                   click: () => {
                     this.editSection(params.row);
@@ -102,9 +98,6 @@ export default {
             return h(
               "a",
               {
-                attrs: {
-                  href: "#"
-                },
                 on: {
                   click: () => {
                     this.viewJsonString = true;
@@ -116,7 +109,7 @@ export default {
                   }
                 }
               },
-              "{...}"
+              "{ JSON }"
             );
           }
         },
@@ -162,7 +155,7 @@ export default {
     refreshData() {
       var _this = this;
       _this.loading = true;
-      Ocelot.GetAllSections(
+      _this.$webapi.ocelot.GetAllSections(
         function(data) {
           _this.dataSourceJString = JSON.stringify(data, null, 2);
           _this.dataSource = data;
@@ -187,7 +180,7 @@ export default {
     },
     saveSection() {
       var _this = this;
-      Ocelot.SaveSection(
+      _this.$webapi.ocelot.SaveSection(
         _this.vsection,
         function() {
           _this.$Notice.success({
@@ -210,7 +203,7 @@ export default {
         title: "注意",
         content: "<p>是否删除当前行？</p>",
         onOk: () => {
-          Ocelot.DeleteSection(
+          _this.$webapi.ocelot.DeleteSection(
             _this.vsection.name,
             function() {
               _this.$Notice.success({
@@ -232,7 +225,7 @@ export default {
     verifySelectedSections() {
       var _this = this;
       var rows = _this.$refs.sectionTable.getSelection();
-      Ocelot.ValidateSection(
+      _this.$webapi.ocelot.ValidateSection(
         rows,
         function() {
           _this.$Notice.success({ title: "验证通过" });

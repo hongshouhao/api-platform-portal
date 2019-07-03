@@ -1,5 +1,5 @@
 <template>
-  <Select v-model="httpMethods" multiple>
+  <Select v-model="innerhttpMethods" transfer multiple>
     <Option v-for="item in supportedHttpMethods" :value="item.toLowerCase()" :key="item">{{ item }}</Option>
   </Select>
 </template>
@@ -18,7 +18,8 @@ export default {
         "HEAD",
         "TRACE",
         "CONNECT"
-      ]
+      ],
+      innerhttpMethods: this.httpMethods
     };
   },
   props: {
@@ -28,6 +29,17 @@ export default {
     }
   },
   mounted() {},
-  methods: {}
+  methods: {},
+  watch: {
+    innerhttpMethods: {
+      handler(val) {
+        this.$emit("update:httpMethods", val);
+      },
+      deep: true
+    },
+    httpMethods() {
+      this.innerhttpMethods = this.httpMethods;
+    }
+  }
 };
 </script>

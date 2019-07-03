@@ -43,8 +43,6 @@
 </template>
 
 <script>
-import { Ocelot } from "../../lib/ocelot";
-import { truncate } from "fs";
 export default {
   data() {
     return {
@@ -70,9 +68,6 @@ export default {
             return h(
               "a",
               {
-                attrs: {
-                  href: "#"
-                },
                 on: {
                   click: () => {
                     this.viewJsonString = true;
@@ -84,7 +79,7 @@ export default {
                   }
                 }
               },
-              "{...}"
+              "{ JSON }"
             );
           }
         },
@@ -173,7 +168,7 @@ export default {
     refreshData() {
       this.loading = true;
       var _this = this;
-      Ocelot.GetAllConfigs(
+      _this.$webapi.ocelot.GetAllConfigs(
         function(data) {
           _this.dataSourceJString = JSON.stringify(data, null, 2);
           _this.dataSource = data;
@@ -192,7 +187,7 @@ export default {
         title: "注意",
         content: "<p>确定是否删除当前行？</p>",
         onOk: () => {
-          Ocelot.DeleteConfig(
+          _this.$webapi.ocelot.DeleteConfig(
             row.id,
             function() {
               _this.$Notice.success({
@@ -228,7 +223,7 @@ export default {
           });
         },
         onOk: () => {
-          Ocelot.BuildConfig(
+          _this.$webapi.ocelot.BuildConfig(
             _this.description,
             function() {
               _this.$Notice.success({
@@ -248,10 +243,10 @@ export default {
     },
     enableConfig(row) {
       var _this = this;
-      Ocelot.EnableConfig(
+      _this.$webapi.ocelot.EnableConfig(
         row.id,
         function() {
-          Ocelot.ReLoadConfig(
+          _this.$webapi.ocelot.ReLoadConfig(
             function() {
               _this.$Notice.success({
                 title: "应用成功"
@@ -277,7 +272,7 @@ export default {
     },
     currentConfig() {
       var _this = this;
-      Ocelot.CurrentConfig(
+      _this.$webapi.ocelot.CurrentConfig(
         function(data) {
           _this.viewJsonString = true;
           _this.json = JSON.stringify(data, null, 2);

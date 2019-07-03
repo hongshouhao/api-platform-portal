@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { Env } from "../../lib/env";
+import Env from "../../lib/env";
 const { Client } = require("@elastic/elasticsearch");
 const client = new Client({ node: Env.elasticserach_host });
 var Enumerable = require("linq");

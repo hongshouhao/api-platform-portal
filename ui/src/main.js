@@ -2,9 +2,10 @@ import Vue from 'vue'
 import iView from 'iview'
 import router from './router'
 import store from './store'
-import 'iview/dist/styles/iview.css'
 import echarts from 'echarts'
 import axios from 'axios'
+import webapi from './lib/webapi'
+import 'iview/dist/styles/iview.css'
 
 import VueHighlightJS from 'vue-highlight.js';
 import hljsvue from '../node_modules/vue-highlight.js/lib/languages/vue';
@@ -25,6 +26,7 @@ Vue.use(VueHighlightJS, {
   }
 });
 
+Vue.prototype.$webapi = new webapi(axios);
 Vue.prototype.$axios = axios
 Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false

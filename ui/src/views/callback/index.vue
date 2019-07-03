@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import { Identity } from "../../lib/identity";
 export default {
   created() {
     debugger;
@@ -15,7 +14,7 @@ export default {
   },
   methods: {
     redirect() {
-      Identity.redirect();
+      this.$webapi.identity.redirect();
     }
   }
 };

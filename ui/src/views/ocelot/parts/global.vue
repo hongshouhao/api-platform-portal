@@ -93,18 +93,16 @@
 </template>
 
 <script>
-import { modelTempl } from "../../modelTempl.js";
+import modelTempl from "../../modelTempl.js";
 
 export default {
   data() {
-    return {
-    };
+    return {};
   },
   props: {
     vmodel: {}
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {}
 };
 </script>

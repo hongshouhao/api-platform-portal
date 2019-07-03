@@ -31,7 +31,7 @@ import ReRoutesView from "./parts/reroutes";
 import DynamicReRoutesView from "./parts/dynamic";
 import AggregatesView from "./parts/aggregates";
 import GlobalView from "./parts/global";
-import { modelTempl } from "../modelTempl.js";
+import modelTempl from "../modelTempl.js";
 
 export default {
   data() {

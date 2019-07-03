@@ -47,16 +47,16 @@
         <MenuItem name="alerts">
           <Icon type="md-eye"/>报警
         </MenuItem>
-        <MenuItem :to="identityAdmin" target="_blank">
+        <MenuItem name :to="identityAdmin" target="_blank">
           <Icon type="md-people"/>认证授权
         </MenuItem>
-        <MenuItem :to="skywalking" target="_blank">
+        <MenuItem name :to="skywalking" target="_blank">
           <Icon type="md-navigate"/>APM
         </MenuItem>
-        <MenuItem :to="uiconsul" target="_blank">
+        <MenuItem name :to="uiconsul" target="_blank">
           <Icon type="md-contrast"/>Consul
         </MenuItem>
-        <MenuItem :to="kibana" target="_blank">
+        <MenuItem name :to="kibana" target="_blank">
           <Icon type="md-recording"/>Kibana
         </MenuItem>
       </Menu>
@@ -78,15 +78,14 @@
 
 <script>
 import "./utility";
-import { Env } from "../lib/env";
-import { Identity } from "../lib/identity";
+import Env from "../lib/env";
 import maxLogo from "../assets/logo.jpg";
 
 export default {
   data() {
     return {
       user: "",
-      activeName: "ocelotconfig",
+      activeName: "monitor",
       kibana: Env.kibana_home,
       uiconsul: Env.consul_host,
       skywalking: Env.skywalking_home,
@@ -96,16 +95,18 @@ export default {
     };
   },
   created() {
-    Identity.ensureLogedin();
-    this.user = Identity.getUser().name;
+    this.$webapi.identity.ensureLogedin();
+    this.user = this.$webapi.identity.getUser().name;
   },
   mounted() {
     this.activeName = this.$route.name;
   },
   methods: {
     handleSelect(name) {
-      this.$router.push({ name: name });
-      this.activeName = name;
+      if (name) {
+        this.$router.push({ name: name });
+        this.activeName = name;
+      }
     }
   }
 };

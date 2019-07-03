@@ -10,15 +10,15 @@
           <Button type="success" style="float: right;margin-right: 8px" @click="saveOption">Save</Button>
           <Button type="error" style="float: right;margin-right: 8px" @click="deleteOption">Delete</Button>
         </div>
-        <OptionsEditView :authOptions="voption" style="margin:0 0 5px 0;"></OptionsEditView>
+        <optionsEditView :authOptions="voption" style="margin:0 0 5px 0;"></optionsEditView>
       </Drawer>
     </div>
   </div>
 </template>
 
 <script>
-import { Env } from "../../lib/env";
-import OptionsEditView from "./optionsEdit";
+import env from "../../lib/env";
+import optionsEditView from "./optionsEdit";
 
 export default {
   data() {
@@ -47,9 +47,6 @@ export default {
             return h(
               "a",
               {
-                attrs: {
-                  href: "#"
-                },
                 on: {
                   click: () => {
                     this.showEditView = true;
@@ -57,7 +54,7 @@ export default {
                   }
                 }
               },
-              "{...}"
+              "{ JSON }"
             );
           }
         },
@@ -85,7 +82,7 @@ export default {
       var _this = this;
       _this.loading = true;
       _this.$axios
-        .get(Env.ocelotConfig_host + "/admin/authoptions/getall")
+        .get(env.ocelotConfig_host + "/admin/authoptions/getall")
         .then(function(response) {
           _this.dataSource = response.data;
           _this.loading = false;
@@ -103,10 +100,9 @@ export default {
         title: "注意",
         content: "<p>确定是否删除当前行？</p>",
         onOk: () => {
-          debugger;
           _this.$axios
             .post(
-              Env.ocelotConfig_host +
+              env.ocelotConfig_host +
                 "/admin/authoptions/delete?id=" +
                 _this.voption.id
             )
@@ -138,7 +134,7 @@ export default {
     saveOption() {
       var _this = this;
       _this.$axios
-        .post(Env.ocelotConfig_host + "/admin/authoptions/save", _this.voption)
+        .post(env.ocelotConfig_host + "/admin/authoptions/save", _this.voption)
         .then(function(response) {
           _this.$Notice.success({
             title: "保存成功"
@@ -154,7 +150,7 @@ export default {
         });
     }
   },
-  components: { OptionsEditView }
+  components: { optionsEditView }
 };
 </script>
 

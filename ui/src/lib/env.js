@@ -42,6 +42,4 @@ class EnvVar {
 // }
 
 var Env = new EnvVar();
-export {
-    Env
-}
+export default Env

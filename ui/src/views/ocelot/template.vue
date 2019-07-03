@@ -26,10 +26,8 @@
 </template>
 
 <script>
-import axios from "axios";
-import { Env } from "../../lib/env";
-import { Identity } from "../../lib/identity";
-import { modelTempl } from "../modelTempl.js";
+import Env from "../../lib/env";
+import modelTempl from "../modelTempl.js";
 import TemplEditView from "./templateEdit";
 
 export default {
@@ -56,9 +54,6 @@ export default {
             return h(
               "a",
               {
-                attrs: {
-                  href: "#"
-                },
                 on: {
                   click: () => {
                     this.showTemplEditView(params.row);
@@ -77,9 +72,6 @@ export default {
             return h(
               "a",
               {
-                attrs: {
-                  href: "#"
-                },
                 on: {
                   click: () => {
                     this.viewJsonString = true;
@@ -91,7 +83,7 @@ export default {
                   }
                 }
               },
-              "{...}"
+              "{ JSON }"
             );
           }
         },
@@ -122,9 +114,9 @@ export default {
   methods: {
     refreshData() {
       var _this = this;
-      Identity.getAccessToken().then(function(token) {
-        Identity.ensureLogedin();
-        axios
+      _this.$webapi.identity.getAccessToken().then(function(token) {
+        _this.$webapi.identity.ensureLogedin();
+        _this.$axios
           .get(Env.ocelotConfig_host + "/admin/template/getall")
           .then(response => {
             _this.dataSource = response.data;
@@ -140,8 +132,8 @@ export default {
     },
     saveTemplate() {
       var _this = this;
-      Identity.getAccessToken().then(function(token) {
-        axios
+      _this.$webapi.identity.getAccessToken().then(function(token) {
+        _this.$axios
           .post(Env.ocelotConfig_host + "/admin/template/save", _this.vtempl)
           .then(response => {
             _this.$Notice.success({
@@ -173,8 +165,8 @@ export default {
         title: "注意",
         content: "<p>是否删除当前模板？</p>",
         onOk: () => {
-          Identity.getAccessToken().then(function(token) {
-            axios
+          _this.$webapi.identity.getAccessToken().then(function(token) {
+            _this.$axios
               .post(
                 Env.ocelotConfig_host +
                   "/admin/template/delete?version=" +

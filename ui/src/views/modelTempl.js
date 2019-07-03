@@ -181,6 +181,4 @@ class ModelTemplate {
 }
 
 var modelTempl = new ModelTemplate()
-export {
-    modelTempl
-}
+export default modelTempl

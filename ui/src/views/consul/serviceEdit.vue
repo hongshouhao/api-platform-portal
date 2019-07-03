@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { modelTempl } from "../modelTempl.js";
+import modelTempl from "../modelTempl.js";
 
 export default {
   data() {

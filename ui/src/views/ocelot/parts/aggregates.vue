@@ -60,14 +60,29 @@
         :array="vmodel.DelegatingHandlers"
       ></StringList>
 
-      <StringList class="mar10" title="UpstreamHttpMethod" :array="vmodel.UpstreamHttpMethod"></StringList>
+      <FormItem label="UpstreamHttpMethod" class="highlight">
+        <Row>
+          <Col span="1">
+            <Tooltip placement="right" content="请求方式" theme="light" :delay="500">
+              <Icon type="ios-information-circle"/>
+            </Tooltip>
+          </Col>
+          <Col span="23">
+            <HttpMethodEditor
+              :httpMethods="vmodel.UpstreamHttpMethod"
+              @update:httpMethods="val=>vmodel.UpstreamHttpMethod=val"
+            ></HttpMethodEditor>
+          </Col>
+        </Row>
+      </FormItem>
     </Form>
   </div>
 </template>
 
 <script>
 import StringList from "../../common/stringlist";
-import { modelTempl } from "../../modelTempl.js";
+import HttpMethodEditor from "../../common/httpmethodeditor";
+import modelTempl from "../../modelTempl.js";
 
 export default {
   data() {
@@ -79,7 +94,8 @@ export default {
   mounted() {},
   methods: {},
   components: {
-    StringList
+    StringList,
+    HttpMethodEditor
   }
 };
 </script>

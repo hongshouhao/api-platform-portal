@@ -1,29 +1,28 @@
-import axios from "axios"
-import Oidc from 'oidc-client'
-import { Env } from './env'
+import oidc from 'oidc-client'
+import env from './env'
 
-class IdentityClass {
-    constructor() {
-        Oidc.Log.logger = window.console;
-        Oidc.Log.level = Oidc.Log.DEBUG;
+export default class IdentityClient {
+    constructor(axios) {
+        oidc.Log.logger = window.console;
+        oidc.Log.level = oidc.Log.DEBUG;
         var settings = {
-            authority: Env.identityServer_host,
-            client_id: Env.client_id,
-            client_secret: Env.client_secret,
-            redirect_uri: Env.redirect_uri,
+            authority: env.identityServer_host,
+            client_id: env.client_id,
+            client_secret: env.client_secret,
+            redirect_uri: env.redirect_uri,
             post_logout_redirect_uri: window.location,
             response_type: "id_token token",
-            scope: Env.scope,
+            scope: env.scope,
             loadUserInfo: true,
             revokeAccessTokenOnSignout: true,
-            silent_redirect_uri: Env.silent_redirect_uri,
+            silent_redirect_uri: env.silent_redirect_uri,
             automaticSilentRenew: true,
-            userStore: new Oidc.WebStorageStateStore({
+            userStore: new oidc.WebStorageStateStore({
                 store: window.localStorage
             })
         };
 
-        var mgr = new Oidc.UserManager(settings);
+        var mgr = new oidc.UserManager(settings);
 
         function handleCallback() {
             mgr.signinRedirectCallback().then(function (user) {
@@ -97,9 +96,4 @@ class IdentityClass {
         mgr.events.addAccessTokenExpiring(function () { });
         mgr.events.addUserSignedOut(function () { });
     }
-}
-
-var Identity = new IdentityClass()
-export {
-    Identity
 }

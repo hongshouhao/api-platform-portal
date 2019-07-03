@@ -102,7 +102,6 @@ export default {
       return result;
     },
     loadWellKnown() {
-      debugger;
       var _this = this;
       if (_this.idsHost) {
         _this.$axios

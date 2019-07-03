@@ -105,12 +105,6 @@
           </FormItem>
         </Col>
       </Row>
-      <!-- <HttpMethodEditor
-        class="mar10 highlight"
-        title="UpstreamHttpMethod"
-        tooltip="请求方式"
-        :array="vmodel.UpstreamHttpMethod"
-      ></HttpMethodEditor>-->
       <FormItem label="UpstreamHttpMethod" class="highlight">
         <Row>
           <Col span="1">
@@ -119,7 +113,10 @@
             </Tooltip>
           </Col>
           <Col span="23">
-            <HttpMethodEditor :httpMethods="vmodel.UpstreamHttpMethod"></HttpMethodEditor>
+            <HttpMethodEditor
+              :httpMethods="vmodel.UpstreamHttpMethod"
+              @update:httpMethods="val=>onPropertyChanged(val,'UpstreamHttpMethod')"
+            ></HttpMethodEditor>
           </Col>
         </Row>
       </FormItem>
@@ -332,7 +329,7 @@
 </template>
 
 <script>
-import { Env } from "../../../lib/env";
+import Env from "../../../lib/env";
 import KeyValueEditor from "../../common/keyvalueeditor";
 import HttpMethodEditor from "../../common/httpmethodeditor";
 import StringList from "../../common/stringlist";
@@ -380,9 +377,6 @@ export default {
       );
       _this.url = slted.Authority;
     }
-  },
-  watch: {
-    vmodel(val) {}
   },
   components: {
     KeyValueEditor,
