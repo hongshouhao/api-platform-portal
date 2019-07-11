@@ -16,8 +16,7 @@ export default {
       .then((redirectPath) => {
         this.$router.push(redirectPath)
       })
-      .catch((err) => {
-        console.error(err)
+      .catch(() => {
         this.$router.push('/signincallbackerror')
       })
   }

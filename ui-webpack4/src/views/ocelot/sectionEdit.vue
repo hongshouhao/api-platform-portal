@@ -201,7 +201,6 @@ export default {
           this.vconfig.ReRoutes.push(
             JSON.parse(JSON.stringify(templ.ReRoutes[0]))
           )
-          debugger
           this.slctedReRoutePanel =
             'reRoute' + (this.vconfig.ReRoutes.length - 1).toString()
           break

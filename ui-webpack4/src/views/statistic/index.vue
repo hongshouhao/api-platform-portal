@@ -30,7 +30,7 @@
         <Col span="2">
         <Input v-model="filter.histogramInterval"
                placeholder="统计周期"
-               @on-enter="loadChart"></Input>
+               @on-enter="loadChart" />
         </Col>
       </Row>
     </div>

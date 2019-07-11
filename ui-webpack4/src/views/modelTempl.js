@@ -1,13 +1,13 @@
 class ModelTemplate {
-  constructor () {
+  constructor() {
     this.getOcelotConfigSection = function () {
       var templ = {
         name: new Date().getTime(),
         jsonString: JSON.stringify(this.getOcelotConfigurationSchema(), null, 2),
         enable: false,
         description: '',
-        createTime: new Date().toLocaleString(),
-        modifiedTime: new Date().toLocaleString()
+        createTime: new Date().format("yyyy-MM-dd hh:mm:ss"),
+        modifiedTime: new Date().format("yyyy-MM-dd hh:mm:ss")
       }
 
       return JSON.parse(JSON.stringify(templ))
@@ -154,7 +154,7 @@ class ModelTemplate {
     }
     this.getIdentityAuthOptions = function () {
       return {
-        AuthScheme: 'Bearer',
+        AuthScheme: 'Default',
         Authority: '',
         ApiName: '',
         ApiSecret: '',
@@ -180,5 +180,4 @@ class ModelTemplate {
   }
 }
 
-var modelTempl = new ModelTemplate()
-export default modelTempl
+export default new ModelTemplate()

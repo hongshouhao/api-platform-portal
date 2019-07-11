@@ -12,7 +12,7 @@ import env from '../../global'
 export default {
   data () {
     return {
-      alertUrl: env.karma_home
+      alertUrl: env.karma_host
     }
   }
 }

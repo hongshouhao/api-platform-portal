@@ -123,7 +123,7 @@ export default {
               '/admin/authoptions/delete?id=' +
               _this.voption.id
             )
-            .then(function (response) {
+            .then(function () {
               _this.$Notice.success({
                 title: '删除成功'
               })
@@ -142,8 +142,8 @@ export default {
     addNewOption () {
       this.voption = {
         description: '',
-        createTime: new Date().toLocaleString(),
-        modifiedTime: new Date().toLocaleString(),
+        createTime: new Date().format("yyyy-MM-dd hh:mm:ss"),
+        modifiedTime: new Date().format("yyyy-MM-dd hh:mm:ss"),
         jsonString: ''
       }
       this.showEditView = true
@@ -152,7 +152,7 @@ export default {
       var _this = this
       _this.$axios
         .post(env.ocelotAdmin_host + '/admin/authoptions/save', _this.voption)
-        .then(function (response) {
+        .then(function () {
           _this.$Notice.success({
             title: '保存成功'
           })
@@ -165,7 +165,8 @@ export default {
             desc: error
           })
         })
-    }
+    },
+
   },
   components: { optionsEditView }
 }
