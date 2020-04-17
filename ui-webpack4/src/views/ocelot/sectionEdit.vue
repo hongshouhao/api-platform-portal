@@ -38,12 +38,13 @@
     </Form>
     <Divider />
 
-    <Tabs value="ReRoute"
+    <Tabs :value="defaultTab"
           @on-click="tabChanged"
           style="margin:5px 0;">
       <Select placeholder="模板"
               slot="extra"
               v-model="sltedTempl"
+              @on-change="sltedTemplChanged"
               @on-open-change="loadTempls"
               :loading="loadingTempl"
               style="width:150px;margin:0 10px 5px 0">
@@ -54,9 +55,17 @@
       <Button type="primary"
               slot="extra"
               icon="md-add"
+              v-if="!vsection.isGlobal"
               @click="addConfigItem"
               style="margin:0 0 5px 0;">{{configType}}</Button>
+      <TabPane label="Global"
+               v-if="vsection.isGlobal"
+               name="Global">
+        <GlobalConfigView class="content"
+                          :vmodel="vconfig.GlobalConfiguration"></GlobalConfigView>
+      </TabPane>
       <TabPane label="ReRoutes"
+               v-if="!vsection.isGlobal"
                name="ReRoute">
         <Collapse v-model="slctedReRoutePanel"
                   accordion>
@@ -79,6 +88,7 @@
         </Collapse>
       </TabPane>
       <TabPane label="DynamicReRoutes"
+               v-if="!vsection.isGlobal"
                name="DynamicReRoute">
         <Collapse v-model="slctedDynamicReRoutePanel"
                   accordion>
@@ -101,6 +111,7 @@
         </Collapse>
       </TabPane>
       <TabPane label="Aggregates"
+               v-if="!vsection.isGlobal"
                name="Aggregate">
         <Collapse v-model="slctedAggregatePanel"
                   accordion>
@@ -129,6 +140,7 @@
 <script>
 import env from '../../global'
 import modelTempl from '../modelTempl'
+import GlobalConfigView from './parts/global'
 import ReRoutesView from './parts/reroutes'
 import DynamicReRoutesView from './parts/dynamic'
 import AggregatesView from './parts/aggregates'
@@ -137,14 +149,17 @@ export default {
   data () {
     return {
       vsection: {
-        name: '',
-        description: '',
-        enable: false,
-        createTime: '',
-        modifiedTime: '',
-        jsonString: ''
+        type: Object,
+        default () {
+          return modelTempl.getOcelotConfigSection()
+        }
       },
-      vconfig: modelTempl.getOcelotConfigurationSchema(),
+      vconfig: {
+        type: Object,
+        default () {
+          return modelTempl.getOcelotConfigurationSchema()
+        }
+      },
       configType: 'ReRoute',
       sltedTempl: '',
       slctedReRoutePanel: '',
@@ -164,22 +179,47 @@ export default {
       default: false
     }
   },
+  computed: {
+    defaultTab: {
+      get () {
+        return this.vsection.isGlobal ? "Global" : "ReRoute";
+      }
+    }
+  },
   mounted () { },
   watch: {
     section () {
       var _this = this
       _this.vsection = _this.section
+
       if (_this.vsection.jsonString) {
         _this.vconfig = JSON.parse(_this.vsection.jsonString)
       }
-      if (_this.forUpdate === false) {
-        _this.vconfig.ReRoutes = []
-        _this.vconfig.DynamicReRoutes = []
-        _this.vconfig.Aggregates = []
+      if (_this.vsection.isGlobal) {
+        if (_this.vconfig.GlobalConfiguration === undefined) {
+          _this.vconfig.GlobalConfiguration = modelTempl.getOcelotConfigurationSchema().GlobalConfiguration
+        }
+      }
+      else {
+        if (_this.forUpdate === false) {
+          _this.vconfig.ReRoutes = []
+          _this.vconfig.DynamicReRoutes = []
+          _this.vconfig.Aggregates = []
+        }
       }
     },
     vconfig: {
-      handler (val, oldVal) {
+      handler (val) {
+        var _this = this
+        if (_this.vsection.isGlobal) {
+          delete val.ReRoutes
+          delete val.DynamicReRoutes
+          delete val.Aggregates
+        }
+        else {
+          delete val.GlobalConfiguration
+        }
+
         this.vsection.jsonString = JSON.stringify(val)
       },
       deep: true
@@ -188,6 +228,11 @@ export default {
   methods: {
     tabChanged (name) {
       this.configType = name
+    },
+    sltedTemplChanged () {
+      if (this.vsection.isGlobal) {
+        this.vconfig.GlobalConfiguration = JSON.parse(this.sltedTempl).GlobalConfiguration
+      }
     },
     addConfigItem () {
       var templ = {}
@@ -247,6 +292,7 @@ export default {
     }
   },
   components: {
+    GlobalConfigView,
     ReRoutesView,
     DynamicReRoutesView,
     AggregatesView

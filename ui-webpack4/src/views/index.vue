@@ -35,6 +35,10 @@
           <Icon type="md-clipboard" />
           <span>模板配置</span>
           </MenuItem>
+           <MenuItem name="test">
+          <Icon type="md-clipboard" />
+          <span>测试</span>
+          </MenuItem>
         </Submenu>
         <MenuItem name="authoptions">
         <Icon type="md-lock" />

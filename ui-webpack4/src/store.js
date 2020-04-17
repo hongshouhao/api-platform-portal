@@ -5,6 +5,14 @@ import env from './global'
 
 Vue.use(Vuex)
 export default new Vuex.Store({
+  state: {
+    servicesInConsul: []
+  },
+  mutations: {
+    setServices (state, value) {
+      state.servicesInConsul = value;
+    }
+  },
   modules: {
     oidcStore: vuexOidcCreateStoreModule(
       env.oidcSettings,

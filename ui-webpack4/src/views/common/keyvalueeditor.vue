@@ -18,8 +18,8 @@
             size="18"
             style="margin-right:5px;"></Icon>
     </a>
-    <div v-for="(item,index) in arr"
-         :key="title+index"
+    <div v-for="(item, index) in list"
+         :key="title + index"
          style="margin-bottom:5px;">
       <Row>
         <Col span="12">
@@ -47,12 +47,7 @@ export default {
   data () {
     return {
       init: false,
-      arr: {
-        type: Array,
-        default () {
-          return []
-        }
-      }
+      list: []
     }
   },
   props: {
@@ -76,16 +71,16 @@ export default {
   watch: {
     property () {
       this.init = true
-      this.arr = this.objToArray(this.property)
+      this.list = this.objToArray(this.property)
     },
-    arr: {
-      handler (newVal) {
+    list: {
+      handler () {
         if (this.init === true) {
           this.init = false
           return
         }
         let obj = {}
-        this.arr.forEach(ele => {
+        this.list.forEach(ele => {
           obj[ele.key] = ele.value
         })
         this.$emit('update:property', obj)
@@ -95,13 +90,13 @@ export default {
   },
   methods: {
     add () {
-      this.arr.push({
+      this.list.push({
         key: '',
         value: ''
       })
     },
     onDelete (index) {
-      this.arr.splice(index, 1)
+      this.list.splice(index, 1)
     },
     objToArray (property) {
       var result = []

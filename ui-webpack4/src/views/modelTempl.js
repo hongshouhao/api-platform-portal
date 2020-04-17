@@ -5,12 +5,13 @@ class ModelTemplate {
         name: new Date().getTime(),
         jsonString: JSON.stringify(this.getOcelotConfigurationSchema(), null, 2),
         enable: false,
+        isGlobal: false,
         description: '',
         createTime: new Date().format("yyyy-MM-dd hh:mm:ss"),
         modifiedTime: new Date().format("yyyy-MM-dd hh:mm:ss")
       }
 
-      return JSON.parse(JSON.stringify(templ))
+      return templ
     }
     this.getOcelotConfigurationSchema = function () {
       var templ = {
@@ -130,7 +131,7 @@ class ModelTemplate {
           }
         }]
       }
-      return JSON.parse(JSON.stringify(templ))
+      return templ
     }
     this.getConsulServiceSchema = function () {
       return {
@@ -150,7 +151,7 @@ class ModelTemplate {
         description: '',
         version: new Date().getTime().toString()
       }
-      return JSON.parse(JSON.stringify(templ))
+      return templ
     }
     this.getIdentityAuthOptions = function () {
       return {

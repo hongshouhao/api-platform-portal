@@ -106,6 +106,7 @@
 </template>
 
 <script>
+import modelTempl from '../../modelTempl'
 export default {
   data () {
     return {}
@@ -113,7 +114,7 @@ export default {
   props: {
     vmodel: {
       type: Object,
-      default () { return {} }
+      default () { return modelTempl.getOcelotConfigurationSchema().GlobalConfiguration }
     }
   },
   mounted () { },

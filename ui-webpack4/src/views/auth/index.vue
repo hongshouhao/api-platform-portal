@@ -1,33 +1,46 @@
 <template>
-  <card>
+  <card dis-hover>
     <div class="content">
-      <Button icon="ios-refresh"
-              type="primary"
-              :style="{margin:'10px'}"
-              @click="refreshData">刷新</Button>
-      <Button icon="md-add"
-              type="primary"
-              :style="{margin:'10px 5px'}"
-              @click="addNewOption">新增</Button>
-      <Table :columns="columns"
-             :data="dataSource"
-             :loading="loading"
-             stripe></Table>
-      <Drawer width="800"
-              v-model="showEditView"
-              :closable="false">
-        <div slot="header"
-             class="drawerheader">
+      <Button
+        icon="ios-refresh"
+        type="primary"
+        :style="{ margin: '10px' }"
+        @click="refreshData"
+        >刷新</Button
+      >
+      <Button
+        icon="md-add"
+        type="primary"
+        :style="{ margin: '10px 5px' }"
+        @click="addNewOption"
+        >新增</Button
+      >
+      <Table
+        :columns="columns"
+        :data="dataSource"
+        :loading="loading"
+        stripe
+      ></Table>
+      <Drawer width="800" v-model="showEditView" :closable="false">
+        <div slot="header" class="drawerheader">
           <p>配置详情</p>
-          <Button type="success"
-                  style="float: right;margin-right: 8px"
-                  @click="saveOption">Save</Button>
-          <Button type="error"
-                  style="float: right;margin-right: 8px"
-                  @click="deleteOption">Delete</Button>
+          <Button
+            type="success"
+            style="float: right;margin-right: 8px"
+            @click="saveOption"
+            >Save</Button
+          >
+          <Button
+            type="error"
+            style="float: right;margin-right: 8px"
+            @click="deleteOption"
+            >Delete</Button
+          >
         </div>
-        <optionsEditView :authOptions="voption"
-                         style="margin:0 0 5px 0;"></optionsEditView>
+        <optionsEditView
+          :authOptions="voption"
+          style="margin:0 0 5px 0;"
+        ></optionsEditView>
       </Drawer>
     </div>
   </card>
@@ -38,7 +51,7 @@ import env from '../../global'
 import optionsEditView from './optionsEdit'
 
 export default {
-  data () {
+  data() {
     return {
       loading: false,
       editState: false,
@@ -91,27 +104,27 @@ export default {
       dataSource: []
     }
   },
-  mounted () {
+  mounted() {
     this.refreshData()
   },
   methods: {
-    refreshData () {
+    refreshData() {
       var _this = this
       _this.loading = true
       _this.$axios
         .get(env.ocelotAdmin_host + '/admin/authoptions/getall')
-        .then(function (response) {
+        .then(function(response) {
           _this.dataSource = response.data
           _this.loading = false
         })
-        .catch(function (error) {
+        .catch(function(error) {
           _this.$Notice.error({
             title: '获取数据失败',
             desc: error
           })
         })
     },
-    deleteOption () {
+    deleteOption() {
       var _this = this
       _this.$Modal.confirm({
         title: '注意',
@@ -120,17 +133,17 @@ export default {
           _this.$axios
             .post(
               env.ocelotAdmin_host +
-              '/admin/authoptions/delete?id=' +
-              _this.voption.id
+                '/admin/authoptions/delete?id=' +
+                _this.voption.id
             )
-            .then(function () {
+            .then(function() {
               _this.$Notice.success({
                 title: '删除成功'
               })
               _this.showEditView = false
               _this.refreshData()
             })
-            .catch(function (error) {
+            .catch(function(error) {
               _this.$Notice.error({
                 title: '删除失败:',
                 desc: error
@@ -139,34 +152,33 @@ export default {
         }
       })
     },
-    addNewOption () {
+    addNewOption() {
       this.voption = {
         description: '',
-        createTime: new Date().format("yyyy-MM-dd hh:mm:ss"),
-        modifiedTime: new Date().format("yyyy-MM-dd hh:mm:ss"),
+        createTime: new Date().format('yyyy-MM-dd hh:mm:ss'),
+        modifiedTime: new Date().format('yyyy-MM-dd hh:mm:ss'),
         jsonString: ''
       }
       this.showEditView = true
     },
-    saveOption () {
+    saveOption() {
       var _this = this
       _this.$axios
         .post(env.ocelotAdmin_host + '/admin/authoptions/save', _this.voption)
-        .then(function () {
+        .then(function() {
           _this.$Notice.success({
             title: '保存成功'
           })
           _this.showEditView = false
           _this.refreshData()
         })
-        .catch(function (error) {
+        .catch(function(error) {
           _this.$Notice.error({
             title: '保存失败:',
             desc: error
           })
         })
-    },
-
+    }
   },
   components: { optionsEditView }
 }

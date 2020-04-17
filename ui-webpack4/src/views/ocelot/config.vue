@@ -1,58 +1,71 @@
 <template>
-  <Card>
+  <Card dis-hover>
     <div class="panel main-content-con">
       <Tabs value="table">
-        <TabPane label="Table View"
-                 name="table">
+        <TabPane label="Table View" name="table">
           <div class="content">
-            <Button icon="ios-refresh"
-                    type="primary"
-                    :style="{margin:'10px'}"
-                    @click="refreshData">刷新</Button>
-            <Button icon="md-add"
-                    type="primary"
-                    @click="addNewSection"
-                    :style="{margin:'10px 5px'}">新增</Button>
-            <Button icon="ios-locate-outline"
-                    type="primary"
-                    @click="verifySelectedSections"
-                    :style="{margin:'10px 5px'}">验证</Button>
-            <Table ref="sectionTable"
-                   :columns="columns"
-                   :data="dataSource"
-                   :loading="loading"
-                   stripe></Table>
+            <Button
+              icon="ios-refresh"
+              type="primary"
+              :style="{ margin: '10px' }"
+              @click="refreshData"
+              >刷新</Button
+            >
+            <Button
+              icon="md-add"
+              type="primary"
+              @click="addNewSection"
+              :style="{ margin: '10px 5px' }"
+              >新增</Button
+            >
+            <Button
+              icon="ios-locate-outline"
+              type="primary"
+              @click="verifySelectedSections"
+              :style="{ margin: '10px 5px' }"
+              >验证</Button
+            >
+            <Table
+              ref="sectionTable"
+              :columns="columns"
+              :data="dataSource"
+              :loading="loading"
+              stripe
+            ></Table>
           </div>
         </TabPane>
 
         <TabPane label="JSON View">
-          <div style="overflow-y:scroll">
-            <highlight-code lang="JSON">{{dataSourceJString}}</highlight-code>
-          </div>
+          <highlight-code lang="JSON">{{
+            dataSourceJsonString
+          }}</highlight-code>
         </TabPane>
       </Tabs>
-      <Drawer :closable="false"
-              width="800"
-              v-model="showEditView">
-        <div slot="header"
-             class="drawerheader">
+      <Drawer :closable="false" width="800" v-model="showEditView">
+        <div slot="header" class="drawerheader">
           <p>配置详情</p>
-          <Button type="success"
-                  style="float: right;margin-right: 8px"
-                  @click="saveSection">Save</Button>
-          <Button type="error"
-                  :disabled="forUpdate==false"
-                  style="float: right;margin-right: 8px"
-                  @click="deleteSection">Delete</Button>
+          <Button
+            type="success"
+            style="float: right;margin-right: 8px"
+            @click="saveSection"
+            >Save</Button
+          >
+          <Button
+            type="error"
+            :disabled="forUpdate == false"
+            style="float: right;margin-right: 8px"
+            @click="deleteSection"
+            >Delete</Button
+          >
         </div>
-        <EditView :section="vsection"
-                  :forUpdate="forUpdate"
-                  style="margin:0 0 5px 0;"></EditView>
+        <EditView
+          :section="vsection"
+          :forUpdate="forUpdate"
+          style="margin:0 0 5px 0;"
+        ></EditView>
       </Drawer>
-      <Modal v-model="viewJsonString"
-             footer-hide
-             width="800">
-        <highlight-code lang="JSON">{{json}}</highlight-code>
+      <Modal v-model="viewJsonString" footer-hide width="800">
+        <highlight-code lang="JSON">{{ json }}</highlight-code>
       </Modal>
     </div>
   </Card>
@@ -63,7 +76,7 @@ import modelTempl from '../modelTempl.js'
 import EditView from './sectionEdit'
 
 export default {
-  data () {
+  data() {
     return {
       vsection: {},
       columns: [
@@ -139,7 +152,7 @@ export default {
         }
       ],
       dataSource: [],
-      dataSourceJString: '',
+      dataSourceJsonString: '',
       showEditView: false,
       viewJsonString: false,
       json: {},
@@ -148,46 +161,48 @@ export default {
       loading: false
     }
   },
-  mounted () {
+  mounted() {
     this.refreshData()
   },
   methods: {
-    refreshData () {
+    refreshData() {
       var _this = this
       _this.loading = true
       _this.$ocelotAdmin.GetAllSections(
-        function (data) {
-          _this.dataSourceJString = JSON.stringify(data, null, 2)
+        function(data) {
+          _this.dataSourceJsonString = JSON.stringify(data, null, 2)
           _this.dataSource = data
           _this.loading = false
         },
-        function (errorThrown) {
-          if (errorThrown === 'Unauthorized') { _this.$Message.warning('登录过期，请重新登录') } else _this.$Message.warning('数据获取失败！')
+        function(errorThrown) {
+          if (errorThrown === 'Unauthorized') {
+            _this.$Message.warning('登录过期，请重新登录')
+          } else _this.$Message.warning('数据获取失败！')
         }
       )
     },
-    addNewSection () {
+    addNewSection() {
       this.vsection = modelTempl.getOcelotConfigSection()
       this.forUpdate = false
       this.showEditView = true
     },
-    editSection (row) {
+    editSection(row) {
       this.vsection = row
       this.forUpdate = true
       this.showEditView = true
     },
-    saveSection () {
+    saveSection() {
       var _this = this
       _this.$ocelotAdmin.SaveSection(
         _this.vsection,
-        function () {
+        function() {
           _this.$Notice.success({
             title: '保存成功'
           })
           _this.showEditView = false
           _this.refreshData()
         },
-        function (errorThrown) {
+        function(errorThrown) {
           _this.$Notice.error({
             title: '保存失败',
             desc: errorThrown
@@ -195,7 +210,7 @@ export default {
         }
       )
     },
-    deleteSection () {
+    deleteSection() {
       var _this = this
       _this.$Modal.confirm({
         title: '注意',
@@ -203,14 +218,14 @@ export default {
         onOk: () => {
           _this.$ocelotAdmin.DeleteSection(
             _this.vsection.name,
-            function () {
+            function() {
               _this.$Notice.success({
                 title: '删除成功'
               })
               _this.showEditView = false
               _this.refreshData()
             },
-            function (errorThrownn) {
+            function(errorThrownn) {
               _this.$Notice.error({
                 title: '删除失败:',
                 desc: errorThrownn
@@ -220,15 +235,15 @@ export default {
         }
       })
     },
-    verifySelectedSections () {
+    verifySelectedSections() {
       var _this = this
       var rows = _this.$refs.sectionTable.getSelection()
       _this.$ocelotAdmin.ValidateSection(
         rows,
-        function () {
+        function() {
           _this.$Notice.success({ title: '验证通过' })
         },
-        function (errorThrown) {
+        function(errorThrown) {
           _this.$Notice.error({
             title: '验证失败：',
             desc: errorThrown
@@ -243,9 +258,9 @@ export default {
 }
 </script>
 
-<style scoped>
-.mappingcontent {
-  height: 500px;
+<style>
+.ivu-tabs-tabpane code {
+  height: calc(100vh - 220px);
   overflow-y: scroll;
 }
 </style>

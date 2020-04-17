@@ -19,7 +19,7 @@
             style="margin-right:5px;"></Icon>
     </a>
     <div v-for="(item,index) in claims"
-         :key="title+index"
+         :key="index"
          style="margin-bottom:5px;">
       <Row>
         <Col span="24">
@@ -49,12 +49,7 @@ export default {
     return {
       wellKnown: {},
       init: false,
-      claims: {
-        type: Array,
-        default () {
-          return []
-        }
-      }
+      claims: []
     }
   },
   props: {
@@ -89,7 +84,7 @@ export default {
       this.claims = this.objToArray(this.property)
     },
     claims: {
-      handler (newVal) {
+      handler () {
         if (this.init === true) {
           this.init = false
           return

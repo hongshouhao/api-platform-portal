@@ -1,47 +1,36 @@
 <template>
   <Card dis-hover>
-    <p slot="title"
-       class="highlight">
-      {{title}}
-      <Tooltip placement="right"
-               content
-               theme="light"
-               :delay="500">
-        <p slot="content">{{tooltip}}</p>
+    <p slot="title" class="highlight">
+      {{ title }}
+      <Tooltip placement="right" content theme="light" :delay="500">
+        <p slot="content">{{ tooltip }}</p>
         <Icon type="ios-information-circle" />
       </Tooltip>
     </p>
-    <a href="#"
-       slot="extra"
-       @click.prevent="add">
-      <Icon type="md-add"
-            size="18"
-            style="margin-right:5px;"></Icon>
+    <a href="#" slot="extra" @click.prevent="add">
+      <Icon type="md-add" size="18" style="margin-right:5px;"></Icon>
     </a>
-    <div v-for="(item,index) in data"
-         :key="index"
-         style="margin-bottom:5px;">
+    <div v-for="(item, index) in hosts" :key="index" style="margin-bottom:5px;">
       <Row>
         <Col>
-        <Row>
-          <Col span="11"
-               class="host">
-          <Input v-model="item.Host">
-          <span slot="prepend">Host</span>
-          </Input>
-          </Col>
-          <Col span="11"
-               class="port">
-          <Input v-model="item.Port"
-                 Number>
-          <span slot="prepend">Port</span>
-          <Button slot="append"
+          <Row>
+            <Col span="11" class="host">
+              <Input v-model="item.Host">
+                <span slot="prepend">Host</span>
+              </Input>
+            </Col>
+            <Col span="11" class="port">
+              <Input v-model="item.Port" Number>
+                <span slot="prepend">Port</span>
+                <Button
+                  slot="append"
                   icon="md-close"
                   size="small"
-                  @click="onDelete(index)"></Button>
-          </Input>
-          </Col>
-        </Row>
+                  @click="onDelete(index)"
+                ></Button>
+              </Input>
+            </Col>
+          </Row>
         </Col>
       </Row>
     </div>
@@ -50,10 +39,8 @@
 
 <script>
 export default {
-  data () {
-    return {
-      data: []
-    }
+  data() {
+    return {}
   },
   props: {
     title: {
@@ -64,30 +51,23 @@ export default {
       type: String,
       default: ''
     },
-    array: {
+    hosts: {
       type: Array,
-      default () {
-        return [{
-          Host: '',
-          Port: 80
-        }]
+      default() {
+        return []
       }
     }
   },
-  watch: {
-    array () {
-      this.data = this.array
-    }
-  },
+  watch: {},
   methods: {
-    add () {
-      this.data.push({
+    add() {
+      this.hosts.push({
         host: '',
-        port: 0
+        port: 80
       })
     },
-    onDelete (index) {
-      this.data.splice(index, 1)
+    onDelete(index) {
+      this.hosts.splice(index, 1)
     }
   }
 }

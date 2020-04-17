@@ -1,43 +1,41 @@
 <template>
-  <card>
+  <card dis-hover>
     <div class="searchPanel">
       <Row>
-        <Col span="2"
-             class="searchPanel_label">统计范围：</Col>
+        <Col span="2" class="searchPanel_label">统计范围：</Col>
         <Col span="4">
-        <Select v-model="filter.uriPrefix"
-                filterable
-                @on-change="loadChart">
-          <Option v-for="item in endpoints"
-                  :value="item"
-                  :key="item">{{ item }}</Option>
-        </Select>
+          <Select v-model="filter.uriPrefix" filterable @on-change="loadChart">
+            <Option v-for="item in endpoints" :value="item" :key="item">{{
+              item
+            }}</Option>
+          </Select>
         </Col>
-        <Col span="1"
-             class="searchPanel_label">时间：</Col>
+        <Col span="1" class="searchPanel_label">时间：</Col>
         <Col span="4">
-        <DatePicker type="daterange"
-                    format="yyyy年MM月dd日"
-                    :options="datePickerOptions"
-                    placement="bottom-end"
-                    placeholder="Select date"
-                    v-model="filter.dateRange"
-                    @on-change="loadChart"
-                    style="width:100%"></DatePicker>
+          <DatePicker
+            type="daterange"
+            format="yyyy年MM月dd日"
+            :options="datePickerOptions"
+            placement="bottom-end"
+            placeholder="Select date"
+            v-model="filter.dateRange"
+            @on-change="loadChart"
+            style="width:100%"
+          ></DatePicker>
         </Col>
-        <Col span="2"
-             class="searchPanel_label">统计周期：</Col>
+        <Col span="2" class="searchPanel_label">统计周期：</Col>
         <Col span="2">
-        <Input v-model="filter.histogramInterval"
-               placeholder="统计周期"
-               @on-enter="loadChart" />
+          <Input
+            v-model="filter.histogramInterval"
+            placeholder="统计周期"
+            @on-enter="loadChart"
+          />
         </Col>
       </Row>
     </div>
-    <br>
+    <br />
     <div style="position:relative">
-      <div id="barChart"
-           :style="{width: '100%', height: '350px'}"></div>
+      <div id="barChart" :style="{ width: '100%', height: '350px' }"></div>
     </div>
   </card>
 </template>
@@ -48,7 +46,7 @@ const { Client } = require('@elastic/elasticsearch')
 const client = new Client({ node: env.elasticserach_host })
 const Enumerable = require('linq')
 export default {
-  data () {
+  data() {
     return {
       endpoints: [],
       filter: {
@@ -60,7 +58,7 @@ export default {
         shortcuts: [
           {
             text: '近一周',
-            value () {
+            value() {
               const end = new Date()
               const start = new Date()
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
@@ -69,7 +67,7 @@ export default {
           },
           {
             text: '近一月',
-            value () {
+            value() {
               const end = new Date()
               const start = new Date()
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
@@ -78,7 +76,7 @@ export default {
           },
           {
             text: '近三月',
-            value () {
+            value() {
               const end = new Date()
               const start = new Date()
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
@@ -87,7 +85,7 @@ export default {
           },
           {
             text: '近一年',
-            value () {
+            value() {
               const end = new Date()
               const start = new Date()
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 365)
@@ -98,20 +96,20 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     const _this = this
     const end = new Date()
     const start = new Date()
     start.setTime(start.getTime() - 3600 * 1000 * 24 * 365)
     _this.filter.dateRange = [start, end]
 
-    _this.getUriPatterns().then(function () {
+    _this.getUriPatterns().then(function() {
       _this.filter.uriPrefix = _this.endpoints[0]
       _this.loadChart()
     })
   },
   methods: {
-    loadChart () {
+    loadChart() {
       const _this = this
       client
         .search({
@@ -186,7 +184,7 @@ export default {
             timeout: '30000ms'
           }
         })
-        .then(function (response) {
+        .then(function(response) {
           let chartoptions = {
             title: {
               text: 'IP/API访问频次',
@@ -236,7 +234,7 @@ export default {
           })
         })
     },
-    readXAxis (res) {
+    readXAxis(res) {
       let xdates = []
       let topbuckets = res.body.aggregations.datehistogram_terms.buckets
       for (let i = 0; i < topbuckets.length; i++) {
@@ -262,10 +260,10 @@ export default {
         }
       ]
     },
-    PrefixInteger (num, n) {
+    PrefixInteger(num, n) {
       return (Array(n).join(0) + num).slice(-n)
     },
-    readYAxis (res) {
+    readYAxis(res) {
       let topbuckets = res.body.aggregations.datehistogram_terms.buckets
       let ipbuckets = Enumerable.from(topbuckets).selectMany(
         s => s.by_ip.buckets
@@ -334,7 +332,7 @@ export default {
       }
       return barItems
     },
-    getUriPatterns () {
+    getUriPatterns() {
       let _this = this
       return client
         .search({
@@ -373,7 +371,7 @@ export default {
             }
           }
         })
-        .then(function (response) {
+        .then(function(response) {
           let fulluris = Enumerable.from(
             response.body.aggregations.uri_aggs.buckets
           )

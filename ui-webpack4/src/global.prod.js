@@ -1,15 +1,16 @@
 'use strict'
 let env = {
+  virtualpath: "",
   oidcSettings: {
     authority: 'http://192.168.122.17:8610',
-    client_id: 'backend_admin_js',
-    client_secret: 'secret',
-    response_type: 'id_token token',
-    scope: 'openid roles name',
+    client_id: 'api_platform_admin',
+    client_secret: '59ecca08-a33d-60c8-e63b-3a884a6c390c',
+    response_type: 'code',
+    scope: 'openid roles cnname',
     loadUserInfo: true,
     revokeAccessTokenOnSignout: true,
-    redirect_uri: window.document.location.origin + '/signincallback',
-    silent_redirect_uri: window.document.location.origin + '/silentcallback',
+    redirect_uri: '/#/signincallback',
+    silent_redirect_uri: '/#/silentcallback',
     post_logout_redirect_uri: '',
     automaticSilentRenew: true
     // userStore: new oidc.WebStorageStateStore({
@@ -28,13 +29,14 @@ let env = {
   identityServerAdmin_host: 'http://192.168.122.17:8620'
 }
 
-function getRootPath () {
-  var curWwwPath = window.document.location.href;
-  var pathName = window.document.location.pathname;
-  var pos = curWwwPath.indexOf(pathName);
-  var localhostPaht = curWwwPath.substring(0, pos);
-  var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
-  return (localhostPaht + projectName);
+var host = window.location.protocol + "//" + window.location.host;
+if (env.virtualpath) {
+  env.oidcSettings.redirect_uri = host + "/" + env.virtualpath + env.oidcSettings.redirect_uri
+  env.oidcSettings.silent_redirect_uri = host + "/" + env.virtualpath + env.oidcSettings.silent_redirect_uri
+}
+else {
+  env.oidcSettings.redirect_uri = host + env.oidcSettings.redirect_uri
+  env.oidcSettings.silent_redirect_uri = host + env.oidcSettings.silent_redirect_uri
 }
 
 export default env

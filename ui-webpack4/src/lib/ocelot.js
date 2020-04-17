@@ -1,5 +1,5 @@
 export default class OcelotClient {
-  constructor (ocelotHost, ocelotAdminHost, axios) {
+  constructor(ocelotHost, ocelotAdminHost, axios) {
     this.GetAllSections = function (ifSuccess, ifError) {
       axios.get(ocelotAdminHost + '/admin/configuration/getAllSections')
         .then(response =>

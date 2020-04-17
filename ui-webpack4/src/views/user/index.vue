@@ -38,7 +38,7 @@ export default {
     userlogo: {
       get () {
         return avatar
-      } }
+      }    }
   },
   methods: {
     ...mapActions('oidcStore', [

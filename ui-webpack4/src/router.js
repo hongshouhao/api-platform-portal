@@ -9,16 +9,16 @@ import OcelotAdminView from '@/views/ocelot/admin.vue'
 import TemplateView from '@/views/ocelot/template.vue'
 import StatisticView from '@/views/statistic/index.vue'
 import ConsulAdminView from '@/views/consul'
+import ServiceChecksView from '@/views/consul/checks'
 import SigninCallback from '@/oidc/signincallback'
 import SigninCallbackError from '@/oidc/signincallbackerror'
 
 import AlertsView from '@/views/alerts/'
 import MonitorView from '@/views/dashbord/'
 import AuthOptionsView from '@/views/auth/'
-
 Vue.use(Router)
 const router = new Router({
-  mode: 'history',
+  mode: 'hash',
   base: process.env.BASE_URL,
   routes: [
     {
@@ -73,7 +73,19 @@ const router = new Router({
         meta: {
           auth: true
         },
-        component: ConsulAdminView
+        component: ConsulAdminView,
+        children: [{
+          path: 'checks',
+          component: ServiceChecksView
+        }]
+      },
+      {
+        path: '/serviceChecks',
+        name: 'serviceChecks',
+        meta: {
+          auth: true
+        },
+        component: ServiceChecksView,
       },
       {
         path: '/alerts',

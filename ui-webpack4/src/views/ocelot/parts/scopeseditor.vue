@@ -1,6 +1,5 @@
 <template>
   <Select v-model="innerscopes"
-          multiple
           not-found-text="请选择一个授权方案">
     <Option v-for="item in supportedScopes"
             :value="item"

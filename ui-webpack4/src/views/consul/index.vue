@@ -1,145 +1,67 @@
 <template>
-  <Card>
-    <div class="panel">
-      <div class="content">
-        <i-select style="width:200px"
-                  @on-change="dcChanged"
-                  v-model="selecteddc">
-          <i-option v-for="item in datacenters"
-                    :value="item"
-                    :key="item">{{ item }}</i-option>
-        </i-select>
-        <Button icon="md-add"
-                type="primary"
-                :style="{margin:'10px 5px'}"
-                @click="editState=true">注册新服务</Button>
-        <Table ref="svcTable"
-               :columns="columns"
-               :data="services_per_page"
-               :loading="loading"
-               stripe></Table>
-        <br>
-        <Page :total="serviceCount"
-              show-elevator
-              @on-change="pageChange" />
-      </div>
-      <Drawer title="服务信息"
-              :closable="false"
-              width="800"
-              v-model="editState"
-              style="overflow:hidden">
-        <serviceEditView ref="serviceEditView"
-                         v-if="editState"
-                         :model="model"></serviceEditView>
-        <div class="drawer-footer-buttons">
-          <Button type="primary"
-                  @click="save">Save</Button>
+  <Card dis-hover>
+    <i-select style="width:200px"
+              @on-change="dcChanged"
+              v-model="selecteddc">
+      <i-option v-for="item in datacenters"
+                :value="item"
+                :key="item">{{
+        item
+      }}</i-option>
+    </i-select>
+    <RadioGroup v-model="filter"
+                style="margin-left:20px"
+                @on-change=filterServices>
+      <Radio label="all">
+        <Icon type="md-list" />
+        <span>All</span>
+      </Radio>
+      <Radio label="critical">
+        <Icon type="md-close-circle" />
+        <span>Critical</span>
+      </Radio>
+      <Radio label="passing">
+        <Icon type="ios-checkmark-circle" />
+        <span>Passing</span>
+      </Radio>
+    </RadioGroup>
+    <div class="wrapper">
+      <Card class="wrapper-content"
+            v-for="(item, index) in services"
+            :key="index">
+        <div slot="title"
+             style="margin:8px auto">
+          <a href="#"
+             @click.prevent="serviceChecks(item)">
+            <Icon type="ios-loop-strong"></Icon>
+            {{ item.Service }}
+          </a>
         </div>
-      </Drawer>
+        <div>{{ item.Node }}</div>
+        <div>{{ item.ServiceHost }}</div>
+        <div>{{ item.Meta?item.Meta.description:""}}</div>
+        <Divider />
+        <div>
+          <Tag color="success">{{item.SummaryPassed}}</Tag>
+          <Tag color="error">{{item.SummaryError}}</Tag>
+        </div>
+      </Card>
     </div>
   </Card>
 </template>
 
 <script>
 import env from '../../global'
-import serviceEditView from './serviceEdit'
+var enumerable = require('linq')
 var consul = require('consul')({ host: new URL(env.consul_host).hostname })
-var Enumerable = require('linq')
 export default {
   data () {
     return {
-      loading: false,
-      editState: false,
       selecteddc: '',
       datacenters: [],
-      services: [],
-      services_per_page: [],
-      serviceCount: 0,
-      columns: [
-        {
-          type: 'index',
-          width: 60,
-          align: 'center'
-        },
-        {
-          title: 'Name',
-          key: 'Service'
-        },
-        {
-          title: 'Host',
-          key: 'ServiceHost',
-          width: 150
-        },
-        {
-          title: 'Node',
-          key: 'Node',
-          width: 200
-        },
-        {
-          title: 'Status',
-          key: 'Status',
-          align: 'center',
-          render: (h, params) => {
-            return h(
-              'Icon',
-              {
-                props: {
-                  size: 20,
-                  type:
-                    params.row.Status === 'passing'
-                      ? 'md-checkmark-circle'
-                      : 'md-close-circle',
-                  color: params.row.Status === 'passing' ? '#19be6b' : '#ed4014'
-                }
-              },
-              params.row.Status
-            )
-          },
-          width: 100
-        },
-        {
-          title: 'Tags',
-          key: 'ServiceTags',
-          align: 'center',
-          render: (h, params) => {
-            return h(
-              'Tag',
-              {
-                props: {
-                  color: 'blue'
-                }
-              },
-              params.row.ServiceTags
-            )
-          },
-          width: 100
-        },
-        {
-          title: 'Action',
-          key: 'action',
-          align: 'center',
-          width: 100,
-          render: (h, params) => {
-            return h('div', [
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'error',
-                    size: 'small'
-                  },
-                  on: {
-                    click: () => {
-                      this.deregister(params.row)
-                    }
-                  }
-                },
-                '注销'
-              )
-            ])
-          }
-        }
-      ]
+      filter: 'all',
+      allServices: [],
+      services: []
     }
   },
   mounted () {
@@ -161,118 +83,92 @@ export default {
     },
     dcChanged (dc) {
       if (!dc) return
-      var _this = this
-      var svcarr = []
-      var svcEnum = Enumerable.from(svcarr)
+      let _this = this
       consul.catalog.node.list(dc, function (err1, nodes) {
         if (err1) throw err1
 
+        _this.allServices.length = 0
+        _this.services = _this.allServices
+        _this.$store.commit('setServices', _this.allServices)
+
         for (var j = 0; j < nodes.length; j++) {
           var node = nodes[j]
-          consul.catalog.node.services(node.Node, function (
-            err2,
-            nodeservices
-          ) {
+          consul.catalog.node.services(node.Node, function (err2, nodeservices) {
             if (err2) throw err2
-            for (var svc in nodeservices.Services) {
-              var svcobj = svcEnum.firstOrDefault(s => s.Service === svc)
-              if (!svcobj) {
-                svcobj = nodeservices.Services[svc]
-                svcobj.Node = node.Address + ':' + node.Node
+            for (var svcName in nodeservices.Services) {
+              let svcobj = nodeservices.Services[svcName]
+              if (svcobj.Service) {
+                svcobj.Node = node.Node
                 svcobj.ServiceHost = svcobj.Address + ':' + svcobj.Port
                 svcobj.ServiceTags = svcobj.Tags.join(',')
+                svcobj.SummaryPassed = ""
+                svcobj.SummaryError = ""
 
-                svcarr.push(svcobj)
+                _this.allServices.push(svcobj)
+
+                consul.health.service(svcobj.Service, function (err3, checks) {
+                  if (err3) throw err3
+
+                  svcobj.Checks = enumerable
+                    .from(checks)
+                    .selectMany(s => s.Checks)
+                    .where(s => s.ServiceName === svcobj.Service).toArray()
+
+                  enumerable
+                    .from(svcobj.Checks).forEach(s => {
+                      if (!s.Output) {
+                        s.Status = "pending"
+                      }
+                    })
+
+                  svcobj.SummaryPassed = enumerable
+                    .from(svcobj.Checks)
+                    .count(s => s.Status === 'passing') + " passing"
+
+                  svcobj.SummaryError = enumerable
+                    .from(svcobj.Checks)
+                    .count(s => s.Status === 'critical') + " critical"
+
+                  svcobj.Status = enumerable
+                    .from(svcobj.Checks)
+                    .all(s => s.Status === 'passing') ? 'passing' : 'critical'
+                })
               }
             }
-
-            consul.health.node(node.Node, function (err3, checks) {
-              if (err3) throw err3
-
-              for (var i = 0; i < checks.length; i++) {
-                svcobj = svcEnum.firstOrDefault(
-                  s => s.Service === checks[i].ServiceName
-                )
-                if (svcobj) {
-                  svcobj.Status = checks[i].Status
-                }
-              }
-
-              svcarr = svcarr.sort(function (a, b) {
-                return a.ServiceHost - b.ServiceHost
-              })
-              _this.serviceCount = svcarr.length
-              _this.services = svcarr
-              _this.pageChange(1)
-            })
           })
         }
       })
     },
-    deregister (row) {
-      var _this = this
-      _this.$Modal.confirm({
-        title: '警告',
-        content: '<p>确定注销此服务实例？</p>',
-        onOk: () => {
-          consul.agent.service.deregister(row.ID, function (err) {
-            if (err) {
-              _this.$Notice.error({
-                title: '注销失败:',
-                desc: err
-              })
-            } else {
-              _this.$Notice.success({
-                title: '注销成功'
-              })
-              _this.dcChanged(_this.selecteddc)
-            }
-          })
-        }
-      })
-    },
-    save () {
-      var _this = this
-      var options = this.$refs.serviceEditView.model
-      consul.agent.service.register(options, function (err) {
-        if (err) {
-          _this.$Notice.error({
-            title: '服务注册失败:',
-            desc: err
-          })
-        } else {
-          _this.$Notice.success({
-            title: '服务注册成功'
-          })
-          _this.editState = false
-          _this.dcChanged(_this.selecteddc)
-        }
-      })
-    },
-    getUrlPort (url) {
-      var protocolReg = /^\w+:\/\//
-      if (!protocolReg.test(url)) {
-        url = 'http://' + url
+    filterServices () {
+      if (this.filter === "all") {
+        this.services = this.allServices
       }
-      return new URL(url).port
+      else {
+        this.services = enumerable.from(this.allServices).where(s => s.Status === this.filter).toArray()
+      }
     },
-    pageChange (page) {
-      var offset = (page - 1) * 15
-      this.services_per_page =
-        offset + 15 >= this.services.length
-          ? this.services.slice(offset, this.services.length)
-          : this.services.slice(offset, offset + 15)
+    serviceChecks (svc) {
+      this.$router.push({
+        path: '/serviceChecks',
+        query: { service: svc.Service }
+      })
     }
   },
-  components: {
-    serviceEditView
-  }
+  components: {}
 }
 </script>
 
 <style scoped>
-.mappingcontent {
-  height: 500px;
-  overflow-y: scroll;
+.wrapper {
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.wrapper-content {
+  margin-top: 14px;
+  width: 32%;
 }
 </style>

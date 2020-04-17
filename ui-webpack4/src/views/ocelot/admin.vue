@@ -202,7 +202,7 @@ export default {
         }
       })
     },
-    buildConfig (row) {
+    buildConfig () {
       var _this = this
       _this.$Modal.confirm({
         render: h => {
