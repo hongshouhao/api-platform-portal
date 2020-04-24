@@ -1,49 +1,59 @@
 <template>
   <Card>
     <div class="panel">
-      <Button icon="md-add"
-              type="primary"
-              @click="addNewTemplate"
-              :style="{margin:'10px 5px'}">新增</Button>
-      <Table ref="configTable"
-             :columns="columns"
-             :data="dataSource"
-             stripe
-             :loading="loading"></Table>
-      <Drawer title="Template Edit"
-              :closable="false"
-              width="800"
-              v-model="editState"
-              style="overflow:hidden">
-        <div slot="header"
-             class="drawerheader">
+      <Button
+        icon="md-add"
+        type="primary"
+        @click="addNewTemplate"
+        :style="{ margin: '10px 5px' }"
+        >新增</Button
+      >
+      <Table
+        ref="configTable"
+        :columns="columns"
+        :data="dataSource"
+        stripe
+        :loading="loading"
+      ></Table>
+      <Drawer
+        title="Template Edit"
+        :closable="false"
+        width="800"
+        v-model="editState"
+        style="overflow:hidden"
+      >
+        <div slot="header" class="drawerheader">
           <p>配置详情</p>
-          <Button type="success"
-                  style="float: right;margin-right: 8px"
-                  @click="saveTemplate">Save</Button>
-          <Button type="error"
-                  style="float: right;margin-right: 8px"
-                  @click="deleteTemplate">Delete</Button>
+          <Button
+            type="success"
+            style="float: right;margin-right: 8px"
+            @click="saveTemplate"
+            >Save</Button
+          >
+          <Button
+            type="error"
+            style="float: right;margin-right: 8px"
+            @click="deleteTemplate"
+            >Delete</Button
+          >
         </div>
         <TemplEditView :vtempl="vtempl"></TemplEditView>
         <div class="drawer-footer-buttons"></div>
       </Drawer>
-      <Modal v-model="viewJsonString"
-             footer-hide
-             width="800">
-        <highlight-code lang="JSON">{{json}}</highlight-code>
+      <Modal v-model="viewJsonString" footer-hide width="800">
+        <highlight-code lang="JSON">{{ json }}</highlight-code>
       </Modal>
     </div>
   </Card>
 </template>
 
 <script>
-import env from '../../global'
+import config from '../../config'
 import modelTempl from '../modelTempl.js'
 import TemplEditView from './templateEdit'
 
 export default {
-  data () {
+  data() {
     return {
       editState: false,
       dataSource: [],
@@ -120,14 +130,14 @@ export default {
       ]
     }
   },
-  mounted () {
+  mounted() {
     this.refreshData()
   },
   methods: {
-    refreshData () {
+    refreshData() {
       var _this = this
       _this.$axios
-        .get(env.ocelotAdmin_host + '/admin/template/getall')
+        .get(config.ocelot.adminApiBaseURL + '/admin/template/getall')
         .then(response => {
           _this.dataSource = response.data
           _this.editState = false
@@ -139,11 +149,14 @@ export default {
           })
         })
     },
-    saveTemplate () {
+    saveTemplate() {
       var _this = this
       _this.$axios
-        .post(env.ocelotAdmin_host + '/admin/template/save', _this.vtempl)
-        .then(response => {
+        .post(
+          config.ocelot.adminApiBaseURL + '/admin/template/save',
+          _this.vtempl
+        )
+        .then(() => {
           _this.$Notice.success({
             title: '模板保存成功'
           })
@@ -156,17 +169,17 @@ export default {
           })
         })
     },
-    addNewTemplate () {
+    addNewTemplate() {
       this.editState = true
       this.vtempl = modelTempl.getOcelotTemplate()
       this.forUpdate = false
     },
-    showTemplEditView (row) {
+    showTemplEditView(row) {
       this.editState = true
       this.vtempl = row
       this.forUpdate = true
     },
-    deleteTemplate () {
+    deleteTemplate() {
       var _this = this
       _this.$Modal.confirm({
         title: '注意',
@@ -174,11 +187,11 @@ export default {
         onOk: () => {
           _this.$axios
             .post(
-              env.ocelotAdmin_host +
-              '/admin/template/delete?version=' +
-              _this.vtempl.version
+              config.ocelot.adminApiBaseURL +
+                '/admin/template/delete?version=' +
+                _this.vtempl.version
             )
-            .then(response => {
+            .then(() => {
               _this.$Notice.success({
                 title: '删除成功'
               })

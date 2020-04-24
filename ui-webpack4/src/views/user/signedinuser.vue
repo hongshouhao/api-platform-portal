@@ -3,16 +3,14 @@
     <Divider>You are signed in as</Divider>
     <div v-html="userDisplay"></div>
     <Divider>Id token</Divider>
-    <p>
-      expires {{ new Date(oidcIdTokenExp).toISOString() }}
-    </p>
-    <Input v-model="oidcIdToken"
-           type="textarea"
-           readonly
-           :rows="5" />
-    <Button type="primary"
-            style="margin-top:15px"
-            @click="authenticateOidcSilent">Reauthenticate silently</Button>
+    <p>expires {{ new Date(oidcIdTokenExp).toISOString() }}</p>
+    <Input v-model="oidcIdToken" type="textarea" readonly :rows="5" />
+    <Button
+      type="primary"
+      style="margin-top:15px"
+      @click="authenticateOidcSilent"
+      >Reauthenticate silently</Button
+    >
   </div>
   <p v-else-if="oidcAuthenticationIsChecked">You are not signed in</p>
   <p v-else>Silent renew is in progress...</p>
@@ -32,7 +30,7 @@ export default {
       'oidcIdToken',
       'oidcIdTokenExp'
     ]),
-    userDisplay: function () {
+    userDisplay: function() {
       return jsonMarkup(this.oidcUser)
     }
   },

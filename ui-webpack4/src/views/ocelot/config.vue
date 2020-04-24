@@ -168,7 +168,7 @@ export default {
     refreshData() {
       var _this = this
       _this.loading = true
-      _this.$ocelotAdmin.GetAllSections(
+      _this.$ocelotClient.GetAllSections(
         function(data) {
           _this.dataSourceJsonString = JSON.stringify(data, null, 2)
           _this.dataSource = data
@@ -193,7 +193,7 @@ export default {
     },
     saveSection() {
       var _this = this
-      _this.$ocelotAdmin.SaveSection(
+      _this.$ocelotClient.SaveSection(
         _this.vsection,
         function() {
           _this.$Notice.success({
@@ -216,7 +216,7 @@ export default {
         title: '注意',
         content: '<p>是否删除当前行？</p>',
         onOk: () => {
-          _this.$ocelotAdmin.DeleteSection(
+          _this.$ocelotClient.DeleteSection(
             _this.vsection.name,
             function() {
               _this.$Notice.success({
@@ -238,7 +238,7 @@ export default {
     verifySelectedSections() {
       var _this = this
       var rows = _this.$refs.sectionTable.getSelection()
-      _this.$ocelotAdmin.ValidateSection(
+      _this.$ocelotClient.ValidateSection(
         rows,
         function() {
           _this.$Notice.success({ title: '验证通过' })

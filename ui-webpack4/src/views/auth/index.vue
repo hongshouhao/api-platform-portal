@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import env from '../../global'
+import config from '../../config'
 import optionsEditView from './optionsEdit'
 
 export default {
@@ -112,7 +112,7 @@ export default {
       var _this = this
       _this.loading = true
       _this.$axios
-        .get(env.ocelotAdmin_host + '/admin/authoptions/getall')
+        .get(config.ocelot.adminApiBaseURL + '/admin/authoptions/getall')
         .then(function(response) {
           _this.dataSource = response.data
           _this.loading = false
@@ -132,7 +132,7 @@ export default {
         onOk: () => {
           _this.$axios
             .post(
-              env.ocelotAdmin_host +
+              config.ocelot.adminApiBaseURL +
                 '/admin/authoptions/delete?id=' +
                 _this.voption.id
             )
@@ -164,7 +164,10 @@ export default {
     saveOption() {
       var _this = this
       _this.$axios
-        .post(env.ocelotAdmin_host + '/admin/authoptions/save', _this.voption)
+        .post(
+          config.ocelot.adminApiBaseURL + '/admin/authoptions/save',
+          _this.voption
+        )
         .then(function() {
           _this.$Notice.success({
             title: '保存成功'

@@ -1,8 +1,10 @@
 <template>
   <Card dis-hover>
-    <RadioGroup v-model="filter"
-                style="margin-left:20px"
-                @on-change=filterChecks>
+    <RadioGroup
+      v-model="filter"
+      style="margin-left:20px"
+      @on-change="filterChecks"
+    >
       <Radio label="all">
         <Icon type="md-list" />
         <span>All</span>
@@ -17,8 +19,7 @@
       </Radio>
     </RadioGroup>
 
-    <div class="panel"
-         style="margin-top:14px">
+    <div class="panel" style="margin-top:14px">
       <div class="content">
         <!-- <Button
           icon="md-add"
@@ -28,10 +29,12 @@
           >注册新服务</Button
         > -->
 
-        <Table ref="checkTable"
-               :columns="columns"
-               :data="checks"
-               stripe></Table>
+        <Table
+          ref="checkTable"
+          :columns="columns"
+          :data="checks"
+          stripe
+        ></Table>
         <br />
       </div>
       <!-- <Drawer title="检查结果"
@@ -48,9 +51,7 @@
           <Button type="primary" @click="save">Save</Button>
         </div>
       </Drawer> -->
-      <Modal v-model="showOutput"
-             footer-hide
-             width="800">
+      <Modal v-model="showOutput" footer-hide width="800">
         <highlight-code>{{ output }}</highlight-code>
       </Modal>
     </div>
@@ -58,16 +59,18 @@
 </template>
 
 <script>
-import env from '../../global'
-var consul = require('consul')({ host: new URL(env.consul_host).hostname })
+import config from '../../config'
+var consul = require('consul')({
+  host: new URL(config.consul.baseURL).hostname
+})
 var enumerable = require('linq')
 export default {
-  data () {
+  data() {
     return {
       service: {},
       showOutput: false,
-      filter: "all",
-      output: "",
+      filter: 'all',
+      output: '',
       checks: [],
       columns: [
         {
@@ -111,7 +114,7 @@ export default {
                 {
                   attrs: {
                     href: params.row.OutputObject.href,
-                    target: "_blank"
+                    target: '_blank'
                   }
                 },
                 params.row.OutputObject.status
@@ -120,24 +123,24 @@ export default {
                 'span',
                 {
                   attrs: {
-                    style: 'margin:0 8px',
+                    style: 'margin:0 8px'
                   }
                 },
-                ""
+                ''
               ),
               h(
                 'a',
                 {
                   on: {
-                    click () {
+                    click() {
                       _this.output = params.row.OutputObject.output
-                      _this.showOutput = true;
+                      _this.showOutput = true
                     }
                   }
                 },
-                "Output"
+                'Output'
               )
-            ]);
+            ])
           }
         }
         // {
@@ -169,7 +172,7 @@ export default {
     }
   },
   props: {},
-  mounted () {
+  mounted() {
     let _this = this
     let serviceName = this.$route.query.service
     let targ = enumerable
@@ -179,7 +182,7 @@ export default {
       _this.service = targ
       _this.checks = _this.service.Checks
     } else {
-      consul.health.service(serviceName, function (err3, fullServices) {
+      consul.health.service(serviceName, function(err3, fullServices) {
         if (err3) throw err3
         _this.service = fullServices[0].Service
         _this.service.Checks = enumerable
@@ -190,61 +193,63 @@ export default {
         _this.service.Checks.forEach(element => {
           element.OutputObject = _this.parseOutput(element.Output)
           if (!element.Output) {
-            element.Status = "pending"
+            element.Status = 'pending'
           }
-        });
+        })
 
         _this.checks = _this.service.Checks
       })
     }
   },
   methods: {
-    parseOutput (outputString) {
+    parseOutput(outputString) {
       let result = {}
-      let typeSpace = outputString.indexOf(" ");
+      let typeSpace = outputString.indexOf(' ')
       result.type = outputString.substring(0, typeSpace)
 
-      if (result.type === "HTTP") {
-        let actionSpace = outputString.indexOf(" ", typeSpace + 1);
-        let firstColon = outputString.indexOf(":", actionSpace + 1);
-        let secondColon = outputString.indexOf(":", firstColon + 1);
-        let outputIndex = outputString.indexOf("Output:", secondColon + 1);
+      if (result.type === 'HTTP') {
+        let actionSpace = outputString.indexOf(' ', typeSpace + 1)
+        let firstColon = outputString.indexOf(':', actionSpace + 1)
+        let secondColon = outputString.indexOf(':', firstColon + 1)
+        let outputIndex = outputString.indexOf('Output:', secondColon + 1)
 
         result.href = outputString.substring(actionSpace + 1, secondColon)
-        result.httpCode = outputString.substring(secondColon + 2, secondColon + 5)
-        result.status = result.type + ":" + result.httpCode
+        result.httpCode = outputString.substring(
+          secondColon + 2,
+          secondColon + 5
+        )
+        result.status = result.type + ':' + result.httpCode
         result.output = outputString.substring(outputIndex + 8)
-        result.ishtml = result.output.startsWith("<!DOCTYPE")
-
-
+        result.ishtml = result.output.startsWith('<!DOCTYPE')
       }
       return result
     },
-    getStatusIcon (status) {
+    getStatusIcon(status) {
       var result = {
         size: 20,
-        type: "",
-        color: ""
+        type: '',
+        color: ''
       }
       if (status === 'passing') {
         result.type = 'md-checkmark'
         result.color = '#19be6b'
-      }
-      else if (status === 'critical') {
+      } else if (status === 'critical') {
         result.type = 'md-close'
         result.color = '#ed4014'
       } else if (status === 'pending') {
         result.type = 'md-bicycle'
-        result.color = "#5cadff"
+        result.color = '#5cadff'
       }
       return result
     },
-    filterChecks () {
-      if (this.filter === "all") {
+    filterChecks() {
+      if (this.filter === 'all') {
         this.checks = this.service.Checks
-      }
-      else {
-        this.checks = enumerable.from(this.service.Checks).where(s => s.Status === this.filter).toArray()
+      } else {
+        this.checks = enumerable
+          .from(this.service.Checks)
+          .where(s => s.Status === this.filter)
+          .toArray()
       }
     }
     // deregister(row) {

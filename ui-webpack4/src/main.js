@@ -18,7 +18,7 @@ import 'echarts/theme/shine'
 
 // import './assets/global.less'
 import OcelotClient from './lib/ocelot'
-import env from './global'
+import config from './config'
 import './views/scraps.less'
 
 Vue.use(Vuex)
@@ -46,7 +46,10 @@ Date.prototype.format = function (fmt) {
   return fmt;
 }
 
-Vue.prototype.$ocelotAdmin = new OcelotClient(env.ocelot_host, env.ocelotAdmin_host, axios)
+if (config.ocelot.enable) {
+  Vue.prototype.$ocelotClient = new OcelotClient(config.ocelot.serverBaseURL, config.ocelot.adminApiBaseURL, axios)
+}
+
 Vue.prototype.$axios = axios
 Vue.prototype.$echarts = echarts
 

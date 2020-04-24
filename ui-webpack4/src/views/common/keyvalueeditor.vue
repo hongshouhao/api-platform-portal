@@ -1,41 +1,36 @@
 <template>
   <Card dis-hover>
     <p slot="title">
-      {{title}}
-      <Tooltip placement="right"
-               content
-               theme="light"
-               :delay="500">
-        <p slot="content">{{tooltip}}</p>
+      {{ title }}
+      <Tooltip placement="right" content theme="light" :delay="500">
+        <p slot="content">{{ tooltip }}</p>
         <Icon type="ios-information-circle" />
       </Tooltip>
     </p>
 
-    <a href="#"
-       slot="extra"
-       @click.prevent="add">
-      <Icon type="md-add"
-            size="18"
-            style="margin-right:5px;"></Icon>
+    <a href="#" slot="extra" @click.prevent="add">
+      <Icon type="md-add" size="18" style="margin-right:5px;"></Icon>
     </a>
-    <div v-for="(item, index) in list"
-         :key="title + index"
-         style="margin-bottom:5px;">
+    <div
+      v-for="(item, index) in list"
+      :key="title + index"
+      style="margin-bottom:5px;"
+    >
       <Row>
         <Col span="12">
-        <Input v-model="item.key"
-               class="key">
-        <span slot="prepend">Key</span>
-        </Input>
+          <Input v-model="item.key" class="key">
+            <span slot="prepend">Key</span>
+          </Input>
         </Col>
         <Col span="12">
-        <Input v-model="item.value"
-               class="value">
-        <span slot="prepend">Value</span>
-        <Button slot="append"
-                icon="md-close"
-                @click="onDelete(index)"></Button>
-        </Input>
+          <Input v-model="item.value" class="value">
+            <span slot="prepend">Value</span>
+            <Button
+              slot="append"
+              icon="md-close"
+              @click="onDelete(index)"
+            ></Button>
+          </Input>
         </Col>
       </Row>
     </div>
@@ -44,7 +39,7 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       init: false,
       list: []
@@ -61,20 +56,19 @@ export default {
     },
     property: {
       type: Object,
-      default () {
+      default() {
         return {}
       }
     }
   },
-  mounted () {
-  },
+  mounted() {},
   watch: {
-    property () {
+    property() {
       this.init = true
       this.list = this.objToArray(this.property)
     },
     list: {
-      handler () {
+      handler() {
         if (this.init === true) {
           this.init = false
           return
@@ -89,16 +83,16 @@ export default {
     }
   },
   methods: {
-    add () {
+    add() {
       this.list.push({
         key: '',
         value: ''
       })
     },
-    onDelete (index) {
+    onDelete(index) {
       this.list.splice(index, 1)
     },
-    objToArray (property) {
+    objToArray(property) {
       var result = []
       if (property) {
         for (let prop in property) {

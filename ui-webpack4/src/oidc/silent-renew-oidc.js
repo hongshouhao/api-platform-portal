@@ -1,5 +1,5 @@
 import 'core-js/fn/promise'
 import { vuexOidcProcessSilentSignInCallback } from 'vuex-oidc'
-import env from '../global'
+import config from '../config'
 
-vuexOidcProcessSilentSignInCallback(env.oidcSettings)
+vuexOidcProcessSilentSignInCallback(config.oidc)

@@ -11,22 +11,22 @@ export default {
   name: 'App',
   computed: {
     ...mapGetters('oidcStore', ['oidcIsAuthenticated']),
-    hasAccess: function() {
+    hasAccess: function () {
       return this.oidcIsAuthenticated || this.$route.meta.isPublic
     }
   },
   methods: {
-    userLoaded: function(e) {
+    userLoaded: function (e) {
       console.log(
         'I am listening to the user loaded event in vuex-oidc',
         e.detail
       )
     }
   },
-  mounted() {
+  mounted () {
     window.addEventListener('vuexoidc:userLoaded', this.userLoaded)
   },
-  destroyed() {
+  destroyed () {
     window.removeEventListener('vuexoidc:userLoaded', this.userLoaded)
   }
 }
@@ -47,7 +47,7 @@ body {
 
 #app {
   .size;
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;

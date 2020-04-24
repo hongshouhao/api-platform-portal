@@ -1,28 +1,25 @@
 <template>
   <div>
-    <div id="cpuchart"
-         style="width: 100%;height:100%;"></div>
-    <Spin size="large"
-          fix
-          v-if="spinShow"></Spin>
+    <div id="cpuchart" style="width: 100%;height:100%;"></div>
+    <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
 </template>
 <script>
-import env from '../../global'
+import config from '../../config'
 export default {
-  data () {
+  data() {
     return {
       series: [],
       spinShow: true
     }
   },
-  mounted () {
+  mounted() {
     setTimeout(() => {
       this.init()
     }, 500)
   },
   methods: {
-    init () {
+    init() {
       var _this = this
       var chartoptions = {
         title: {
@@ -73,22 +70,22 @@ export default {
         'light'
       )
       myChart.setOption(chartoptions)
-      setInterval(function () {
+      setInterval(function() {
         var date = new Date().getTime() / 1000
         _this.$axios
           .get(
-            env.prometheus_host +
-            '/api/v1/query_range?query=(sum by(instance)(irate(wmi_cpu_time_total{mode!="idle"}[5m]))/sum by(instance)(irate(wmi_cpu_time_total[5m])))*100&start=' +
-            (date - 70) +
-            '&end=' +
-            date +
-            '&step=1&_=' +
-            date
+            config.prometheus.baseURL +
+              '/api/v1/query_range?query=(sum by(instance)(irate(wmi_cpu_time_total{mode!="idle"}[5m]))/sum by(instance)(irate(wmi_cpu_time_total[5m])))*100&start=' +
+              (date - 70) +
+              '&end=' +
+              date +
+              '&step=1&_=' +
+              date
           )
-          .then(function (response) {
+          .then(function(response) {
             _this.spinShow = false
-            var series = response.data.data.result.map(function (instanceItem) {
-              var values = instanceItem.values.map(function (valueItem) {
+            var series = response.data.data.result.map(function(instanceItem) {
+              var values = instanceItem.values.map(function(valueItem) {
                 return {
                   name: valueItem[0],
                   value: [
@@ -114,7 +111,7 @@ export default {
             chartoptions.series = series
             myChart.setOption(chartoptions)
           })
-          .catch(function (error) {
+          .catch(function(error) {
             _this.$Notice.error({
               title: '获取数据失败',
               desc: error

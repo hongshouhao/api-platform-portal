@@ -1,19 +1,16 @@
 <template>
-  <Dropdown class="user"
-            @on-click="handleClick">
+  <Dropdown class="user" @on-click="handleClick">
     <Badge>
       <Avatar :src="userlogo" />
     </Badge>
 
     <DropdownMenu slot="list">
       <DropdownItem name="info">
-        {{oidcUser.name}}
+        {{ oidcUser.name }}
       </DropdownItem>
       <DropdownItem name="logout">退出登录</DropdownItem>
     </DropdownMenu>
-    <Modal name="modal"
-           v-model="displayed"
-           footer-hide>
+    <Modal name="modal" v-model="displayed" footer-hide>
       <userinfo />
     </Modal>
   </Dropdown>
@@ -24,35 +21,30 @@ import avatar from '../../assets/avatar.png'
 import { mapGetters, mapActions } from 'vuex'
 import userinfo from './signedinuser'
 export default {
-  data () {
+  data() {
     return {
       displayed: false
     }
   },
-  props: {
-  },
+  props: {},
   computed: {
-    ...mapGetters('oidcStore', [
-      'oidcUser'
-    ]),
+    ...mapGetters('oidcStore', ['oidcUser']),
     userlogo: {
-      get () {
+      get() {
         return avatar
-      }    }
+      }
+    }
   },
   methods: {
-    ...mapActions('oidcStore', [
-      'authenticateOidcSilent',
-      'signOutOidc'
-    ]),
-    logout () {
+    ...mapActions('oidcStore', ['authenticateOidcSilent', 'signOutOidc']),
+    logout() {
       this.signOutOidc().then(() => {
         this.$router.push({
           path: '/'
         })
       })
     },
-    displayInfo () {
+    displayInfo() {
       this.displayed = true
       // let _this = this
       // _this.$Modal.info({
@@ -65,7 +57,7 @@ export default {
       //   closable: false
       // })
     },
-    handleClick (name) {
+    handleClick(name) {
       switch (name) {
         case 'info':
           this.displayInfo()

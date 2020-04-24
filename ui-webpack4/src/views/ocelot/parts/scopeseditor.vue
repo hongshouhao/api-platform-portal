@@ -1,16 +1,15 @@
 <template>
-  <Select v-model="innerscopes"
-          not-found-text="请选择一个授权方案">
-    <Option v-for="item in supportedScopes"
-            :value="item"
-            :key="item">{{ item }}</Option>
+  <Select v-model="innerscopes" not-found-text="请选择一个授权方案">
+    <Option v-for="item in supportedScopes" :value="item" :key="item">{{
+      item
+    }}</Option>
   </Select>
 </template>
 
 <script>
-import env from '../../../global'
+import config from '../../../config'
 export default {
-  data () {
+  data() {
     return {
       supportedScopes: []
     }
@@ -22,38 +21,37 @@ export default {
     },
     scopes: {
       type: Array,
-      default () {
+      default() {
         return []
       }
     }
   },
-  mounted () {
-  },
+  mounted() {},
   computed: {
     innerscopes: {
-      get () {
+      get() {
         return this.scopes
       },
-      set (val) {
+      set(val) {
         this.$emit('update:scopes', val)
       }
     }
   },
   watch: {
-    idsHost () {
+    idsHost() {
       this.loadScopes()
     }
   },
   methods: {
-    loadScopes () {
+    loadScopes() {
       var _this = this
       if (_this.idsHost) {
         _this.$axios
-          .get(_this.idsHost + env.identityServerWellKnownUri)
-          .then(function (response) {
+          .get(_this.idsHost + config.ids.wellKnownUri)
+          .then(function(response) {
             _this.supportedScopes = response.data.scopes_supported
           })
-          .catch(function (error) {
+          .catch(function(error) {
             _this.$Notice.error({
               title: '服务连接失败!',
               desc: error

@@ -1,39 +1,38 @@
 <template>
   <div>
-    <Form :model="vtempl"
-          :label-width="150"
-          inline>
+    <Form :model="vtempl" :label-width="150" inline>
       <FormItem label="version">
-        <Input v-model="vtempl.version"
-               class="two"></Input>
+        <Input v-model="vtempl.version" class="two"></Input>
       </FormItem>
       <FormItem label="description">
-        <Input v-model="vtempl.description"
-               class="two"></Input>
+        <Input v-model="vtempl.description" class="two"></Input>
       </FormItem>
     </Form>
     <Divider />
-    <Tabs value="ReRoutes"
-          class="cardView">
-      <TabPane label="ReRoutes"
-               name="ReRoutes">
-        <ReRoutesView class="content"
-                      :vmodel="vconfigtempl.ReRoute"></ReRoutesView>
+    <Tabs value="ReRoutes" class="cardView">
+      <TabPane label="ReRoutes" name="ReRoutes">
+        <ReRoutesView
+          class="content"
+          :vmodel="vconfigtempl.ReRoute"
+        ></ReRoutesView>
       </TabPane>
-      <TabPane label="DynamicReRoutes"
-               name="DynamicReRoutes">
-        <DynamicReRoutesView class="content"
-                             :vmodel="vconfigtempl.DynamicReRoute"></DynamicReRoutesView>
+      <TabPane label="DynamicReRoutes" name="DynamicReRoutes">
+        <DynamicReRoutesView
+          class="content"
+          :vmodel="vconfigtempl.DynamicReRoute"
+        ></DynamicReRoutesView>
       </TabPane>
-      <TabPane label="Aggregates"
-               name="Aggregates">
-        <AggregatesView class="content"
-                        :vmodel="vconfigtempl.Aggregate"></AggregatesView>
+      <TabPane label="Aggregates" name="Aggregates">
+        <AggregatesView
+          class="content"
+          :vmodel="vconfigtempl.Aggregate"
+        ></AggregatesView>
       </TabPane>
-      <TabPane label="Global"
-               name="GlobalConfiguration">
-        <GlobalView class="content"
-                    :vmodel="vconfigtempl.GlobalConfiguration"></GlobalView>
+      <TabPane label="Global" name="GlobalConfiguration">
+        <GlobalView
+          class="content"
+          :vmodel="vconfigtempl.GlobalConfiguration"
+        ></GlobalView>
       </TabPane>
     </Tabs>
   </div>
@@ -47,7 +46,7 @@ import GlobalView from './parts/global'
 import modelTempl from '../modelTempl.js'
 
 export default {
-  data () {
+  data() {
     return {
       vconfigtempl: this.getVConfigTempl(
         modelTempl.getOcelotConfigurationSchema()
@@ -59,14 +58,14 @@ export default {
   },
   watch: {
     vtempl: {
-      handler (val) {
+      handler(val) {
         if (val.jsonString) {
           this.vconfigtempl = this.getVConfigTempl(JSON.parse(val.jsonString))
         }
       }
     },
     vconfigtempl: {
-      handler (val) {
+      handler(val) {
         var fullconfig = {
           GlobalConfiguration: val.GlobalConfiguration,
           ReRoutes: [],
@@ -82,7 +81,7 @@ export default {
     }
   },
   methods: {
-    getVConfigTempl (ocelotConfig) {
+    getVConfigTempl(ocelotConfig) {
       return {
         GlobalConfiguration: ocelotConfig.GlobalConfiguration,
         ReRoute: ocelotConfig.ReRoutes[0],

@@ -1,16 +1,17 @@
 <template>
-  <Select v-model="innerhttpMethods"
-          transfer
-          multiple>
-    <Option v-for="item in supportedHttpMethods"
-            :value="item.toLowerCase()"
-            :key="item">{{ item }}</Option>
+  <Select v-model="innerhttpMethods" transfer multiple>
+    <Option
+      v-for="item in supportedHttpMethods"
+      :value="item.toLowerCase()"
+      :key="item"
+      >{{ item }}</Option
+    >
   </Select>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       supportedHttpMethods: [
         'GET',
@@ -28,17 +29,17 @@ export default {
   props: {
     httpMethods: {
       type: Array,
-      default () {
+      default() {
         return []
       }
     }
   },
   computed: {
     innerhttpMethods: {
-      get () {
+      get() {
         return this.httpMethods
       },
-      set (val) {
+      set(val) {
         this.$emit('update:httpMethods', val)
       }
     }

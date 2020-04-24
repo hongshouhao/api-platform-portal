@@ -18,65 +18,76 @@
         <Icon type="md-desktop" />
         <span>服务器监控</span>
         </MenuItem>
-        <Submenu name="apigateway">
+        <Submenu name="apigateway"
+                 v-if="config.ocelot.enable">
           <template slot="title">
             <Icon type="md-cube" />
             <span>网关</span>
           </template>
           <MenuItem name="ocelotconfig">
           <Icon type="md-cog" />
-          <span>跳转配置</span>
+          <span>路由配置</span>
           </MenuItem>
           <MenuItem name="ocelotadmin">
           <Icon type="md-code-working" />
-          <span>配置发布</span>
+          <span>路由发布</span>
           </MenuItem>
           <MenuItem name="template">
           <Icon type="md-clipboard" />
-          <span>模板配置</span>
+          <span>路由模板</span>
           </MenuItem>
-           <MenuItem name="test">
+          <MenuItem name="test">
           <Icon type="md-clipboard" />
           <span>测试</span>
           </MenuItem>
+          <MenuItem name="authoptions">
+          <Icon type="md-lock" />
+          <span>认证方案</span>
+          </MenuItem>
         </Submenu>
-        <MenuItem name="authoptions">
-        <Icon type="md-lock" />
-        <span>认证方案</span>
-        </MenuItem>
+
         <MenuItem name="consuladmin">
         <Icon type="md-swap" />
         <span>服务注册</span>
         </MenuItem>
+
         <MenuItem name="statistic">
         <Icon type="md-stats" />
         <span>访问统计</span>
         </MenuItem>
-        <MenuItem name="alerts">
+
+        <MenuItem name="alerts"
+                  v-if="config.karma.enable">
         <Icon type="md-eye" />
         <span>报警</span>
         </MenuItem>
+
         <MenuItem name
                   :to="identityAdmin"
                   target="_blank">
         <Icon type="md-people" />
         <span>认证授权</span>
         </MenuItem>
+
         <MenuItem name
-                  :to="skywalking"
+                  :to="apm"
                   target="_blank">
         <Icon type="md-navigate" />
         <span>APM</span>
         </MenuItem>
+
         <MenuItem name
                   :to="uiconsul"
-                  target="_blank">
+                  target="_blank"
+                  v-if="config.consul.enable">
         <Icon type="md-contrast" />
         <span>Consul</span>
         </MenuItem>
+
         <MenuItem name
                   :to="kibana"
-                  target="_blank">
+                  target="_blank"
+                  v-if="config.kibana.enable">
         <Icon type="md-recording" />
         <span>Kibana</span>
         </MenuItem>
@@ -102,18 +113,20 @@
 
 <script>
 import './index.less'
-import env from '../global'
+// eslint-disable-next-line no-unused-vars
+import _config from '../config'
 import user from './user'
 import maxLogo from '../assets/logo.jpg'
 
 export default {
   data () {
     return {
+      config: _config,
       activeName: 'monitor',
-      kibana: env.kibana_host,
-      uiconsul: env.consul_host,
-      skywalking: env.skywalking_host,
-      identityAdmin: env.identityServerAdmin_host,
+      kibana: _config.kibana.baseURL,
+      uiconsul: _config.consul.baseURL,
+      apm: _config.apm.baseURL,
+      identityAdmin: _config.ids.adminApiBaseURL,
       isCollapsed: false,
       maxLogo
     }

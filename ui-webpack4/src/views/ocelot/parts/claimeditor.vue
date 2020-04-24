@@ -1,41 +1,43 @@
 <template>
   <Card dis-hover>
     <p slot="title">
-      {{title}}
-      <Tooltip placement="right"
-               content
-               theme="light"
-               :delay="500">
-        <p slot="content">{{tooltip}}</p>
+      {{ title }}
+      <Tooltip placement="right" content theme="light" :delay="500">
+        <p slot="content">{{ tooltip }}</p>
         <Icon type="ios-information-circle" />
       </Tooltip>
     </p>
 
-    <a href="#"
-       slot="extra"
-       @click.prevent="add">
-      <Icon type="md-add"
-            size="18"
-            style="margin-right:5px;"></Icon>
+    <a href="#" slot="extra" @click.prevent="add">
+      <Icon type="md-add" size="18" style="margin-right:5px;"></Icon>
     </a>
-    <div v-for="(item,index) in claims"
-         :key="index"
-         style="margin-bottom:5px;">
+    <div
+      v-for="(item, index) in claims"
+      :key="index"
+      style="margin-bottom:5px;"
+    >
       <Row>
         <Col span="24">
-        <Input v-model="item.value">
-        <Select slot="prepend"
-                v-model="item.key"
-                not-found-text="请选择一个授权方案"
-                style="width: 150px">
-          <Option v-for="(claim, cidx) in wellKnown.claims_supported"
-                  :value="claim"
-                  :key="cidx">{{claim}}</Option>
-        </Select>
-        <Button slot="append"
-                icon="md-close"
-                @click="onDelete(index)"></Button>
-        </Input>
+          <Input v-model="item.value">
+            <Select
+              slot="prepend"
+              v-model="item.key"
+              not-found-text="请选择一个授权方案"
+              style="width: 150px"
+            >
+              <Option
+                v-for="(claim, cidx) in wellKnown.claims_supported"
+                :value="claim"
+                :key="cidx"
+                >{{ claim }}</Option
+              >
+            </Select>
+            <Button
+              slot="append"
+              icon="md-close"
+              @click="onDelete(index)"
+            ></Button>
+          </Input>
         </Col>
       </Row>
     </div>
@@ -43,9 +45,9 @@
 </template>
 
 <script>
-import env from '../../../global'
+import config from '../../../config'
 export default {
-  data () {
+  data() {
     return {
       wellKnown: {},
       init: false,
@@ -67,24 +69,24 @@ export default {
     },
     property: {
       type: Object,
-      default () {
+      default() {
         return {}
       }
     }
   },
-  mounted () {
+  mounted() {
     this.loadWellKnown()
   },
   watch: {
-    idsHost () {
+    idsHost() {
       this.loadWellKnown()
     },
-    property () {
+    property() {
       this.init = true
       this.claims = this.objToArray(this.property)
     },
     claims: {
-      handler () {
+      handler() {
         if (this.init === true) {
           this.init = false
           return
@@ -99,16 +101,16 @@ export default {
     }
   },
   methods: {
-    add () {
+    add() {
       this.claims.push({
         key: '',
         value: ''
       })
     },
-    onDelete (index) {
+    onDelete(index) {
       this.claims.splice(index, 1)
     },
-    objToArray (property) {
+    objToArray(property) {
       var result = []
       if (property) {
         for (let prop in property) {
@@ -121,15 +123,15 @@ export default {
       }
       return result
     },
-    loadWellKnown () {
+    loadWellKnown() {
       var _this = this
       if (_this.idsHost) {
         _this.$axios
-          .get(_this.idsHost + env.identityServerWellKnownUri)
-          .then(function (response) {
+          .get(_this.idsHost + config.ids.wellKnownUri)
+          .then(function(response) {
             _this.wellKnown = response.data
           })
-          .catch(function (error) {
+          .catch(function(error) {
             _this.$Notice.error({
               title: '服务连接失败!',
               desc: error

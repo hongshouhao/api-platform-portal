@@ -2,36 +2,44 @@
   <Card>
     <div class="panel">
       <Tabs value="table">
-        <TabPane label="Table View"
-                 name="table">
+        <TabPane label="Table View" name="table">
           <div class="content">
-            <Button icon="ios-refresh"
-                    type="primary"
-                    :style="{margin:'10px'}"
-                    @click="refreshData">刷新</Button>
-            <Button icon="ios-cloud-circle"
-                    type="primary"
-                    :style="{margin:'10px 5px'}"
-                    @click="buildConfig">生成</Button>
-            <Button icon="ios-code-working"
-                    type="primary"
-                    :style="{margin:'10px'}"
-                    @click="currentConfig">当前Mapping</Button>
-            <Table ref="configTable"
-                   :columns="columns"
-                   :data="dataSource"
-                   :loading="loading"
-                   stripe></Table>
+            <Button
+              icon="ios-refresh"
+              type="primary"
+              :style="{ margin: '10px' }"
+              @click="refreshData"
+              >刷新</Button
+            >
+            <Button
+              icon="ios-cloud-circle"
+              type="primary"
+              :style="{ margin: '10px 5px' }"
+              @click="buildConfig"
+              >生成</Button
+            >
+            <Button
+              icon="ios-code-working"
+              type="primary"
+              :style="{ margin: '10px' }"
+              @click="currentConfig"
+              >当前Mapping</Button
+            >
+            <Table
+              ref="configTable"
+              :columns="columns"
+              :data="dataSource"
+              :loading="loading"
+              stripe
+            ></Table>
           </div>
         </TabPane>
         <TabPane label="JSON View">
-          <highlight-code lang="JSON">{{dataSourceJString}}</highlight-code>
+          <highlight-code lang="JSON">{{ dataSourceJString }}</highlight-code>
         </TabPane>
       </Tabs>
-      <Modal v-model="viewJsonString"
-             footer-hide
-             width="800">
-        <highlight-code lang="JSON">{{json}}</highlight-code>
+      <Modal v-model="viewJsonString" footer-hide width="800">
+        <highlight-code lang="JSON">{{ json }}</highlight-code>
       </Modal>
     </div>
   </Card>
@@ -39,7 +47,7 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       loading: false,
       viewJsonString: false,
@@ -156,20 +164,20 @@ export default {
       description: ''
     }
   },
-  mounted () {
+  mounted() {
     this.refreshData()
   },
   methods: {
-    refreshData () {
+    refreshData() {
       this.loading = true
       var _this = this
-      _this.$ocelotAdmin.GetAllConfigs(
-        function (data) {
+      _this.$ocelotClient.GetAllConfigs(
+        function(data) {
           _this.dataSourceJString = JSON.stringify(data, null, 2)
           _this.dataSource = data
           _this.loading = false
         },
-        function (errorThrown) {
+        function(errorThrown) {
           if (errorThrown === 'Unauthorized') {
             _this.$Message.warning('登录过期，请重新登录')
           } else {
@@ -178,21 +186,21 @@ export default {
         }
       )
     },
-    deleteConfig (row) {
+    deleteConfig(row) {
       var _this = this
       _this.$Modal.confirm({
         title: '注意',
         content: '<p>确定是否删除当前行？</p>',
         onOk: () => {
-          _this.$ocelotAdmin.DeleteConfig(
+          _this.$ocelotClient.DeleteConfig(
             row.id,
-            function () {
+            function() {
               _this.$Notice.success({
                 title: '删除成功'
               })
               _this.refreshData()
             },
-            function (errorThrownn) {
+            function(errorThrownn) {
               _this.$Notice.error({
                 title: '删除失败:',
                 desc: errorThrownn
@@ -202,7 +210,7 @@ export default {
         }
       })
     },
-    buildConfig () {
+    buildConfig() {
       var _this = this
       _this.$Modal.confirm({
         render: h => {
@@ -220,15 +228,15 @@ export default {
           })
         },
         onOk: () => {
-          _this.$ocelotAdmin.BuildConfig(
+          _this.$ocelotClient.BuildConfig(
             _this.description,
-            function () {
+            function() {
               _this.$Notice.success({
                 title: '生成成功'
               })
               _this.refreshData()
             },
-            function (errorThrownn) {
+            function(errorThrownn) {
               _this.$Notice.error({
                 title: '生成失败:',
                 desc: errorThrownn
@@ -238,19 +246,19 @@ export default {
         }
       })
     },
-    enableConfig (row) {
+    enableConfig(row) {
       var _this = this
-      _this.$ocelotAdmin.EnableConfig(
+      _this.$ocelotClient.EnableConfig(
         row.id,
-        function () {
-          _this.$ocelotAdmin.ReLoadConfig(
-            function () {
+        function() {
+          _this.$ocelotClient.ReLoadConfig(
+            function() {
               _this.$Notice.success({
                 title: '应用成功'
               })
               _this.refreshData()
             },
-            function (errorThrownn) {
+            function(errorThrownn) {
               _this.$Notice.error({
                 title: '网关加载映射失败',
                 desc: errorThrownn
@@ -258,7 +266,7 @@ export default {
             }
           )
         },
-        function (errorThrownn) {
+        function(errorThrownn) {
           _this.$Notice.error({
             title: '应用失败:',
             desc: errorThrownn
@@ -267,14 +275,14 @@ export default {
         }
       )
     },
-    currentConfig () {
+    currentConfig() {
       var _this = this
-      _this.$ocelotAdmin.CurrentConfig(
-        function (data) {
+      _this.$ocelotClient.CurrentConfig(
+        function(data) {
           _this.viewJsonString = true
           _this.json = JSON.stringify(data, null, 2)
         },
-        function (errorThrown) {
+        function(errorThrown) {
           _this.$Notice.error({
             title: '获取失败',
             desc: errorThrown
@@ -282,7 +290,7 @@ export default {
         }
       )
     },
-    inputDesc () { }
+    inputDesc() {}
   },
   components: {}
 }

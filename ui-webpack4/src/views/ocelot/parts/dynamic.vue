@@ -1,14 +1,15 @@
 <template>
   <div class="form">
-    <Form :model="vmodel"
-          :label-width="150">
+    <Form :model="vmodel" :label-width="150">
       <FormItem label="ServiceName">
         <Input v-model="vmodel.ServiceName"></Input>
       </FormItem>
       <Card dis-hover>
         <p slot="title">RateLimitRule</p>
         <FormItem label="EnableRateLimiting">
-          <i-switch v-model="vmodel.RateLimitRule.EnableRateLimiting"></i-switch>
+          <i-switch
+            v-model="vmodel.RateLimitRule.EnableRateLimiting"
+          ></i-switch>
         </FormItem>
         <FormItem label="Limit">
           <Input v-model="vmodel.RateLimitRule.Limit"></Input>
@@ -19,9 +20,11 @@
         <FormItem label="PeriodTimespan">
           <Input v-model="vmodel.RateLimitRule.PeriodTimespan"></Input>
         </FormItem>
-        <StringList class="mar10"
-                    title="ClientWhitelist"
-                    :array="vmodel.RateLimitRule.ClientWhitelist"></StringList>
+        <StringList
+          class="mar10"
+          title="ClientWhitelist"
+          :array="vmodel.RateLimitRule.ClientWhitelist"
+        ></StringList>
       </Card>
     </Form>
   </div>
@@ -31,15 +34,18 @@
 import StringList from '../../common/stringlist'
 
 export default {
-  data () {
+  data() {
     return {}
   },
   props: {
     vmodel: {
       type: Object,
-      default () { return {} } }
+      default() {
+        return {}
+      }
+    }
   },
-  mounted () { },
+  mounted() {},
   methods: {},
   components: {
     StringList
@@ -47,5 +53,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>

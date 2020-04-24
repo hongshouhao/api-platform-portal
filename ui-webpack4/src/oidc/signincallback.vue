@@ -1,19 +1,16 @@
 <template>
-  <div>
-  </div>
+  <div></div>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
 export default {
   methods: {
-    ...mapActions('oidcStore', [
-      'oidcSignInCallback'
-    ])
+    ...mapActions('oidcStore', ['oidcSignInCallback'])
   },
-  created () {
+  created() {
     this.oidcSignInCallback()
-      .then((redirectPath) => {
+      .then(redirectPath => {
         this.$router.push(redirectPath)
       })
       .catch(() => {

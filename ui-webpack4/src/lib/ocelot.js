@@ -1,7 +1,7 @@
 export default class OcelotClient {
-  constructor(ocelotHost, ocelotAdminHost, axios) {
+  constructor(serverBaseUrl, adminApiBaseUrl, axios) {
     this.GetAllSections = function (ifSuccess, ifError) {
-      axios.get(ocelotAdminHost + '/admin/configuration/getAllSections')
+      axios.get(adminApiBaseUrl + '/admin/configuration/getAllSections')
         .then(response =>
           ifSuccess(response.data)
         ).catch(error => {
@@ -10,7 +10,7 @@ export default class OcelotClient {
         })
     }
     this.GetSection = function (name, ifSuccess, ifError) {
-      axios.get(ocelotAdminHost + '/admin/configuration/getSection')
+      axios.get(adminApiBaseUrl + '/admin/configuration/getSection')
         .then(response =>
           ifSuccess(response.data)
         ).catch(error => {
@@ -18,7 +18,7 @@ export default class OcelotClient {
         })
     }
     this.SaveSection = function (json, ifSuccess, ifError) {
-      axios.post(ocelotAdminHost + '/admin/configuration/saveSection', json)
+      axios.post(adminApiBaseUrl + '/admin/configuration/saveSection', json)
         .then(response =>
           ifSuccess(response.data)
         ).catch(error => {
@@ -26,7 +26,7 @@ export default class OcelotClient {
         })
     }
     this.DeleteSection = function (sectionName, ifSuccess, ifError) {
-      axios.post(ocelotAdminHost + '/admin/configuration/deleteSection?name=' + sectionName)
+      axios.post(adminApiBaseUrl + '/admin/configuration/deleteSection?name=' + sectionName)
         .then(response =>
           ifSuccess(response.data)
         ).catch(error => {
@@ -34,7 +34,7 @@ export default class OcelotClient {
         })
     }
     this.ValidateSection = function (json, ifSuccess, ifError) {
-      axios.post(ocelotAdminHost + '/admin/configuration/validateSections', json)
+      axios.post(adminApiBaseUrl + '/admin/configuration/validateSections', json)
         .then(response =>
           ifSuccess(response.data)
         ).catch(error => {
@@ -42,7 +42,7 @@ export default class OcelotClient {
         })
     }
     this.BuildConfig = function (description, ifSuccess, ifError) {
-      axios.post(ocelotAdminHost + '/admin/configuration/buildConfig?description=' + description)
+      axios.post(adminApiBaseUrl + '/admin/configuration/buildConfig?description=' + description)
         .then(response =>
           ifSuccess(response.data)
         ).catch(error => {
@@ -51,7 +51,7 @@ export default class OcelotClient {
     }
 
     this.EnableConfig = function (id, ifSuccess, ifError) {
-      axios.post(ocelotAdminHost + '/admin/configuration/enableConfig?id=' + id)
+      axios.post(adminApiBaseUrl + '/admin/configuration/enableConfig?id=' + id)
         .then(response =>
           ifSuccess(response.data)
         ).catch(error => {
@@ -59,7 +59,7 @@ export default class OcelotClient {
         })
     }
     this.GetAllConfigs = function (ifSuccess, ifError) {
-      axios.get(ocelotAdminHost + '/admin/configuration/getAllConfigs')
+      axios.get(adminApiBaseUrl + '/admin/configuration/getAllConfigs')
         .then(response =>
           ifSuccess(response.data)
         ).catch(error => {
@@ -67,7 +67,7 @@ export default class OcelotClient {
         })
     }
     this.DeleteConfig = function (id, ifSuccess, ifError) {
-      axios.post(ocelotAdminHost + '/admin/configuration/deleteConfig?id=' + id)
+      axios.post(adminApiBaseUrl + '/admin/configuration/deleteConfig?id=' + id)
         .then(response =>
           ifSuccess(response.data)
         ).catch(error => {
@@ -75,7 +75,7 @@ export default class OcelotClient {
         })
     }
     this.ReLoadConfig = function (ifSuccess, ifError) {
-      axios.post(ocelotHost + '/admin/configuration/reLoad')
+      axios.post(serverBaseUrl + '/admin/configuration/reLoad')
         .then(response =>
           ifSuccess(response.data)
         ).catch(error => {
@@ -83,7 +83,7 @@ export default class OcelotClient {
         })
     }
     this.CurrentConfig = function (ifSuccess, ifError) {
-      axios.get(ocelotHost + '/admin/configuration/get')
+      axios.get(serverBaseUrl + '/admin/configuration/get')
         .then(response =>
           ifSuccess(response.data)
         ).catch(error => {

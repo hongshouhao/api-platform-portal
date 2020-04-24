@@ -395,7 +395,7 @@
 </template>
 
 <script>
-import env from '../../../global'
+import config from '../../../config'
 import KeyValueEditor from '../../common/keyvalueeditor'
 import HttpMethodEditor from '../../common/httpmethodeditor'
 import StringList from '../../common/stringlist'
@@ -430,7 +430,7 @@ export default {
       var _this = this
       _this.loadingAuthOptions = true
       _this.$axios
-        .get(env.ocelotAdmin_host + '/admin/authoptions/getall')
+        .get(config.ocelot.adminApiBaseURL + '/admin/authoptions/getall')
         .then(function(response) {
           _this.loadingAuthOptions = false
           _this.options = response.data.map(op => {
